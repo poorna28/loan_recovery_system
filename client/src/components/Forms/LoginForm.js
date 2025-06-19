@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 const LoginForm = () => {
   const [form, setForm] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -12,6 +14,7 @@ const LoginForm = () => {
     try {
       const res = await api.post('/auth/login', form);
       toast.success(res.data.message);
+       navigate('/dashboard');
       // Store token if needed: localStorage.setItem('token', res.data.token)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');

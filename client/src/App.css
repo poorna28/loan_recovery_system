@@ -13,24 +13,37 @@
 }
 
 /* Fixed Sidebar */
+/* Sidebar Base */
 .sidebar-fixed {
   position: fixed;
-  top: 60px; /* below header */
+  top: 60px;
   left: 0;
-  width: 240px;
   height: calc(100vh - 60px);
   background-color: #1c1f26;
   color: white;
   padding: 1rem 0.5rem;
   overflow-y: auto;
-  transition: width 0.3s ease;
   z-index: 999;
+  width: 240px;
+  transition: width 0.3s ease, padding 0.3s ease;
 }
 
+/* Collapsed Sidebar */
 .sidebar-fixed.collapsed {
   width: 70px;
+  padding: 1rem 0.25rem;
 }
 
+/* Collapse Toggle Button */
+.btn-toggle-collapse {
+  background: none;
+  border: none;
+  color: #fff;
+  margin: 0.25rem 0.5rem;
+  font-size: 16px;
+}
+
+/* Nav Styling */
 .sidebar-fixed .nav-link {
   color: #ddd;
   display: flex;
@@ -44,13 +57,7 @@
   color: #fff;
 }
 
-.sidebar-fixed .btn-toggle-collapse {
-  background: none;
-  border: none;
-  color: #fff;
-  margin: 0.25rem 0.5rem;
-}
-
+/* Main content shifts based on sidebar width */
 .main-content {
   margin-top: 60px;
   margin-left: 240px;
@@ -61,6 +68,7 @@
 .sidebar-fixed.collapsed ~ .main-content {
   margin-left: 70px;
 }
+
 
 /* Footer */
 footer {

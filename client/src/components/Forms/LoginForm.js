@@ -9,17 +9,22 @@ const LoginForm = () => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post('/auth/login', form);
-      toast.success(res.data.message);
-       navigate('/dashboard');
-      // Store token if needed: localStorage.setItem('token', res.data.token)
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await api.post('/auth/login', form);
+    toast.success(res.data.message);
+
+    // ✅ Store token
+    localStorage.setItem('authToken', res.data.token || 'logged-in');
+
+    // ✅ Navigate and replace history
+    navigate('/dashboard', { replace: true });
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Login failed');
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit}>

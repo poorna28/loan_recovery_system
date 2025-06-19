@@ -12,6 +12,7 @@ const SignupForm = () => {
     try {
       const res = await api.post('/auth/signup', form);
       toast.success(res.data.message);
+      form.reset();
     } catch (err) {
             console.error('Signup error:', err); // Add this line
 

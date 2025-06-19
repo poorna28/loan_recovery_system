@@ -9,6 +9,7 @@
     "concurrently": "^8.2.0"
   },
   "dependencies": {
+    "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5"
   }
 }

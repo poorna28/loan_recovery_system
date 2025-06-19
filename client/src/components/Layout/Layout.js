@@ -4,12 +4,12 @@ import Footer from '../Footer/Footer';
 
 const Layout = ({ children }) => {
   return (
-    <div className="app-layout">
+    <div>
       <Header />
-      <div style={{ display: 'flex' }}>
-        <Sidebar />
-        <main style={{ padding: '20px', flex: 1 }}>{children}</main>
-      </div>
+      <Sidebar />
+      <main className="main-content p-3">
+        {children}
+      </main>
       <Footer />
     </div>
   );

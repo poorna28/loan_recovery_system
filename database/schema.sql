@@ -8,3 +8,4 @@ CREATE TABLE IF NOT EXISTS users (
 
 
 
+UPDATE users SET password = 'your_bcrypt_hash' WHERE email = 'user@example.com';

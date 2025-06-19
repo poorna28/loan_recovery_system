@@ -13,6 +13,8 @@ const SignupForm = () => {
       const res = await api.post('/auth/signup', form);
       toast.success(res.data.message);
     } catch (err) {
+            console.error('Signup error:', err); // Add this line
+
       toast.error(err.response?.data?.message || 'Signup failed');
     }
   };

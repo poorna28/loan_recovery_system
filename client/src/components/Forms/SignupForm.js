@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -12,7 +14,8 @@ const SignupForm = () => {
     try {
       const res = await api.post('/auth/signup', form);
       toast.success(res.data.message);
-      form.reset();
+      setForm({name :'',email: '', password: ''});
+      navigate('/');
     } catch (err) {
             console.error('Signup error:', err); // Add this line
 

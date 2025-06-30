@@ -57,12 +57,12 @@ const Sidebar = () => {
             onClick={() => toggleMenu('customers')}
           >
             <i className="fas fa-users"></i>
-            {actualExpanded && <span className="ms-2">Customers</span>}
+            {actualExpanded && <span className="ms-2">Customer</span>}
           </button>
           {actualExpanded && openMenu === 'customers' && (
             <ul className="nav flex-column ms-3">
-              <li className="nav-item"><a href="#" className="nav-link text-white">Loan Customers</a></li>
-              <li className="nav-item"><a href="#" className="nav-link text-white">Recovery</a></li>
+              <li className="nav-item"><a href="/basic_info" className="nav-link text-white">Basic Information</a></li>
+              <li className="nav-item"><a href="/loan_details" className="nav-link text-white">Loan Details</a></li>
             </ul>
           )}
         </li>

@@ -6,6 +6,14 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS customers (
+    customer_id VARCHAR(20) UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+ALTER TABLE customers ADD COLUMN customer_id VARCHAR(20) UNIQUE AFTER id;
 
 UPDATE users SET password = 'your_bcrypt_hash' WHERE email = 'user@example.com';
+

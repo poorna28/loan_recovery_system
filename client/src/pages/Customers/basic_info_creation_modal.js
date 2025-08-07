@@ -40,7 +40,7 @@ const Basic_Info_Creation_Modal = ({ editData, setEditData }) => {
     };
     const onSave = () => {
         const method = editData ? api.put : api.post;
-        const url = editData ? `/api/customers/${editData.customerId}` : '/api/customers';
+        const url = editData ? `/api/customers/${editData.customerId}` : '/api/basic_info';
 
         method(url, formData)
             .then(() => {

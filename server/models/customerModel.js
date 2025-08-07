@@ -1,17 +1,17 @@
 const db = require('./db');
 
 const Customer = {
-  createCustomer: async ({ name, email, ...otherFields }) => {
+  createCustomer: async ({
+    firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
+  }) => {
     return new Promise((resolve, reject) => {
-      // First, insert the customer without customer_id to get the auto-increment id
       db.query(
-        'INSERT INTO customers (name, email, ...) VALUES (?, ?, ...)',
-        [name, email, /* other fields */],
+        'INSERT INTO customers (firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore],
         (err, results) => {
           if (err) return reject(err);
           const insertId = results.insertId;
           const customerId = `USR${1000 + insertId}`;
-          // Update the customer_id field
           db.query(
             'UPDATE customers SET customer_id = ? WHERE id = ?',
             [customerId, insertId],

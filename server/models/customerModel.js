@@ -1,6 +1,7 @@
 const db = require('./db');
 
 const Customer = {
+  // Create a new customer
   createCustomer: async ({
     firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
   }) => {
@@ -24,7 +25,42 @@ const Customer = {
       );
     });
   },
-  // ...other methods...
+
+  // Get all customers
+  getAllCustomers: () => {
+    return new Promise((resolve, reject) => {
+      db.query('SELECT * FROM customers', (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+  },
+
+  // Delete a customer by customer_id
+  deleteCustomer: (customerId) => {
+    return new Promise((resolve, reject) => {
+      db.query('DELETE FROM customers WHERE customer_id = ?', [customerId], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+  },
+
+  // Update a customer by customer_id
+  updateCustomer: (customerId, {
+    firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
+  }) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        `UPDATE customers SET firstName = ?, email = ?, PhoneNumber = ?, dateOfBirth = ?, address = ?, EmploymentStatus = ?, AnnualIncome = ?, creditScore = ? WHERE customer_id = ?`,
+        [firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore, customerId],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results);
+        }
+      );
+    });
+  }
 };
 
 module.exports = Customer;

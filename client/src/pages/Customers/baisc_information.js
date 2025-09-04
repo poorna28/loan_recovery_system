@@ -8,12 +8,12 @@ const Basic_Info = () => {
     const [customers, setCustomers] = useState([]);
     const [editData, setEditData] = useState(null);
 
-    useEffect(() => {
-        // Replace with your actual API endpoint
-        fetch('/api/customers')
-            .then(res => res.json())
-            .then(data => setCustomers(data.customers || []));
-    }, []);
+   useEffect(() => {
+    api.get('customers')
+        .then(res => setCustomers(res.data.customers || []))
+        .catch(err => console.error('Failed to fetch customers:', err));
+}, []);
+
 
     const handleEdit = (customer) => {
         setEditData(customer);
@@ -23,7 +23,7 @@ const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
         try {
             await api.delete(`/api/customers/${id}`);
-            setCustomers(prev => prev.filter(c => c.customerId !== id));
+            setCustomers(prev => prev.filter(c => c.customer_id  !== id));
         } catch (err) {
             alert('Failed to delete customer');
         }
@@ -63,7 +63,7 @@ const handleDelete = async (id) => {
                     </thead>
                     <tbody>
                         {customers.map((customer, idx) => (
-                            <tr key={customer.customerId}>
+                            <tr key={customer.id}>
                                 <td>{customer.firstName}</td>
                                 <td>{customer.email}</td>
                                 <td>{customer.PhoneNumber}</td>
@@ -83,7 +83,7 @@ const handleDelete = async (id) => {
                                     </button>
                                     <button
                                         className="btn btn-sm btn-danger"
-                                        onClick={() => handleDelete(customer.customerId)}
+                                        onClick={() => handleDelete(customer.customer_id)}
                                     >
                                         Delete
                                     </button>

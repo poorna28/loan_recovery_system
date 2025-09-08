@@ -34,9 +34,18 @@ exports.deleteCustomer = async (req, res) => {
 exports.updateCustomer = async (req, res) => {
   try {
     const { id } = req.params;
-    await customerModel.updateCustomer(id, req.body);
+    const updatePayload = req.body;
+
+    console.log('🔧 Updating customer:', id);
+    console.log('📦 Payload:', updatePayload);
+
+    const result = await customerModel.updateCustomer(id, updatePayload);
+
+    console.log('✅ Update result:', result);
     res.status(200).json({ message: 'Customer updated' });
   } catch (err) {
+    console.error('❌ Update error:', err); // This will show full error stack
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+

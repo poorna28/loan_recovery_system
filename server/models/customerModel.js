@@ -46,21 +46,29 @@ const Customer = {
     });
   },
 
-  // Update a customer by customer_id
   updateCustomer: (customerId, {
     firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
   }) => {
     return new Promise((resolve, reject) => {
+      console.log('🔧 Updating customer:', customerId);
+      console.log('📦 Payload:', {
+        firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
+      });
+
       db.query(
         `UPDATE customers SET firstName = ?, email = ?, PhoneNumber = ?, dateOfBirth = ?, address = ?, EmploymentStatus = ?, AnnualIncome = ?, creditScore = ? WHERE customer_id = ?`,
         [firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore, customerId],
         (err, results) => {
-          if (err) return reject(err);
+          if (err) {
+            console.error('❌ SQL Error:', err.sqlMessage || err.message);
+            return reject(err);
+          }
           resolve(results);
         }
       );
     });
   }
+
 };
 
 module.exports = Customer;

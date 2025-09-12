@@ -36,7 +36,7 @@ const Sidebar = () => {
             onClick={() => {
                 const newCollapsed = !collapsed;
                 setCollapsed(newCollapsed);
-                if (newCollapsed) setHovered(false); // ✅ Reset hover on manual collapse
+                if (newCollapsed) setHovered(false); //  Reset hover on manual collapse
             }}
             >
             <i className={`fas fa-${collapsed ? 'angle-double-right' : 'angle-double-left'}`}></i>
@@ -52,6 +52,12 @@ const Sidebar = () => {
         </li>
 
         <li className="nav-item">
+           <a href="/basic_info" className="nav-link text-white">
+            <i className="fas fa-user"></i>
+            {actualExpanded && <span className="ms-2">Customers</span>}
+          </a>
+        </li>
+         {/* <li className="nav-item">
           <button
             className="nav-link btn btn-link text-white text-start w-100"
             onClick={() => toggleMenu('customers')}
@@ -65,12 +71,26 @@ const Sidebar = () => {
               <li className="nav-item"><a href="/loan_details" className="nav-link text-white">Loan Details</a></li>
             </ul>
           )}
-        </li>
+        </li> */}
 
         <li className="nav-item">
           <a href="#" className="nav-link text-white">
             <i className="fas fa-user"></i>
-            {actualExpanded && <span className="ms-2">Users</span>}
+            {actualExpanded && <span className="ms-2">Loans</span>}
+          </a>
+        </li>
+
+        <li className="nav-item">
+          <a href="#" className="nav-link text-white">
+            <i className="fas fa-cog"></i>
+            {actualExpanded && <span className="ms-2">Payments</span>}
+          </a>
+        </li>
+
+        <li className="nav-item">
+          <a href="#" className="nav-link text-white">
+            <i className="fas fa-cog"></i>
+            {actualExpanded && <span className="ms-2">Reports</span>}
           </a>
         </li>
 
@@ -80,6 +100,7 @@ const Sidebar = () => {
             {actualExpanded && <span className="ms-2">Settings</span>}
           </a>
         </li>
+
       </ul>
     </aside>
   );

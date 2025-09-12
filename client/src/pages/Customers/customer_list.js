@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import '../../App.css';
 import Layout from '../../components/Layout/Layout';
-import Basic_Info_Creation_Modal from './basic_info_creation_modal';
+import Customer_list_personal_details from './customer_list_personal_details';
+import Customer_list_view from './customer_list_view';
 
 const Basic_Info = () => {
     const [customers, setCustomers] = useState([]);
     const [editData, setEditData] = useState(null);
+    const [viewData, setViewData] = useState(null);
 
     useEffect(() => {
         api.get('customers')
@@ -14,11 +16,14 @@ const Basic_Info = () => {
             .catch(err => console.error('Failed to fetch customers:', err));
     }, []);
 
-
     const handleEdit = (customer) => {
         setEditData(customer);
-    }
+    };
 
+    const handleView = (customer) => {
+        setViewData(customer);
+        console.log("Viewing customer:", customer);
+    };
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this customer?")) {
@@ -33,9 +38,9 @@ const Basic_Info = () => {
         }
     };
 
-
     return (
         <Layout>
+            {/* Add Button */}
             <button
                 type="button"
                 className="btn btn-primary mb-3"
@@ -45,35 +50,39 @@ const Basic_Info = () => {
             >
                 Add Customer
             </button>
-            <Basic_Info_Creation_Modal editData={editData} setEditData={setEditData} />
 
+            {/* Add/Edit Modal */}
+            <Customer_list_personal_details editData={editData} setEditData={setEditData} />
+
+            {/* View Modal */}
+            <Customer_list_view viewData={viewData} />
+
+            {/* Customer Table */}
             <div>
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">FirstName</th>
+                            <th scope="col">Customer_Id</th>
+                            <th scope="col">Full_Name</th>
+                            <th scope="col">Phone_Number</th>
                             <th scope="col">Email</th>
-                            <th scope="col">PhoneNumber</th>
-                            <th scope="col">Date_of_Birth</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">EmploymentStatus</th>
-                            <th scope="col">AnnualIncome</th>
-                            <th scope="col">creditScore</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Active_Loans</th>
+                            <th scope="col">Last_Payment</th>
+                            <th scope="col">Credit_Score</th>
                             <th scope="col">Actions</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
-                        {customers.map((customer, idx) => (
-                            <tr key={customer.id}>
+                        {customers.map((customer) => (
+                            <tr key={customer.customer_id}>
+                                <td>{customer.customer_id}</td>
                                 <td>{customer.firstName}</td>
+                                <td>{customer.phoneNumber}</td>
                                 <td>{customer.email}</td>
-                                <td>{customer.PhoneNumber}</td>
-                                <td>{customer.dateOfBirth}</td>
-                                <td>{customer.address}</td>
-                                <td>{customer.EmploymentStatus}</td>
-                                <td>{customer.AnnualIncome}</td>
+                                <td>{customer.employmentStatus}</td>
+                                <td>{customer.activeLoans}</td>
+                                <td>{customer.lastPayment}</td>
                                 <td>{customer.creditScore}</td>
                                 <td>
                                     <button
@@ -83,6 +92,14 @@ const Basic_Info = () => {
                                         data-bs-target="#addCustomerModal"
                                     >
                                         Edit
+                                    </button>
+                                    <button
+                                        className="btn btn-sm btn-info me-2"
+                                        onClick={() => handleView(customer)}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewCustomerModal"
+                                    >
+                                        View
                                     </button>
                                     <button
                                         className="btn btn-sm btn-danger"

@@ -3,7 +3,7 @@ import SignupForm from './components/Forms/SignupForm';
 import LoginForm from './components/Forms/LoginForm';
 import DashboardPage from './pages/Dashboard/Dashboard';
 import PrivateRoute from './privateRoute';
-import Basic_Info from './pages/Customers/baisc_information';
+import Basic_Info from './pages/Customers/customer_list';
 import Loan_Details from './pages/Customers/loan_details';
 
 const routes = [

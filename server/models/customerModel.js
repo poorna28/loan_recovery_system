@@ -3,12 +3,12 @@ const db = require('./db');
 const Customer = {
   // Create a new customer
   createCustomer: async ({
-    firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
+    firstName, email, profileStatus, title, lastName, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
   }) => {
     return new Promise((resolve, reject) => {
       db.query(
         'INSERT INTO customers (firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore],
+        [firstName, email, profileStatus, title, lastName, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore],
         (err, results) => {
           if (err) return reject(err);
           const insertId = results.insertId;
@@ -47,17 +47,104 @@ const Customer = {
   },
 
   updateCustomer: (customerId, {
-    firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
+    firstName,
+    lastName,
+    title,
+    gender,
+    dateOfBirth,
+    nationality,
+    email,
+    PhoneNumber,
+    primaryNumber,
+    secondaryNumber,
+    address,
+    city,
+    state,
+    postalCode,
+    profileStatus,
+    employmentStatus,
+    companyName,
+    jobTitle,
+    monthlyIncome,
+    annualIncome,
+    incomeProofDocument,
+    creditScore,
+    creditScoreBand,
+    govtIdType,
+    govtIdNumber,
+    idIssueDate,
+    idExpiryDate,
+    addressProof,
+    idDocumentUpload,
+    customerPhoto
   }) => {
     return new Promise((resolve, reject) => {
       console.log('🔧 Updating customer:', customerId);
       console.log('📦 Payload:', {
-        firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore
+        firstName,
+        lastName,
+        title,
+        gender,
+        dateOfBirth,
+        nationality,
+        email,
+        PhoneNumber,
+        primaryNumber,
+        secondaryNumber,
+        address,
+        city,
+        state,
+        postalCode,
+        profileStatus,
+        employmentStatus,
+        companyName,
+        jobTitle,
+        monthlyIncome,
+        annualIncome,
+        incomeProofDocument,
+        creditScore,
+        creditScoreBand,
+        govtIdType,
+        govtIdNumber,
+        idIssueDate,
+        idExpiryDate,
+        addressProof,
+        idDocumentUpload,
+        customerPhoto
       });
 
       db.query(
         `UPDATE customers SET firstName = ?, email = ?, PhoneNumber = ?, dateOfBirth = ?, address = ?, EmploymentStatus = ?, AnnualIncome = ?, creditScore = ? WHERE customer_id = ?`,
-        [firstName, email, PhoneNumber, dateOfBirth, address, EmploymentStatus, AnnualIncome, creditScore, customerId],
+        [firstName,
+          lastName,
+          title,
+          gender,
+          dateOfBirth,
+          nationality,
+          email,
+          PhoneNumber,
+          primaryNumber,
+          secondaryNumber,
+          address,
+          city,
+          state,
+          postalCode,
+          profileStatus,
+          employmentStatus,
+          companyName,
+          jobTitle,
+          monthlyIncome,
+          annualIncome,
+          incomeProofDocument,
+          creditScore,
+          creditScoreBand,
+          govtIdType,
+          govtIdNumber,
+          idIssueDate,
+          idExpiryDate,
+          addressProof,
+          idDocumentUpload,
+          customerPhoto],
         (err, results) => {
           if (err) {
             console.error('❌ SQL Error:', err.sqlMessage || err.message);

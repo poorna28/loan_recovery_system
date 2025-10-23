@@ -6,19 +6,46 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE customers (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  customer_id VARCHAR(20) UNIQUE,
-  firstName VARCHAR(100) NOT NULL,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  PhoneNumber VARCHAR(20),
-  dateOfBirth DATE,
-  address TEXT,
-  EmploymentStatus VARCHAR(50),
-  AnnualIncome VARCHAR(50),
-  creditScore VARCHAR(50),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ CREATE TABLE IF NOT EXISTS customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id VARCHAR(20) UNIQUE,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100),
+    title VARCHAR(20),
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phoneNumber VARCHAR(20),
+    primaryNumber VARCHAR(20),
+    secondaryNumber VARCHAR(20),
+    dateOfBirth DATE,
+    gender VARCHAR(10),
+    nationality VARCHAR(50),
+    address TEXT,
+    city VARCHAR(50),
+    state VARCHAR(50),
+    postalCode VARCHAR(20),
+    addressProof VARCHAR(255), -- Stores file path/URL
+    profileStatus VARCHAR(50),
+
+    -- Financial/Employment Info
+    employmentStatus VARCHAR(50),
+    companyName VARCHAR(100),
+    jobTitle VARCHAR(100),
+    monthlyIncome DECIMAL(10, 2),
+    annualIncome DECIMAL(10, 2),
+    incomeProofDocument VARCHAR(255),
+    creditScore INT,
+    creditScoreBand VARCHAR(50),
+
+    -- KYC/Verification Info
+    govtIdType VARCHAR(50),
+    govtIdNumber VARCHAR(100),
+    idIssueDate DATE,
+    idExpiryDate DATE,
+    idDocumentUpload VARCHAR(255), -- Stores file path/URL
+    customerPhoto VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 ALTER TABLE customers ADD COLUMN customer_id VARCHAR(20) UNIQUE AFTER id;
 
@@ -29,7 +56,7 @@ UPDATE users SET password = 'your_bcrypt_hash' WHERE email = 'user@example.com';
 -- CREATE TABLE IF NOT EXISTS customers (
 --     id INT AUTO_INCREMENT PRIMARY KEY,
 --     customer_id VARCHAR(20) UNIQUE,
---     first_name VARCHAR(100) NOT NULL,
+--     firstName VARCHAR(100) NOT NULL,
 --     last_name VARCHAR(100),
 --     title VARCHAR(20),
 --     email VARCHAR(100) NOT NULL UNIQUE,

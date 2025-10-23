@@ -12,6 +12,7 @@ exports.createCustomer = async (req, res) => {
 // Get all customers
 exports.getAllCustomers = async (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store'); // disable caching
     const customers = await customerModel.getAllCustomers();
     res.status(200).json({ customers });
   } catch (err) {

@@ -38,6 +38,8 @@ const Basic_Info = () => {
         }
     };
 
+    
+
     return (
         <Layout>
             {/* Add Button */}

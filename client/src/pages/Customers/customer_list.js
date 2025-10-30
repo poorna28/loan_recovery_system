@@ -68,9 +68,9 @@ const Basic_Info = () => {
                             <th scope="col">Full_Name</th>
                             <th scope="col">Phone_Number</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Active_Loans</th>
-                            <th scope="col">Last_Payment</th>
+                            <th scope="col">Employee Status</th>
+                            <th scope="col">Profile Status</th>
+                            <th scope="col">Annual Income</th>
                             <th scope="col">Credit_Score</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -83,8 +83,8 @@ const Basic_Info = () => {
                                 <td>{customer.phoneNumber}</td>
                                 <td>{customer.email}</td>
                                 <td>{customer.employmentStatus}</td>
-                                <td>{customer.activeLoans}</td>
-                                <td>{customer.lastPayment}</td>
+                                <td>{customer.profileStatus}</td>
+                                <td>{customer.annualIncome}</td>
                                 <td>{customer.creditScore}</td>
                                 <td>
                                     <button

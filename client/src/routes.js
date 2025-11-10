@@ -4,7 +4,7 @@ import LoginForm from './components/Forms/LoginForm';
 import DashboardPage from './pages/Dashboard/Dashboard';
 import PrivateRoute from './privateRoute';
 import Basic_Info from './pages/Customers/customer_list';
-import Loan_Details from './pages/Customers/loan_details';
+import Loan_Details from './pages/Loans/loan_list';
 
 const routes = [
   { path: '/', element: <LoginForm /> },

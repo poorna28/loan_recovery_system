@@ -74,7 +74,7 @@ const Sidebar = () => {
         </li> */}
 
         <li className="nav-item">
-          <a href="#" className="nav-link text-white">
+          <a href="/Loan_Details" className="nav-link text-white">
             <i className="fas fa-user"></i>
             {actualExpanded && <span className="ms-2">Loans</span>}
           </a>

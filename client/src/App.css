@@ -115,3 +115,111 @@ footer {
 .table>:not(caption)>*>*{
   padding: 6px 6px !important;
 }
+
+
+/* step forms ui */
+
+
+/* Step section container */
+.step-section {
+  background-color: #f8fafc;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* Step header */
+.step-header h5 {
+  font-size: 1.25rem;
+}
+
+.step-header p {
+  margin-bottom: 0;
+}
+
+/* Form labels & inputs */
+.form-label {
+  color: #334155;
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+/* Optional: subtle fade-in animation */
+.step-section {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Elegant modal container */
+.elegant-modal {
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* Tabs styling */
+.modal-tabs {
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tab-item {
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-item:hover {
+  color: #000;
+  background-color: #f1f5f9;
+}
+
+.tab-item.active {
+  color: #000;
+  border-bottom: 3px solid #000;
+  background-color: #ffffff;
+}
+
+/* Modal header */
+.modal-header h4 {
+  font-size: 1.3rem;
+}
+
+.modal-header {
+  background-color: #f8fafc;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 1rem 1.5rem;
+}
+
+/* Footer buttons */
+.modal-footer {
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.form-label{
+    font-weight: 600;
+}

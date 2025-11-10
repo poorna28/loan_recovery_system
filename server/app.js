@@ -9,6 +9,10 @@ app.use(express.json());
 const customerRoutes = require('./routes/customerRoutes');
 app.use('/api', customerRoutes);
 
+const loanRoutes = require('./routes/loanRoutes');
+app.use('/api', loanRoutes);
+
+
 app.use('/api/auth', require('./routes/authRoutes'));
 
 

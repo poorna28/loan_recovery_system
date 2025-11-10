@@ -95,3 +95,20 @@ UPDATE users SET password = 'your_bcrypt_hash' WHERE email = 'user@example.com';
 -- );
 
 -- The manual ALTER and UPDATE commands from the original file are removed as they are resolved above.
+
+
+
+CREATE TABLE loanCustomer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    loan_id VARCHAR(20) UNIQUE,
+    loanAmount DECIMAL(10,2) NOT NULL,
+    loanPurpose VARCHAR(100) NOT NULL,
+    interestRate DECIMAL(5,2) NOT NULL,
+    loanTerm INT NOT NULL,
+    aplicationDate DATE,
+    statusApproved ENUM('Approved', 'Not Approved', 'Pending') DEFAULT 'Pending',
+    monthlyPayment DECIMAL(10,2),
+    nextPaymentDue DATE,
+    remainingBalance DECIMAL(10,2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -6,6 +6,8 @@ import Loan_List_Details from './loan_list_details';
 import Loan_List_View from './loan_list_view';
 
 
+// poorna charan comi child barcnh
+
 const Loan_Details = () => {
 
     const [loanCustomers, setLoanCustomers] = useState([]);

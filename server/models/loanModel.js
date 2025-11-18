@@ -2,94 +2,105 @@ const db = require('./db');
 
 const LoanCustomer = {
 
-    createLoan: async  (data) => {
-        const {
-            loanAmount,
-            loanPurpose,
-            interestRate,
-            loanTerm,
-            aplicationDate,
-            statusApproved,
-            monthlyPayment,
-            nextPaymentDue,
-            remainingBalance
-
-        } = data;
-
-        return new Promise((resolve, reject) => {
-            const sql = `Insert into loan_customer  (
-            loanAmount,
-            loanPurpose,
-            interestRate,
-            loanTerm,
-            aplicationDate,
-            statusApproved,
-            monthlyPayment,
-            nextPaymentDue,
-            remainingBalance
-            ) Values (?,?,?,?,?,?,?,?,?)`;
-
-            const values = [
-                loanAmount,
-                loanPurpose,
-                interestRate,
-                loanTerm,
-                aplicationDate,
-                statusApproved,
-                monthlyPayment,
-                nextPaymentDue,
-                remainingBalance
-            ]
-
-            db.query(sql, values, (err, results) => {
-                if (err) return reject(err);
-
-                const insertId = results.insertId;
-                const loan_id = `USR${1000 + insertId}`;
-
-                db.query(
-                    'UPDATE loan_customer  SET loan_id = ? WHERE id = ?',
-                    [loan_id, insertId],
-                    (err2) => {
-                        if (err2) return reject(err2);
-                        resolve({ id: insertId, loan_id });
-                    }
-                );
-            });
-        })
-    },
-
-      // Update existing customer
-  updateLoanCustomer: async (loan_id, data) => {
+  createLoan: async (data) => {
     const {
-            loanAmount,
-            loanPurpose,
-            interestRate,
-            loanTerm,
-            aplicationDate,
-            statusApproved,
-            monthlyPayment,
-            nextPaymentDue,
-            remainingBalance
+      loanAmount,
+      loanPurpose,
+      interestRate,
+      loanTerm,
+      aplicationDate,
+      statusApproved,
+      monthlyPayment,
+      nextPaymentDue,
+      remainingBalance
+
     } = data;
 
     return new Promise((resolve, reject) => {
-      const sql = `UPDATE loan_customer  SET
-        loanAmount=?, loanPurpose=?, interestRate=?, loanTerm=?, aplicationDate=?, statusApproved=?, monthlyPayment=?,
-        nextPaymentDue=?, remainingBalance=?
-        WHERE loan_id=?`;
+      const sql = `INSERT INTO loan_customer (
+    loan_amount,
+    loan_purpose,
+    interest_rate,
+    loan_term,
+    application_date,
+    status_approved,
+    monthly_payment,
+    next_payment_due,
+    remaining_balance
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
 
       const values = [
-            loanAmount,
-            loanPurpose,
-            interestRate,
-            loanTerm,
-            aplicationDate || null,
-            statusApproved,
-            monthlyPayment,
-            nextPaymentDue,
-            remainingBalance,
-            loan_id
+        loanAmount,
+        loanPurpose,
+        interestRate,
+        loanTerm,
+        aplicationDate,
+        statusApproved,
+        monthlyPayment,
+        nextPaymentDue,
+        remainingBalance
+      ]
+
+      db.query(sql, values, (err, results) => {
+        if (err) return reject(err);
+
+        const insertId = results.insertId;
+        const loan_id = `USR${1000 + insertId}`;
+
+        db.query(
+          'UPDATE loan_customer  SET loan_id = ? WHERE id = ?',
+          [loan_id, insertId],
+          (err2) => {
+            if (err2) return reject(err2);
+            resolve({ id: insertId, loan_id });
+          }
+        );
+      });
+    })
+  },
+
+  // Update existing customer
+  updateLoanCustomer: async (loan_id, data) => {
+    const {
+      loanAmount,
+      loanPurpose,
+      interestRate,
+      loanTerm,
+      aplicationDate,
+      statusApproved,
+      monthlyPayment,
+      nextPaymentDue,
+      remainingBalance
+    } = data;
+
+    return new Promise((resolve, reject) => {
+const sql = `
+    UPDATE loan_customer SET
+        loan_amount = ?,
+        loan_purpose = ?,
+        interest_rate = ?,
+        loan_term = ?,
+        application_date = ?,
+        status_approved = ?,
+        monthly_payment = ?,
+        next_payment_due = ?,
+        remaining_balance = ?
+    WHERE loan_id = ?
+`;
+
+
+      const values = [
+        loanAmount,
+        loanPurpose,
+        interestRate,
+        loanTerm,
+        aplicationDate || null,
+        statusApproved,
+        monthlyPayment,
+        nextPaymentDue,
+        remainingBalance,
+        loan_id
       ];
 
       db.query(sql, values, (err, results) => {

@@ -3,6 +3,7 @@ import Layout from '../../components/Layout/Layout';
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import Loan_List_Details from './loan_list_details';
+import Loan_List_View from './loan_list_view';
 
 
 const Loan_Details = () => {
@@ -16,7 +17,22 @@ const Loan_Details = () => {
     useEffect(() => {
         api.get('loan_customers')
             .then(res => {
-                setLoanCustomers(res.data.loan_customers || []);
+                const mapped = res.data.loan_customers.map(item => ({
+                    loan_customer_id: item.id,
+                    loan_id: item.loan_id,
+                    loanAmount: item.loan_amount,
+                    loanPurpose: item.loan_purpose,
+                    interestRate: item.interest_rate,
+                    loanTerm: item.loan_term,
+                    aplicationDate: item.application_date?.substring(0, 10),
+                    statusApproved: item.status_approved,
+                    monthlyPayment: item.monthly_payment,
+                    nextPaymentDue: item.next_payment_due?.substring(0, 10),
+                    remainingBalance: item.remaining_balance,
+                }));
+
+                setLoanCustomers(mapped);
+
                 setLoading(false);
             })
             .catch(err => {
@@ -54,10 +70,14 @@ const Loan_Details = () => {
                 data-bs-toggle="modal"
                 data-bs-target="#addLoanCustomerModal"
                 onClick={() => setEditLoanCustomer(null)}>
-                     Add Loan Customer
+                Add Loan Customer
 
             </button>
+              
 
+              <Loan_List_Details editLoanCustomer={editLoanCustomer} setEditLoanCustomer={setEditLoanCustomer}  />
+              
+              <Loan_List_View viewLoanCustomer={viewLoanCustomer} setViewLoanCustomer={setViewLoanCustomer}  />
 
 
 
@@ -128,7 +148,8 @@ const Loan_Details = () => {
                     </tbody>
                 </table>
             </div>
-            <Loan_List_Details />
+            <Loan_List_Details editData={editLoanCustomer} />
+
         </Layout>
     )
 }

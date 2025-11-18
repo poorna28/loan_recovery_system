@@ -208,7 +208,7 @@ const Loan_List_Details = () => {
                                     <div className="col-md-6">
                                         <label className="form-label fw-semibold">Next Payment Due</label>
                                         <input
-                                            type="text"
+                                            type="date"
                                             className="form-control"
                                             name="nextPaymentDue"
                                             placeholder="Enter next payment due"

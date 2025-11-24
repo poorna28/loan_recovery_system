@@ -1,46 +1,43 @@
 const db = require('./db');
 
 const LoanCustomer = {
-
   createLoan: async (data) => {
     const {
       loanAmount,
       loanPurpose,
       interestRate,
       loanTerm,
-      aplicationDate,
+      applicationDate,
       statusApproved,
       monthlyPayment,
       nextPaymentDue,
       remainingBalance
-
     } = data;
 
     return new Promise((resolve, reject) => {
       const sql = `INSERT INTO loan_customer (
-    loan_amount,
-    loan_purpose,
-    interest_rate,
-    loan_term,
-    application_date,
-    status_approved,
-    monthly_payment,
-    next_payment_due,
-    remaining_balance
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
+        loan_amount,
+        loan_purpose,
+        interest_rate,
+        loan_term,
+        application_date,
+        status_approved,
+        monthly_payment,
+        next_payment_due,
+        remaining_balance
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       const values = [
         loanAmount,
         loanPurpose,
         interestRate,
         loanTerm,
-        aplicationDate,
+        applicationDate || null,
         statusApproved,
         monthlyPayment,
-        nextPaymentDue,
+        nextPaymentDue || null,
         remainingBalance
-      ]
+      ];
 
       db.query(sql, values, (err, results) => {
         if (err) return reject(err);
@@ -49,7 +46,7 @@ const LoanCustomer = {
         const loan_id = `USR${1000 + insertId}`;
 
         db.query(
-          'UPDATE loan_customer  SET loan_id = ? WHERE id = ?',
+          'UPDATE loan_customer SET loan_id = ? WHERE id = ?',
           [loan_id, insertId],
           (err2) => {
             if (err2) return reject(err2);
@@ -57,17 +54,17 @@ const LoanCustomer = {
           }
         );
       });
-    })
+    });
   },
 
-  // Update existing customer
-  updateLoanCustomer: async (loan_id, data) => {
+  // Update by numeric primary id
+  updateLoanCustomerById: async (id, data) => {
     const {
       loanAmount,
       loanPurpose,
       interestRate,
       loanTerm,
-      aplicationDate,
+      applicationDate,
       statusApproved,
       monthlyPayment,
       nextPaymentDue,
@@ -75,32 +72,31 @@ const LoanCustomer = {
     } = data;
 
     return new Promise((resolve, reject) => {
-const sql = `
-    UPDATE loan_customer SET
-        loan_amount = ?,
-        loan_purpose = ?,
-        interest_rate = ?,
-        loan_term = ?,
-        application_date = ?,
-        status_approved = ?,
-        monthly_payment = ?,
-        next_payment_due = ?,
-        remaining_balance = ?
-    WHERE loan_id = ?
-`;
-
+      const sql = `
+        UPDATE loan_customer SET
+          loan_amount = ?,
+          loan_purpose = ?,
+          interest_rate = ?,
+          loan_term = ?,
+          application_date = ?,
+          status_approved = ?,
+          monthly_payment = ?,
+          next_payment_due = ?,
+          remaining_balance = ?
+        WHERE id = ?
+      `;
 
       const values = [
         loanAmount,
         loanPurpose,
         interestRate,
         loanTerm,
-        aplicationDate || null,
+        applicationDate || null,
         statusApproved,
         monthlyPayment,
-        nextPaymentDue,
+        nextPaymentDue || null,
         remainingBalance,
-        loan_id
+        id
       ];
 
       db.query(sql, values, (err, results) => {
@@ -116,28 +112,32 @@ const sql = `
   // Get all customers
   getAllLoanCustomers: async () => {
     return new Promise((resolve, reject) => {
-      db.query('SELECT * FROM loan_customer ', (err, results) => {
+      db.query('SELECT * FROM loan_customer', (err, results) => {
         if (err) return reject(err);
         resolve(results);
       });
     });
   },
 
-  // Delete a customer by customer_id
-  deleteLoanCustomer: async (loan_id) => {
+  // Get one by id (primary key)
+  getLoanCustomerById: async (id) => {
     return new Promise((resolve, reject) => {
-      db.query('DELETE FROM loan_customer  WHERE loan_id = ?', [loan_id], (err, results) => {
+      db.query('SELECT * FROM loan_customer WHERE id = ?', [id], (err, results) => {
+        if (err) return reject(err);
+        resolve(results[0] || null);
+      });
+    });
+  },
+
+  // Delete by numeric primary id
+  deleteLoanCustomerById: async (id) => {
+    return new Promise((resolve, reject) => {
+      db.query('DELETE FROM loan_customer WHERE id = ?', [id], (err, results) => {
         if (err) return reject(err);
         resolve(results);
       });
     });
   }
-
-
-
-
-
-
 };
 
 module.exports = LoanCustomer;

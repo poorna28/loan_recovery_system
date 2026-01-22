@@ -8,7 +8,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
         // Step 1
         firstName: '',
         email: '',
-        PhoneNumber: '',
+        phoneNumber: '',
         dateOfBirth: '',
         address: '',
         profileStatus: '',
@@ -37,76 +37,106 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
         incomeProofDocument: '',
         creditScore: '',
         creditScoreBand: '',
-
-
-
-
-
-
     });
+
+    const emptyForm = {
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        email: '',
+        profileStatus: '',
+        employmentStatus: '',
+        annualIncome: '',
+        creditScore: '',
+        dateOfBirth: '',
+        address: '',
+        title: '',
+        gender: '',
+        nationality: '',
+        primaryNumber: '',
+        secondaryNumber: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        addressProof: null,
+        idExpiryDate: '',
+        idIssueDate: '',
+        govtIdNumber: '',
+        govtIdType: '',
+        idDocumentUpload: null,
+        customerPhoto: null,
+        companyName: '',
+        jobTitle: '',
+        monthlyIncome: '',
+        incomeProofDocument: '',
+        creditScoreBand: '',
+    };
+
 
     useEffect(() => {
         if (editData) {
-            const normalizedDate = editData.dateOfBirth?.split('T')[0] || editData.dateOfBirth;
-            setFormData({ ...editData, dateOfBirth: normalizedDate });
-        } else {
+            const normalizedDate = editData.dateOfBirth?.split('T')[0] || '';
             setFormData({
-                firstName: '',
-                email: '',
-                PhoneNumber: '',
-                dateOfBirth: '',
-                address: '',
-                profileStatus: '',
-                title: '',
-                lastName: '',
-                gender: '',
-                nationality: '',
-                primaryNumber: '',
-                secondaryNumber: '',
-                city: '',
-                state: '',
-                postalCode: '',
-                addressProof: null,
-                idExpiryDate: '',
-                annualIncome: '',
-                creditScore: '',
-                idIssueDate: '',
-                govtIdNumber: '',
-                govtIdType: '',
-                idDocumentUpload: null,
-                customerPhoto: null,
-                employmentStatus: '',
-                companyName: '',
-                jobTitle: '',
-                monthlyIncome: '',
-                incomeProofDocument: '',
-                creditScore: '',
-                creditScoreBand: '',
-
+                ...emptyForm,
+                ...editData,
+                dateOfBirth: normalizedDate
             });
+        } else {
+            setFormData(emptyForm);
         }
+
+        setErrors({});
+        setShowAlert(false);
+         setStep(1);
     }, [editData]);
 
 
+
     const [errors, setErrors] = useState({});
+    const [showAlert, setShowAlert] = useState(false);
 
     const validate = () => {
         const newErrors = {};
+        const missingFields = [];
 
-        if (!formData.profileStatus) newErrors.profileStatus = "Profile Status is required";
-        if (!formData.firstName) newErrors.firstName = "First Name is required";
-        if (!formData.lastName) newErrors.lastName = "Last Name is required";
-        if (!formData.phoneNumber) newErrors.phoneNumber = "Phone Number is required";
-        if (!formData.email) newErrors.email = "Email is required";
+        const requiredFields = [
+            { name: "profileStatus", label: "Profile Status", step: 1 },
+            { name: "firstName", label: "First Name", step: 1 },
+            { name: "lastName", label: "Last Name", step: 1 },
+            { name: "phoneNumber", label: "Phone Number", step: 1 },
+            { name: "email", label: "Email", step: 2 },
+            { name: "employmentStatus", label: "Employment Status", step: 4 },
+            { name: "annualIncome", label: "Annual Income", step: 2 },
+            { name: "creditScore", label: "Credit Score", step: 2 }
+        ];
 
-        if (!formData.employmentStatus) newErrors.employmentStatus = "Employment Status is required";
-        if (!formData.annualIncome) newErrors.annualIncome = "Annual Income is required";
-        if (!formData.creditScore) newErrors.creditScore = "Credit Score is required";
+        let firstErrorStep = null;
+
+        requiredFields.forEach(field => {
+            if (!formData[field.name]) {
+                newErrors[field.name] = `${field.label} is required`;
+                missingFields.push(field.label);
+
+                if (!firstErrorStep) {
+                    firstErrorStep = field.step;
+                }
+            }
+        });
 
         setErrors(newErrors);
 
-        // If no errors → valid
-        return Object.keys(newErrors).length === 0;
+        if (missingFields.length > 0) {
+            alert(
+                "Please fill the following required fields:\n\n" +
+                missingFields.join(", ")
+            );
+
+            // Automatically jump to tab where first error exists
+            setStep(firstErrorStep);
+            return false;
+        }
+
+        return true;
     };
 
 
@@ -180,17 +210,26 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                 aria-labelledby="addCustomerModalLabel"
                 aria-hidden="true"
             >
+
+
+
                 <div className="modal-dialog modal-dialog-centered custom-modal-dialog">
                     <div className="modal-content elegant-modal shadow-lg border-0">
 
                         {/* Header */}
-                        <div className="modal-header border-0 pb-0">
-                            <div className="w-100 d-flex justify-content-between align-items-center">
+                        <div className="modal-header border-0 ">
+                            <h5> {editData ? "Update Customer" : "Add Customer"}</h5>
+                            <div className=" d-flex justify-content-between align-items-center">
                                 <button
                                     type="button"
                                     className="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close"
+                                         onClick={() => {
+                                    setEditData(null);
+                                    setShowAlert(false)
+                                    setErrors({});
+                                }}
                                 ></button>
                             </div>
                         </div>
@@ -726,6 +765,11 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                 type="button"
                                 className="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
+                                onClick={() => {
+                                    setEditData(null);
+                                    setShowAlert(false)
+                                    setErrors({});
+                                }}
                             >
                                 Cancel
                             </button>

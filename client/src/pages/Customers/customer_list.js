@@ -45,7 +45,8 @@ const Basic_Info = () => {
             {/* Add Button */}
             <button
                 type="button"
-                className="btn btn-primary mb-3"
+                className="btn btn-primary d-block mb-3"
+                 style={{marginLeft: "auto"}}
                 data-bs-toggle="modal"
                 data-bs-target="#addCustomerModal"
                 onClick={() => setEditData(null)}

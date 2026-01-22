@@ -9,6 +9,7 @@ const Customer_list_view = ({ viewData }) => {
             const normalizedDate = viewData.dateOfBirth?.split("T")[0] || viewData.dateOfBirth;
             setFormData({ ...viewData, dateOfBirth: normalizedDate });
         }
+        setStep(1);
     }, [viewData]);
 
     const [step, setStep] = useState(1);
@@ -29,8 +30,8 @@ const Customer_list_view = ({ viewData }) => {
             aria-hidden="true"
         >
             <div className="modal-dialog modal-dialog-centered custom-modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
+                <div className="modal-content elegant-modal shadow-lg border-0">
+                    <div className="modal-header border-0">
                         <h5 className="modal-title" id="viewCustomerModalLabel">
                             View Customer
                         </h5>
@@ -42,66 +43,66 @@ const Customer_list_view = ({ viewData }) => {
                         ></button>
                     </div>
 
-                    <div className="modal-body row">
-                        <div className="d-flex mb-3">
-                            {steps.map((s) => (
-                                <div
-                                    key={s.id}
-                                    className={`flex-fill text-center p-2 border ${step === s.id ? "bg-primary text-white" : "bg-light text-dark"
-                                        }`}
-                                    style={{ cursor: "pointer", height: "30px", width: "30px" }}
-                                    onClick={() => setStep(s.id)}
-                                >
-                                    {s.name}
-                                </div>
-                            ))}
-                        </div>
+                    <div className="modal-tabs">
+                        {steps.map((s) => (
+                            <div
+                                key={s.id}
+                                className={`tab-item ${step === s.id ? "active" : ""}`}
+                                onClick={() => setStep(s.id)}
+                            >
+                                {s.name}
+                            </div>
+                        ))}
                     </div>
 
                     {/* Step 1 */}
                     {step === 1 && (
-                        <div className="row">
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Customer Id</label>
-                                <p className="form-control-plaintext">{formData.customer_id || "--"}</p>
-                            </div>
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Profile Status</label>
-                                <p className="form-control-plaintext">{formData.profileStatus || "--"}</p>
-                            </div>
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Title</label>
-                                <p className="form-control-plaintext">{formData.title || "--"}</p>
-                            </div>
+                        <div className="modal-body">
+                            <div className="step-section">
+                                <div className="row g-3">
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Customer Id</label>
+                                        <p className="form-control-plaintext">{formData.customer_id || "--"}</p>
+                                    </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Profile Status</label>
+                                        <p className="form-control-plaintext">{formData.profileStatus || "--"}</p>
+                                    </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Title</label>
+                                        <p className="form-control-plaintext">{formData.title || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">First Name</label>
-                                <p className="form-control-plaintext">{formData.firstName || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">First Name</label>
+                                        <p className="form-control-plaintext">{formData.firstName || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Last Name</label>
-                                <p className="form-control-plaintext">{formData.lastName || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Last Name</label>
+                                        <p className="form-control-plaintext">{formData.lastName || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Date of Birth</label>
-                                <p className="form-control-plaintext">{formData.dateOfBirth || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Date of Birth</label>
+                                        <p className="form-control-plaintext">{formData.dateOfBirth || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Gender</label>
-                                <p className="form-control-plaintext">{formData.gender || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Gender</label>
+                                        <p className="form-control-plaintext">{formData.gender || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Nationality</label>
-                                <p className="form-control-plaintext">{formData.nationality || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Nationality</label>
+                                        <p className="form-control-plaintext">{formData.nationality || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Phone Number</label>
-                                <p className="form-control-plaintext">{formData.phoneNumber || "--"}</p>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Phone Number</label>
+                                        <p className="form-control-plaintext">{formData.phoneNumber || "--"}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -110,81 +111,85 @@ const Customer_list_view = ({ viewData }) => {
                     {/* Step 2 */}
                     {/* Step 2 */}
                     {step === 2 && (
-                        <div className="row">
+                        <div className="modal-body">
+                            <div className="step-section">
+                                <div className="row g-3">
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Primary Phone Number</label>
-                                <p className="form-control-plaintext">{formData.primaryNumber || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Primary Phone Number</label>
+                                        <p className="form-control-plaintext">{formData.primaryNumber || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Secondary Phone Number</label>
-                                <p className="form-control-plaintext">{formData.secondaryNumber || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Secondary Phone Number</label>
+                                        <p className="form-control-plaintext">{formData.secondaryNumber || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Email</label>
-                                <p className="form-control-plaintext">{formData.email || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Email</label>
+                                        <p className="form-control-plaintext">{formData.email || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Address</label>
-                                <p className="form-control-plaintext">{formData.address || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Address</label>
+                                        <p className="form-control-plaintext">{formData.address || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">City</label>
-                                <p className="form-control-plaintext">{formData.city || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">City</label>
+                                        <p className="form-control-plaintext">{formData.city || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">State</label>
-                                <p className="form-control-plaintext">{formData.state || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">State</label>
+                                        <p className="form-control-plaintext">{formData.state || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Postal Code</label>
-                                <p className="form-control-plaintext">{formData.postalCode || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Postal Code</label>
+                                        <p className="form-control-plaintext">{formData.postalCode || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Address Proof Document</label>
-                                {formData.customerPhoto ? (
-                                    <>
-                                        {/* If it's an image (jpg, jpeg, png) */}
-                                        {/\.(jpg|jpeg|png)$/i.test(formData.addressProof) ? (
-                                            <img
-                                                src={formData.addressProof}   // full URL or path
-                                                alt="Customer"
-                                                className="img-thumbnail"
-                                                style={{ maxWidth: "150px", height: "auto" }}
-                                            />
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Address Proof Document</label>
+                                        {formData.customerPhoto ? (
+                                            <>
+                                                {/* If it's an image (jpg, jpeg, png) */}
+                                                {/\.(jpg|jpeg|png)$/i.test(formData.addressProof) ? (
+                                                    <img
+                                                        src={formData.addressProof}   // full URL or path
+                                                        alt="Customer"
+                                                        className="img-thumbnail"
+                                                        style={{ maxWidth: "150px", height: "auto" }}
+                                                    />
+                                                ) : (
+                                                    /* For PDF or other files, show link */
+                                                    <a
+                                                        href={formData.addressProof}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="form-control-plaintext"
+                                                    >
+                                                        View Uploaded File
+                                                    </a>
+                                                )}
+                                            </>
                                         ) : (
-                                            /* For PDF or other files, show link */
-                                            <a
-                                                href={formData.addressProof}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="form-control-plaintext"
-                                            >
-                                                View Uploaded File
-                                            </a>
+                                            <p className="form-control-plaintext">--</p>
                                         )}
-                                    </>
-                                ) : (
-                                    <p className="form-control-plaintext">--</p>
-                                )}
-                            </div>
+                                    </div>
 
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Annual Income</label>
-                                <p className="form-control-plaintext">{formData.annualIncome || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Annual Income</label>
+                                        <p className="form-control-plaintext">{formData.annualIncome || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Credit Score</label>
-                                <p className="form-control-plaintext">{formData.creditScore || "--"}</p>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Credit Score</label>
+                                        <p className="form-control-plaintext">{formData.creditScore || "--"}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -192,128 +197,137 @@ const Customer_list_view = ({ viewData }) => {
 
                     {/* Step 3 */}
                     {step === 3 && (
-                        <div className="row">
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Govt ID Type</label>
-                                <p className="form-control-plaintext">{formData.govtIdType || "--"}</p>
-                            </div>
+                        <div className="modal-body">
+                            <div className="step-section">
+                                <div className="row g-3">
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Govt ID Type</label>
+                                        <p className="form-control-plaintext">{formData.govtIdType || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Govt ID Number</label>
-                                <p className="form-control-plaintext">{formData.govtIdNumber || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Govt ID Number</label>
+                                        <p className="form-control-plaintext">{formData.govtIdNumber || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">ID Issue Date</label>
-                                <p className="form-control-plaintext">{formData.idIssueDate || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">ID Issue Date</label>
+                                        <p className="form-control-plaintext">{formData.idIssueDate || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">ID Expiry Date</label>
-                                <p className="form-control-plaintext">{formData.idExpiryDate || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">ID Expiry Date</label>
+                                        <p className="form-control-plaintext">{formData.idExpiryDate || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">ID Expiry Date</label>
-                                {formData.customerPhoto ? (
-                                    <>
-                                        {/* If it's an image (jpg, jpeg, png) */}
-                                        {/\.(jpg|jpeg|png)$/i.test(formData.idDocumentUpload) ? (
-                                            <img
-                                                src={formData.idDocumentUpload}   // full URL or path
-                                                alt="Customer"
-                                                className="img-thumbnail"
-                                                style={{ maxWidth: "150px", height: "auto" }}
-                                            />
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">ID Expiry Date</label>
+                                        {formData.customerPhoto ? (
+                                            <>
+                                                {/* If it's an image (jpg, jpeg, png) */}
+                                                {/\.(jpg|jpeg|png)$/i.test(formData.idDocumentUpload) ? (
+                                                    <img
+                                                        src={formData.idDocumentUpload}   // full URL or path
+                                                        alt="Customer"
+                                                        className="img-thumbnail"
+                                                        style={{ maxWidth: "150px", height: "auto" }}
+                                                    />
+                                                ) : (
+                                                    /* For PDF or other files, show link */
+                                                    <a
+                                                        href={formData.idDocumentUpload}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="form-control-plaintext"
+                                                    >
+                                                        View Uploaded File
+                                                    </a>
+                                                )}
+                                            </>
                                         ) : (
-                                            /* For PDF or other files, show link */
-                                            <a
-                                                href={formData.idDocumentUpload}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="form-control-plaintext"
-                                            >
-                                                View Uploaded File
-                                            </a>
+                                            <p className="form-control-plaintext">--</p>
                                         )}
-                                    </>
-                                ) : (
-                                    <p className="form-control-plaintext">--</p>
-                                )}
-                            </div>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Photo of Customer</label>
-                                {formData.customerPhoto ? (
-                                    <>
-                                        {/* If it's an image (jpg, jpeg, png) */}
-                                        {/\.(jpg|jpeg|png)$/i.test(formData.customerPhoto) ? (
-                                            <img
-                                                src={formData.customerPhoto}   // full URL or path
-                                                alt="Customer"
-                                                className="img-thumbnail"
-                                                style={{ maxWidth: "150px", height: "auto" }}
-                                            />
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Photo of Customer</label>
+                                        {formData.customerPhoto ? (
+                                            <>
+                                                {/* If it's an image (jpg, jpeg, png) */}
+                                                {/\.(jpg|jpeg|png)$/i.test(formData.customerPhoto) ? (
+                                               <img
+  src={formData.customerPhoto}
+  alt="Preview"
+  className="img-thumbnail rounded"
+  style={{ maxWidth: "180px" }}
+/>
+
+                                                ) : (
+                                                    /* For PDF or other files, show link */
+                                                    <a
+                                                        href={formData.customerPhoto}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="form-control-plaintext"
+                                                    >
+                                                        View Uploaded File
+                                                    </a>
+                                                )}
+                                            </>
                                         ) : (
-                                            /* For PDF or other files, show link */
-                                            <a
-                                                href={formData.customerPhoto}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="form-control-plaintext"
-                                            >
-                                                View Uploaded File
-                                            </a>
+                                            <p className="form-control-plaintext">--</p>
                                         )}
-                                    </>
-                                ) : (
-                                    <p className="form-control-plaintext">--</p>
-                                )}
+                                    </div>
+
+
+
+
+
+                                </div>
                             </div>
-
-
-
-
-
                         </div>
                     )}
 
                     {/* Step 4 */}
                     {step === 4 && (
-                        <div className="row">
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Employment Status</label>
-                                <p className="form-control-plaintext">{formData.employmentStatus || "--"}</p>
-                            </div>
+                        <div className="modal-body">
+                            <div className="step-section">
+                                <div className="row g-3">
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Employment Status</label>
+                                        <p className="form-control-plaintext">{formData.employmentStatus || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Company Name</label>
-                                <p className="form-control-plaintext">{formData.companyName || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Company Name</label>
+                                        <p className="form-control-plaintext">{formData.companyName || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Job Title</label>
-                                <p className="form-control-plaintext">{formData.jobTitle || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Job Title</label>
+                                        <p className="form-control-plaintext">{formData.jobTitle || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Monthly Income</label>
-                                <p className="form-control-plaintext">{formData.monthlyIncome || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Monthly Income</label>
+                                        <p className="form-control-plaintext">{formData.monthlyIncome || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Income Proof Document</label>
-                                <p className="form-control-plaintext">{formData.incomeProof || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Income Proof Document</label>
+                                        <p className="form-control-plaintext">{formData.incomeProof || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Credit Score</label>
-                                <p className="form-control-plaintext">{formData.creditScore || "--"}</p>
-                            </div>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Credit Score</label>
+                                        <p className="form-control-plaintext">{formData.creditScore || "--"}</p>
+                                    </div>
 
-                            <div className="mb-3 col-sm-6">
-                                <label className="form-label">Credit Score Band</label>
-                                <p className="form-control-plaintext">{formData.creditScoreBand || "--"}</p>
+                                    <div className="mb-3 col-sm-6">
+                                        <label className="form-label">Credit Score Band</label>
+                                        <p className="form-control-plaintext">{formData.creditScoreBand || "--"}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}

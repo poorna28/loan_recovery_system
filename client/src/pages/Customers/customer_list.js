@@ -38,7 +38,7 @@ const Basic_Info = () => {
         }
     };
 
-    
+
 
     return (
         <Layout>
@@ -60,19 +60,19 @@ const Basic_Info = () => {
             <Customer_list_view viewData={viewData} />
 
             {/* Customer Table */}
-            <div>
-                <table className="table table-striped">
+            <div className="table-responsive customer-table">
+                <table className="table table-striped table-hover align-middle">
                     <thead>
                         <tr>
-                            <th scope="col">Customer_Id</th>
-                            <th scope="col">Full_Name</th>
-                            <th scope="col">Phone_Number</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Employee Status</th>
-                            <th scope="col">Profile Status</th>
-                            <th scope="col">Annual Income</th>
-                            <th scope="col">Credit_Score</th>
-                            <th scope="col">Actions</th>
+                            <th>Customer Id</th>
+                            <th>Full Name</th>
+                            <th>Phone No</th>
+                            <th>Email</th>
+                            <th>Emp Status</th>
+                            <th>Profile Status</th>
+                            <th>Annual Income</th>
+                            <th>Credit Score</th>
+                            <th style={{ width: "130px", textAlign: "center" }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,29 +87,37 @@ const Basic_Info = () => {
                                 <td>{customer.annualIncome}</td>
                                 <td>{customer.creditScore}</td>
                                 <td>
-                                    <button
-                                        className="btn btn-sm btn-warning me-2"
-                                        onClick={() => handleEdit(customer)}
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#addCustomerModal"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-info me-2"
-                                        onClick={() => handleView(customer)}
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#viewCustomerModal"
-                                    >
-                                        View
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-danger"
-                                        onClick={() => handleDelete(customer.customer_id)}
-                                    >
-                                        Delete
-                                    </button>
+                                    <div className="d-flex align-items-center justify-content-center gap-2">
+                                        <button
+                                            className="btn btn-sm btn-warning"
+                                            onClick={() => handleEdit(customer)}
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#addCustomerModal"
+                                            title="Edit"
+                                        >
+                                            <i className="bi bi-pencil-square"></i>
+                                        </button>
+
+                                        <button
+                                            className="btn btn-sm btn-info"
+                                            onClick={() => handleView(customer)}
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#viewCustomerModal"
+                                            title="View"
+                                        >
+                                            <i className="bi bi-eye"></i>
+                                        </button>
+
+                                        <button
+                                            className="btn btn-sm btn-danger"
+                                            onClick={() => handleDelete(customer.customer_id)}
+                                            title="Delete"
+                                        >
+                                            <i className="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>

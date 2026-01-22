@@ -88,6 +88,28 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
     }, [editData]);
 
 
+    const [errors, setErrors] = useState({});
+
+    const validate = () => {
+        const newErrors = {};
+
+        if (!formData.profileStatus) newErrors.profileStatus = "Profile Status is required";
+        if (!formData.firstName) newErrors.firstName = "First Name is required";
+        if (!formData.lastName) newErrors.lastName = "Last Name is required";
+        if (!formData.phoneNumber) newErrors.phoneNumber = "Phone Number is required";
+        if (!formData.email) newErrors.email = "Email is required";
+
+        if (!formData.employmentStatus) newErrors.employmentStatus = "Employment Status is required";
+        if (!formData.annualIncome) newErrors.annualIncome = "Annual Income is required";
+        if (!formData.creditScore) newErrors.creditScore = "Credit Score is required";
+
+        setErrors(newErrors);
+
+        // If no errors → valid
+        return Object.keys(newErrors).length === 0;
+    };
+
+
     const [step, setStep] = useState(1);
 
     const onChange = (e) => {
@@ -105,8 +127,17 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                 [name]: value
             });
         }
+
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: "" });
+        }
     };
     const onSave = () => {
+
+        if (!validate()) {
+            return; // Stop submission
+        }
+
         // Ensure dateOfBirth is in 'YYYY-MM-DD' format
         const sanitizedDate = formData.dateOfBirth?.split('T')[0] || formData.dateOfBirth;
 
@@ -202,7 +233,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         {/* Profile Status */}
                                         <div className="col-md-6">
-                                            <label className="form-label fw-semibold">Profile Status</label>
+                                            <label className="form-label fw-semibold">Profile Status <span className="text-danger">*</span></label>
                                             <select
                                                 className="form-select"
                                                 name="profileStatus"
@@ -214,6 +245,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 <option value="Inactive">Inactive</option>
                                                 <option value="OnHold">On Hold</option>
                                             </select>
+                                            {errors.profileStatus && <small className="text-danger">{errors.profileStatus}</small>}
                                         </div>
 
                                         {/* Title */}
@@ -235,7 +267,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         {/* First Name */}
                                         <div className="col-md-6">
-                                            <label className="form-label fw-semibold">First Name</label>
+                                            <label className="form-label fw-semibold">First Name <span className="text-danger">*</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -244,11 +276,12 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 value={formData.firstName}
                                                 onChange={onChange}
                                             />
+                                            {errors.firstName && <small className="text-danger">{errors.firstName}</small>}
                                         </div>
 
                                         {/* Last Name */}
                                         <div className="col-md-6">
-                                            <label className="form-label fw-semibold">Last Name</label>
+                                            <label className="form-label fw-semibold">Last Name <span className="text-danger">*</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -257,6 +290,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 value={formData.lastName}
                                                 onChange={onChange}
                                             />
+                                            {errors.lastName && <small className="text-danger">{errors.lastName}</small>}
                                         </div>
 
                                         {/* Date of Birth */}
@@ -302,7 +336,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         {/* Phone Number */}
                                         <div className="col-md-6">
-                                            <label className="form-label fw-semibold">Phone Number</label>
+                                            <label className="form-label fw-semibold">Phone Number <span className="text-danger">*</span></label>
                                             <input
                                                 type="tel"
                                                 className="form-control"
@@ -311,6 +345,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 value={formData.phoneNumber}
                                                 onChange={onChange}
                                             />
+                                            {errors.phoneNumber && <small className="text-danger">{errors.phoneNumber}</small>}
                                         </div>
                                     </div>
                                 </div>
@@ -349,7 +384,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         {/* Email */}
                                         <div className="col-md-6">
-                                            <label className="form-label">Email</label>
+                                            <label className="form-label">Email <span className="text-danger">*</span></label>
                                             <input
                                                 type="email"
                                                 className="form-control"
@@ -357,6 +392,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 value={formData.email}
                                                 onChange={onChange}
                                             />
+                                            {errors.email && <small className="text-danger">{errors.email}</small>}
                                         </div>
 
                                         {/* Address */}
@@ -433,7 +469,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         {/* Annual Income */}
                                         <div className="col-md-6">
-                                            <label className="form-label">Annual Income</label>
+                                            <label className="form-label">Annual Income <span className="text-danger">*</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -441,11 +477,12 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 value={formData.annualIncome}
                                                 onChange={onChange}
                                             />
+                                            {errors.annualIncome && <small className="text-danger">{errors.annualIncome}</small>}
                                         </div>
 
                                         {/* Credit Score */}
                                         <div className="col-md-6">
-                                            <label className="form-label">Credit Score</label>
+                                            <label className="form-label">Credit Score <span className="text-danger">*</span></label>
                                             <select
                                                 className="form-control"
                                                 name="creditScore"
@@ -459,6 +496,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 <option value="Poor (600-649)">Poor (600-649)</option>
                                                 <option value="Very Poor (<600)">Very Poor (&lt;600)</option>
                                             </select>
+                                            {errors.creditScore && <small className="text-danger">{errors.creditScore}</small>}
                                         </div>
 
                                     </div>
@@ -558,7 +596,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         {/* Employment Status */}
                                         <div className="col-md-6">
-                                            <label className="form-label">Employment Status</label>
+                                            <label className="form-label">Employment Status <span className="text-danger">*</span></label>
                                             <select
                                                 className="form-control"
                                                 name="employmentStatus"
@@ -572,6 +610,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 <option value="Student">Student</option>
                                                 <option value="Retired">Retired</option>
                                             </select>
+                                            {errors.employmentStatus && <small className="text-danger">{errors.employmentStatus}</small>}
                                         </div>
 
                                         {/* Company Name */}

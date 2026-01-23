@@ -33,7 +33,10 @@ const Customer = {
       idExpiryDate,
       addressProof,
       idDocumentUpload,
-      customerPhoto
+      customerPhoto,
+      idDocumentUploadOriginal,
+      addressProofOriginal,
+      customerPhotoOriginal
     } = data;
 
     return new Promise((resolve, reject) => {
@@ -42,8 +45,8 @@ const Customer = {
         dateOfBirth, gender, nationality, address, city, state, postalCode, profileStatus,
         employmentStatus, companyName, jobTitle, monthlyIncome, annualIncome, incomeProofDocument,
         creditScore, creditScoreBand, govtIdType, govtIdNumber, idIssueDate, idExpiryDate,
-        addressProof, idDocumentUpload, customerPhoto
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+        addressProof, idDocumentUpload, customerPhoto, idDocumentUploadOriginal, addressProofOriginal, customerPhotoOriginal
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       const values = [
         firstName,
@@ -75,8 +78,14 @@ const Customer = {
         idExpiryDate || null,
         addressProof,
         idDocumentUpload,
-        customerPhoto
+        customerPhoto,
+        idDocumentUploadOriginal,
+        addressProofOriginal,
+        customerPhotoOriginal
       ];
+
+
+
 
       db.query(sql, values, (err, results) => {
         if (err) return reject(err);
@@ -128,7 +137,10 @@ const Customer = {
       idExpiryDate,
       addressProof,
       idDocumentUpload,
-      customerPhoto
+      customerPhoto,
+      idDocumentUploadOriginal,
+      addressProofOriginal,
+      customerPhotoOriginal
     } = data;
 
     return new Promise((resolve, reject) => {
@@ -137,42 +149,46 @@ const Customer = {
         dateOfBirth=?, gender=?, nationality=?, address=?, city=?, state=?, postalCode=?, profileStatus=?,
         employmentStatus=?, companyName=?, jobTitle=?, monthlyIncome=?, annualIncome=?, incomeProofDocument=?,
         creditScore=?, creditScoreBand=?, govtIdType=?, govtIdNumber=?, idIssueDate=?, idExpiryDate=?,
-        addressProof=?, idDocumentUpload=?, customerPhoto=?
+        addressProof=?, idDocumentUpload=?, customerPhoto=? , idDocumentUploadOriginal=?, addressProofOriginal=?, customerPhotoOriginal=?
         WHERE customer_id=?`;
 
-      const values = [
-        firstName,
-        lastName,
-        title,
-        email,
-        phoneNumber,
-        primaryNumber,
-        secondaryNumber,
-        dateOfBirth || null,
-        gender,
-        nationality,
-        address,
-        city,
-        state,
-        postalCode,
-        profileStatus,
-        employmentStatus,
-        companyName,
-        jobTitle,
-        monthlyIncome || null,
-        annualIncome || null,
-        incomeProofDocument,
-        creditScore || null,
-        creditScoreBand,
-        govtIdType,
-        govtIdNumber,
-        idIssueDate || null,
-        idExpiryDate || null,
-        addressProof,
-        idDocumentUpload,
-        customerPhoto,
-        customerId
-      ];
+  const values = [
+  firstName,
+  lastName,
+  title,
+  email,
+  phoneNumber,
+  primaryNumber,
+  secondaryNumber,
+  dateOfBirth || null,
+  gender,
+  nationality,
+  address,
+  city,
+  state,
+  postalCode,
+  profileStatus,
+  employmentStatus,
+  companyName,
+  jobTitle,
+  monthlyIncome || null,
+  annualIncome || null,
+  incomeProofDocument,
+  creditScore || null,
+  creditScoreBand,
+  govtIdType,
+  govtIdNumber,
+  idIssueDate || null,
+  idExpiryDate || null,
+  addressProof,
+  idDocumentUpload,
+  customerPhoto,
+  idDocumentUploadOriginal,
+  addressProofOriginal,
+  customerPhotoOriginal,
+  customerId // ✅ MUST be last (matches WHERE customer_id=?)
+];
+
 
       db.query(sql, values, (err, results) => {
         if (err) {

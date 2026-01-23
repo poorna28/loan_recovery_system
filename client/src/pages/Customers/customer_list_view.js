@@ -150,33 +150,17 @@ const Customer_list_view = ({ viewData }) => {
                                         <p className="form-control-plaintext">{formData.postalCode || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
+                                    <div className="mb-3 col-sm-6 d-flex flex-column">
                                         <label className="form-label">Address Proof Document</label>
-                                        {formData.customerPhoto ? (
-                                            <>
-                                                {/* If it's an image (jpg, jpeg, png) */}
-                                                {/\.(jpg|jpeg|png)$/i.test(formData.addressProof) ? (
-                                                    <img
-                                                        src={formData.addressProof}   // full URL or path
-                                                        alt="Customer"
-                                                        className="img-thumbnail"
-                                                        style={{ maxWidth: "150px", height: "auto" }}
-                                                    />
-                                                ) : (
-                                                    /* For PDF or other files, show link */
-                                                    <a
-                                                        href={formData.addressProof}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="form-control-plaintext"
-                                                    >
-                                                        View Uploaded File
-                                                    </a>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <p className="form-control-plaintext">--</p>
-                                        )}
+                                        <span>
+                                        <a
+                                            href={`http://localhost:5000/uploads/${formData.addressProofOriginal}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {formData.addressProofOriginal || '---'}
+                                        </a>
+                                        </span>
                                     </div>
 
 
@@ -220,63 +204,30 @@ const Customer_list_view = ({ viewData }) => {
                                         <p className="form-control-plaintext">{formData.idExpiryDate || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
-                                        <label className="form-label">ID Expiry Date</label>
-                                        {formData.customerPhoto ? (
-                                            <>
-                                                {/* If it's an image (jpg, jpeg, png) */}
-                                                {/\.(jpg|jpeg|png)$/i.test(formData.idDocumentUpload) ? (
-                                                    <img
-                                                        src={formData.idDocumentUpload}   // full URL or path
-                                                        alt="Customer"
-                                                        className="img-thumbnail"
-                                                        style={{ maxWidth: "150px", height: "auto" }}
-                                                    />
-                                                ) : (
-                                                    /* For PDF or other files, show link */
-                                                    <a
-                                                        href={formData.idDocumentUpload}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="form-control-plaintext"
-                                                    >
-                                                        View Uploaded File
-                                                    </a>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <p className="form-control-plaintext">--</p>
-                                        )}
+                                    <div className="mb-3 col-sm-6 d-flex flex-column">
+                                        <label className="form-label">Document Id Upload</label>
+                                        <span>
+                                        <a
+                                            href={`http://localhost:5000/uploads/${formData.idDocumentUploadOriginal}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {formData.idDocumentUploadOriginal || '---'}
+                                        </a>
+                                        </span>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
+                                    <div className="mb-3 col-sm-6 d-flex flex-column">
                                         <label className="form-label">Photo of Customer</label>
-                                        {formData.customerPhoto ? (
-                                            <>
-                                                {/* If it's an image (jpg, jpeg, png) */}
-                                                {/\.(jpg|jpeg|png)$/i.test(formData.customerPhoto) ? (
-                                               <img
-  src={formData.customerPhoto}
-  alt="Preview"
-  className="img-thumbnail rounded"
-  style={{ maxWidth: "180px" }}
-/>
-
-                                                ) : (
-                                                    /* For PDF or other files, show link */
-                                                    <a
-                                                        href={formData.customerPhoto}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="form-control-plaintext"
-                                                    >
-                                                        View Uploaded File
-                                                    </a>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <p className="form-control-plaintext">--</p>
-                                        )}
+                                        <span>
+                                        <a
+                                            href={`http://localhost:5000/uploads/${formData.customerPhotoOriginal}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {formData.customerPhotoOriginal || '---'}
+                                        </a>
+                                        </span>
                                     </div>
 
 

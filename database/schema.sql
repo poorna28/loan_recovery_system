@@ -46,6 +46,11 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE customers
+ADD COLUMN idDocumentUploadOriginal VARCHAR(255),
+ADD COLUMN addressProofOriginal VARCHAR(255),
+ADD COLUMN customerPhotoOriginal VARCHAR(255);
+
 
 ALTER TABLE customers ADD COLUMN customer_id VARCHAR(20) UNIQUE AFTER id;
 
@@ -112,3 +117,5 @@ CREATE TABLE loanCustomer (
     remainingBalance DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+

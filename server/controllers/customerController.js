@@ -2,9 +2,52 @@ const customerModel = require('../models/customerModel');
 
 exports.createCustomer = async (req, res) => {
   try {
-    const customer = await customerModel.createCustomer(req.body);
-    res.status(201).json({ message: 'Customer created', customerId: customer.customerId });
+const payload = {
+  ...req.body,
+// Address Proof
+      addressProof:
+        req.files?.addressProof?.[0]?.savedAs ||
+        req.body.addressProof ||
+        null,
+
+      addressProofOriginal:
+        req.files?.addressProof?.[0]?.originalname ||
+        req.body.addressProofOriginal ||
+        null,
+
+      // ID Document
+      idDocumentUpload:
+        req.files?.idDocumentUpload?.[0]?.savedAs ||
+        req.body.idDocumentUpload ||
+        null,
+
+      idDocumentUploadOriginal:
+        req.files?.idDocumentUpload?.[0]?.originalname ||
+        req.body.idDocumentUploadOriginal ||
+        null,
+
+      // Customer Photo
+      customerPhoto:
+        req.files?.customerPhoto?.[0]?.savedAs ||
+        req.body.customerPhoto ||
+        null,
+
+      customerPhotoOriginal:
+        req.files?.customerPhoto?.[0]?.originalname ||
+        req.body.customerPhotoOriginal ||
+        null
+};
+
+
+    const customer = await customerModel.createCustomer(payload);
+
+    res.status(201).json({
+      message: 'Customer created',
+      customerId: customer.customerId
+    });
+
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
@@ -35,18 +78,52 @@ exports.deleteCustomer = async (req, res) => {
 exports.updateCustomer = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatePayload = req.body;
 
-    console.log('🔧 Updating customer:', id);
-    console.log('📦 Payload:', updatePayload);
+    const payload = {
+      ...req.body,
 
-    const result = await customerModel.updateCustomer(id, updatePayload);
+      // Address Proof
+      addressProof:
+        req.files?.addressProof?.[0]?.savedAs ||
+        req.body.addressProof ||
+        null,
 
-    console.log('✅ Update result:', result);
+      addressProofOriginal:
+        req.files?.addressProof?.[0]?.originalname ||
+        req.body.addressProofOriginal ||
+        null,
+
+      // ID Document
+      idDocumentUpload:
+        req.files?.idDocumentUpload?.[0]?.savedAs ||
+        req.body.idDocumentUpload ||
+        null,
+
+      idDocumentUploadOriginal:
+        req.files?.idDocumentUpload?.[0]?.originalname ||
+        req.body.idDocumentUploadOriginal ||
+        null,
+
+      // Customer Photo
+      customerPhoto:
+        req.files?.customerPhoto?.[0]?.savedAs ||
+        req.body.customerPhoto ||
+        null,
+
+      customerPhotoOriginal:
+        req.files?.customerPhoto?.[0]?.originalname ||
+        req.body.customerPhotoOriginal ||
+        null
+    };
+
+    await customerModel.updateCustomer(id, payload);
+
     res.status(200).json({ message: 'Customer updated' });
+
   } catch (err) {
-    console.error('❌ Update error:', err); // This will show full error stack
+    console.error(err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
 

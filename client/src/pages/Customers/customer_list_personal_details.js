@@ -87,13 +87,19 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
         setErrors({});
         setShowAlert(false);
-         setStep(1);
+        setStep(1);
     }, [editData]);
 
 
 
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
+    const [selectedFileNames, setSelectedFileNames] = useState({
+        addressProof: "",
+        idDocumentUpload: "",
+        customerPhoto: ""
+    });
+
 
     const validate = () => {
         const newErrors = {};
@@ -145,11 +151,17 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
     const onChange = (e) => {
         const { name, value, type, files } = e.target;
 
-        // Special handling for file uploads
         if (type === "file") {
+            const file = files[0];
+
             setFormData({
                 ...formData,
-                [name]: files[0] || null
+                [name]: file || null
+            });
+
+            setSelectedFileNames({
+                ...selectedFileNames,
+                [name]: file?.name || ""
             });
         } else {
             setFormData({
@@ -162,6 +174,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
             setErrors({ ...errors, [name]: "" });
         }
     };
+
     const onSave = () => {
 
         if (!validate()) {
@@ -179,10 +192,19 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
         console.log('PUT URL:', `/customers/${editData?.customer_id}`);
         console.log('Updating customer with:', sanitizedFormData);
 
+        const formPayload = new FormData();
+        Object.entries(sanitizedFormData).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                formPayload.append(key, value);
+            }
+        });
+
         const method = editData ? api.put : api.post;
         const url = editData ? `/customers/${editData.customer_id}` : '/basic_info';
 
-        method(url, sanitizedFormData)
+        method(url, formPayload, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
             .then(() => {
                 setEditData(null);
                 window.location.reload(); // Optional: consider refreshing only the customer list instead
@@ -225,11 +247,11 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                     className="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close"
-                                         onClick={() => {
-                                    setEditData(null);
-                                    setShowAlert(false)
-                                    setErrors({});
-                                }}
+                                    onClick={() => {
+                                        setEditData(null);
+                                        setShowAlert(false)
+                                        setErrors({});
+                                    }}
                                 ></button>
                             </div>
                         </div>
@@ -506,6 +528,29 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                             />
                                         </div>
 
+                                        {/* Show filename below input */}
+                                        <div className="mt-1">
+
+                                            {/* If user selected a new file */}
+                                            {selectedFileNames.addressProof && (
+                                                <small>{selectedFileNames.addressProof}</small>
+                                            )}
+
+                                            {/* Otherwise show existing file from backend */}
+                                            {!selectedFileNames.addressProof && editData?.addressProofOriginal && (
+                                                <a
+                                                    href={`http://localhost:5000/uploads/${editData.addressProof}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {editData.addressProofOriginal}
+                                                </a>
+                                            )}
+
+                                        </div>
+
+
+
                                         {/* Annual Income */}
                                         <div className="col-md-6">
                                             <label className="form-label">Annual Income <span className="text-danger">*</span></label>
@@ -600,9 +645,8 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                             />
                                         </div>
 
-                                        {/* ID Document Upload */}
-                                        <div className="col-md-6">
-                                            <label className="form-label">ID Document Upload</label>
+                                         <div className="col-md-6">
+                                            <label className="form-label"> Document Id Upload</label>
                                             <input
                                                 type="file"
                                                 className="form-control"
@@ -611,6 +655,30 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
                                         </div>
+
+                                      
+
+                                        {/* Show filename below input */}
+                                        <div className="mt-1">
+
+                                            {/* If user selected a new file */}
+                                            {selectedFileNames.idDocumentUpload && (
+                                                <small>{selectedFileNames.idDocumentUpload}</small>
+                                            )}
+
+                                            {/* Otherwise show existing file from backend */}
+                                            {!selectedFileNames.idDocumentUpload && editData?.idDocumentUploadOriginal && (
+                                                <a
+                                                    href={`http://localhost:5000/uploads/${editData.idDocumentUpload}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {editData.idDocumentUploadOriginal}
+                                                </a>
+                                            )}
+
+                                        </div>
+
 
                                         {/* Customer Photo */}
                                         <div className="col-md-6">
@@ -623,6 +691,29 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
                                         </div>
+
+                                          {/* Show filename below input */}
+                                        <div className="mt-1">
+
+                                            {/* If user selected a new file */}
+                                            {selectedFileNames.customerPhoto && (
+                                                <small>{selectedFileNames.customerPhoto}</small>
+                                            )}
+
+                                            {/* Otherwise show existing file from backend */}
+                                            {!selectedFileNames.customerPhoto && editData?.customerPhotoOriginal && (
+                                                <a
+                                                    href={`http://localhost:5000/uploads/${editData.customerPhoto}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {editData.customerPhotoOriginal}
+                                                </a>
+                                            )}
+
+                                        </div>
+
+                                        
 
                                     </div>
                                 </div>

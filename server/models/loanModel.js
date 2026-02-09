@@ -1,8 +1,10 @@
+
 const db = require('./db');
 
 const LoanCustomer = {
   createLoan: async (data) => {
     const {
+      customer_id,
       loanAmount,
       loanPurpose,
       interestRate,
@@ -16,6 +18,7 @@ const LoanCustomer = {
 
     return new Promise((resolve, reject) => {
       const sql = `INSERT INTO loan_customer (
+        customer_id,
         loan_amount,
         loan_purpose,
         interest_rate,
@@ -25,9 +28,10 @@ const LoanCustomer = {
         monthly_payment,
         next_payment_due,
         remaining_balance
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       const values = [
+        customer_id,
         loanAmount,
         loanPurpose,
         interestRate,
@@ -60,6 +64,7 @@ const LoanCustomer = {
   // Update by numeric primary id
   updateLoanCustomerById: async (id, data) => {
     const {
+      customer_id,
       loanAmount,
       loanPurpose,
       interestRate,
@@ -74,6 +79,7 @@ const LoanCustomer = {
     return new Promise((resolve, reject) => {
       const sql = `
         UPDATE loan_customer SET
+         customer_id = ?,
           loan_amount = ?,
           loan_purpose = ?,
           interest_rate = ?,
@@ -87,6 +93,7 @@ const LoanCustomer = {
       `;
 
       const values = [
+        customer_id,
         loanAmount,
         loanPurpose,
         interestRate,
@@ -137,7 +144,23 @@ const LoanCustomer = {
         resolve(results);
       });
     });
-  }
+  },
+
+  getLoansByCustomerId: async (customer_id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM loan_customer WHERE customer_id = ?",
+      [customer_id],
+      (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      }
+    );
+  });
+}
+
+
+
 };
 
 module.exports = LoanCustomer;

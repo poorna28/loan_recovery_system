@@ -1,8 +1,6 @@
 import api from "../../services/api";
 import "../../App.css";
-import Layout from "../../components/Layout/Layout";
 import React, { useEffect, useState } from 'react';
-import Basic_Info from "./customer_list";
 const Customer_list_personal_details = ({ editData, setEditData }) => {
     const [formData, setFormData] = useState({
         // Step 1
@@ -35,7 +33,6 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
         jobTitle: '',
         monthlyIncome: '',
         incomeProofDocument: '',
-        creditScore: '',
         creditScoreBand: '',
     });
 
@@ -81,6 +78,15 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                 ...editData,
                 dateOfBirth: normalizedDate
             });
+
+                setSelectedFileNames({
+      addressProof: "",
+      idDocumentUpload: "",
+      customerPhoto: ""
+    });
+
+
+
         } else {
             setFormData(emptyForm);
         }
@@ -113,7 +119,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
             { name: "email", label: "Email", step: 2 },
             { name: "employmentStatus", label: "Employment Status", step: 4 },
             { name: "annualIncome", label: "Annual Income", step: 2 },
-            { name: "creditScore", label: "Credit Score", step: 2 }
+            // { name: "creditScore", label: "Credit Score", step: 2 }
         ];
 
         let firstErrorStep = null;
@@ -174,6 +180,8 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
             setErrors({ ...errors, [name]: "" });
         }
     };
+
+    
 
     const onSave = () => {
 
@@ -285,10 +293,10 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                             <label className="form-label fw-semibold">Customer ID</label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className="form-control auto-generated"
                                                 name="customer_id"
                                                 value={editData ? editData.customer_id : "Auto-generated"}
-                                                readOnly
+                                                readOnly disabled
                                             />
                                         </div>
 
@@ -472,7 +480,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         <div className="col-md-6">
                                             <label className="form-label">City</label>
                                             <select
-                                                className="form-control"
+                                                className="form-select"
                                                 name="city"
                                                 value={formData.city}
                                                 onChange={onChange}
@@ -526,9 +534,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 onChange={onChange}
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
-                                        </div>
-
-                                        {/* Show filename below input */}
+                                               {/* Show filename below input */}
                                         <div className="mt-1">
 
                                             {/* If user selected a new file */}
@@ -548,6 +554,9 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                             )}
 
                                         </div>
+                                        </div>
+
+                                     
 
 
 
@@ -568,7 +577,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         <div className="col-md-6">
                                             <label className="form-label">Credit Score <span className="text-danger">*</span></label>
                                             <select
-                                                className="form-control"
+                                                className="form-select"
                                                 name="creditScore"
                                                 value={formData.creditScore}
                                                 onChange={onChange}
@@ -654,11 +663,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 onChange={onChange}
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
-                                        </div>
-
-                                      
-
-                                        {/* Show filename below input */}
+                                               {/* Show filename below input */}
                                         <div className="mt-1">
 
                                             {/* If user selected a new file */}
@@ -678,6 +683,11 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                             )}
 
                                         </div>
+                                        </div>
+
+                                      
+
+                                     
 
 
                                         {/* Customer Photo */}
@@ -690,8 +700,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 onChange={onChange}
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
-                                        </div>
-
+                                            
                                           {/* Show filename below input */}
                                         <div className="mt-1">
 
@@ -713,6 +722,8 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
 
                                         </div>
 
+                                        </div>
+
                                         
 
                                     </div>
@@ -728,7 +739,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         <div className="col-md-6">
                                             <label className="form-label">Employment Status <span className="text-danger">*</span></label>
                                             <select
-                                                className="form-control"
+                                                className="form-select"
                                                 name="employmentStatus"
                                                 value={formData.employmentStatus}
                                                 onChange={onChange}
@@ -783,9 +794,9 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         <div className="col-md-6">
                                             <label className="form-label">Income Proof Document</label>
                                             <select
-                                                className="form-control"
-                                                name="incomeProof"
-                                                value={formData.incomeProof}
+                                                className="form-select"
+                                                name="incomeProofDocument"
+                                                value={formData.incomeProofDocument}
                                                 onChange={onChange}
                                             >
                                                 <option value="">Select Income Proof Document</option>

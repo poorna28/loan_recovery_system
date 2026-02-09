@@ -218,7 +218,58 @@ const Customer = {
         resolve(results);
       });
     });
-  }
+  },
+
+getCustomersWithLoanCount: async () => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT 
+        c.customer_id,
+        c.firstName,
+        c.lastName,
+        c.email,
+        c.phoneNumber,
+        c.employmentStatus,
+        c.profileStatus,
+        c.annualIncome,
+        c.creditScore,
+        COUNT(l.id) AS loan_count
+      FROM customers c
+      LEFT JOIN loan_customer l
+        ON c.customer_id = l.customer_id
+      GROUP BY 
+        c.customer_id,
+        c.firstName,
+        c.lastName,
+        c.email,
+        c.phoneNumber,
+        c.employmentStatus,
+        c.profileStatus,
+        c.annualIncome,
+        c.creditScore
+    `;
+
+    db.query(sql, (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+},
+
+
+getCustomerById: async (customer_id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      'SELECT * FROM customers WHERE customer_id = ?',
+      [customer_id],
+      (err, results) => {
+        if (err) return reject(err);
+        resolve(results[0] || null);
+      }
+    );
+  });
+}
+
 
 };
 

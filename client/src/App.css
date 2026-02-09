@@ -80,6 +80,14 @@ footer {
   max-width: 900px;
   margin: 2rem auto;
 }
+.modal-dialog.custom-modal-dialog-md {
+  max-width: 700px;
+  margin: 2rem auto;
+}
+.modal-dialog.custom-modal-dialog-sm {
+  max-width: 300px;
+  margin: 2rem auto;
+}
 
 .modal-content {
   padding: 0;
@@ -153,7 +161,7 @@ footer {
 .form-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #374151;
+  color: #000;
   margin-bottom: 4px;
 }
 
@@ -164,6 +172,9 @@ footer {
   font-size: 0.9rem;
   border: 1px solid #d1d5db;
   transition: all 0.2s ease;
+}
+.form-select{
+  cursor: pointer;
 }
 
 textarea.form-control {
@@ -234,4 +245,11 @@ textarea {
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   padding: 6px;
+}
+
+
+.auto-generated{
+  background-color: #000 !important;
+  color: #fff !important;
+  opacity: 0.7;
 }

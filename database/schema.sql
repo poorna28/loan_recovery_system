@@ -103,19 +103,50 @@ UPDATE users SET password = 'your_bcrypt_hash' WHERE email = 'user@example.com';
 
 
 
-CREATE TABLE loanCustomer (
+-- CREATE TABLE loanCustomer (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     loan_id VARCHAR(20) UNIQUE,
+--     loanAmount DECIMAL(10,2) NOT NULL,
+--     loanPurpose VARCHAR(100) NOT NULL,
+--     interestRate DECIMAL(5,2) NOT NULL,
+--     loanTerm INT NOT NULL,
+--     aplicationDate DATE,
+--     statusApproved ENUM('Approved', 'Not Approved', 'Pending') DEFAULT 'Pending',
+--     monthlyPayment DECIMAL(10,2),
+--     nextPaymentDue DATE,
+--     remainingBalance DECIMAL(10,2),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+
+CREATE TABLE loan_customer (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id VARCHAR(20) NOT NULL,
     loan_id VARCHAR(20) UNIQUE,
-    loanAmount DECIMAL(10,2) NOT NULL,
-    loanPurpose VARCHAR(100) NOT NULL,
-    interestRate DECIMAL(5,2) NOT NULL,
-    loanTerm INT NOT NULL,
-    aplicationDate DATE,
-    statusApproved ENUM('Approved', 'Not Approved', 'Pending') DEFAULT 'Pending',
-    monthlyPayment DECIMAL(10,2),
-    nextPaymentDue DATE,
-    remainingBalance DECIMAL(10,2),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    loan_amount DECIMAL(10,2) NOT NULL,
+    loan_purpose VARCHAR(100) NOT NULL,
+    interest_rate DECIMAL(5,2) NOT NULL,
+    loan_term INT NOT NULL,
+    application_date DATE,
+    status_approved ENUM('Approved', 'Not Approved', 'Pending') DEFAULT 'Pending',
+    monthly_payment DECIMAL(10,2),
+    next_payment_due DATE,
+    remaining_balance DECIMAL(10,2),
 );
 
-
+-- PART 1 — SQL (Customer list with loan count)
+SELECT 
+  c.customer_id,
+  c.firstName,
+  c.lastName,
+  c.email,
+  c.phoneNumber,
+  COUNT(l.id) AS loan_count
+FROM customers c
+LEFT JOIN loan_customer l
+  ON c.customer_id = l.customer_id
+GROUP BY 
+  c.customer_id,
+  c.firstName,
+  c.lastName,
+  c.email,
+  c.phoneNumber;

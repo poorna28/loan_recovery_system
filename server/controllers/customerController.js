@@ -56,9 +56,12 @@ const payload = {
 exports.getAllCustomers = async (req, res) => {
   try {
     res.set('Cache-Control', 'no-store'); // disable caching
-    const customers = await customerModel.getAllCustomers();
+
+    const customers = await customerModel.getCustomersWithLoanCount();
+
     res.status(200).json({ customers });
   } catch (err) {
+    console.error('❌ Error fetching customers:', err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
@@ -66,8 +69,10 @@ exports.getAllCustomers = async (req, res) => {
 // Delete a customer
 exports.deleteCustomer = async (req, res) => {
   try {
-    const { id } = req.params;
-    await customerModel.deleteCustomer(id);
+        res.set('Cache-Control', 'no-store'); // disable caching
+
+    const { customer_id  } = req.params;
+    await customerModel.deleteCustomer(customer_id );
     res.status(200).json({ message: 'Customer deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -77,7 +82,9 @@ exports.deleteCustomer = async (req, res) => {
 // Update a customer
 exports.updateCustomer = async (req, res) => {
   try {
-    const { id } = req.params;
+        res.set('Cache-Control', 'no-store'); // disable caching
+
+    const { customer_id  } = req.params;
 
     const payload = {
       ...req.body,
@@ -116,7 +123,7 @@ exports.updateCustomer = async (req, res) => {
         null
     };
 
-    await customerModel.updateCustomer(id, payload);
+    await customerModel.updateCustomer(customer_id , payload);
 
     res.status(200).json({ message: 'Customer updated' });
 
@@ -125,5 +132,23 @@ exports.updateCustomer = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+exports.getCustomerById = async (req, res) => {
+  try {
+        res.set('Cache-Control', 'no-store'); // disable caching
+
+    const { customer_id } = req.params;
+    const customer = await customerModel.getCustomerById(customer_id);
+
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    res.status(200).json(customer);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
 
 

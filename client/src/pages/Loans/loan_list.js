@@ -122,40 +122,33 @@ const Loan_Details = () => {
                   <td>{loanCustomer.nextPaymentDue}</td>
                   <td>{loanCustomer.remainingBalance}</td>
                   <td>
-                    <button
-                      className="btn btn-sm btn-warning me-2"
-                      onClick={() => {
-                        handleEdit(loanCustomer);
-                        // open modal (Bootstrap)
-                        const el = document.getElementById('addLoanCustomerModal');
-                        if (el) {
-                          // data-bs-toggle already present — ensure modal shows
-                          // Use bootstrap's Modal API if available to show programmatically
-                        }
-                      }}
-                      data-bs-toggle="modal"
-                      data-bs-target="#addLoanCustomerModal"
-                    >
-                      Edit
-                    </button>
+                    <div className="d-flex align-items-center justify-content-center gap-2">
+                      <button
+                        className="btn btn-sm btn-warning me-2"
+                        onClick={() => { handleEdit(loanCustomer); }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#addLoanCustomerModal" title="Edit"
+                      >
+                        <i className="bi bi-pencil-square"></i>
+                      </button>
 
-                    <button
-                      className="btn btn-sm btn-info me-2"
-                      onClick={() => {
-                        handleView(loanCustomer);
-                      }}
-                      data-bs-toggle="modal"
-                      data-bs-target="#viewLoanCustomerModal"
-                    >
-                      View
-                    </button>
+                      <button
+                        className="btn btn-sm btn-info me-2"
+                        onClick={() => { handleView(loanCustomer); }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#viewLoanCustomerModal" title="View"
+                      >
+                        <i className="bi bi-eye"></i>
+                      </button>
 
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDelete(loanCustomer.loan_customer_id)}
-                    >
-                      Delete
-                    </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDelete(loanCustomer.loan_customer_id)} title="Delete"
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </div>
+
                   </td>
                 </tr>
               ))

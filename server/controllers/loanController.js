@@ -1,7 +1,16 @@
+
+
 const loanModel = require('../models/loanModel');
 
 exports.createLoan = async (req, res) => {
   try {
+    console.log("📥 Incoming body:", req.body);
+
+    const { customer_id } = req.body;
+    if (!customer_id) {
+      return res.status(400).json({ message: 'Loan must belong to a customer' });
+    }
+
     const loanCustomer = await loanModel.createLoan(req.body);
     res.status(201).json({ message: 'Loan Customer created', loan_id: loanCustomer.loan_id, id: loanCustomer.id });
   } catch (err) {
@@ -9,6 +18,7 @@ exports.createLoan = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
 
 exports.getAllLoanCustomers = async (req, res) => {
   try {
@@ -61,6 +71,17 @@ exports.updateLoanCustomer = async (req, res) => {
     res.status(200).json({ message: 'Loan Customer updated' });
   } catch (err) {
     console.error('❌ Update error:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+
+exports.getLoansByCustomer = async (req, res) => {
+  try {
+    const { customer_id } = req.params;
+    const loans = await loanModel.getLoansByCustomerId(customer_id);
+    res.status(200).json({ loans });
+  } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };

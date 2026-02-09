@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
 
 const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
   const [formData, setFormData] = useState({
+    customer_id: "",
     loanAmount: "",
     loanPurpose: "",
     interestRate: "",
@@ -14,9 +16,14 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
     remainingBalance: ""
   });
 
+  const [customers, setCustomers] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+
+
   useEffect(() => {
     if (editData) {
       setFormData({
+        customer_id: editData.customer_id || "",
         loanAmount: editData.loanAmount || "",
         loanPurpose: editData.loanPurpose || "",
         interestRate: editData.interestRate || "",
@@ -29,6 +36,7 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
       });
     } else {
       setFormData({
+        customer_id: "",
         loanAmount: "",
         loanPurpose: "",
         interestRate: "",
@@ -46,12 +54,26 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    api.get('/customers')
+      .then(res => {
+        const list = res.data?.customers || res.data?.data || [];
+        setCustomers(Array.isArray(list) ? list : []);
+      })
+      .catch(err => console.error('Failed to fetch customers', err));
+  }, []);
+
+
+
   const handleSubmit = () => {
     const payload = { ...formData };
 
     const apiCall = editData
       ? api.put(`/loan_customers/${editData.loan_customer_id}`, payload)
       : api.post("/loan_customers", payload);
+
+    console.log("Submitting payload:", payload);
+
 
     apiCall
       .then(() => {
@@ -77,9 +99,13 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
     >
       <div className="modal-dialog modal-dialog-centered custom-modal-dialog">
         <div className="modal-content elegant-modal shadow-lg border-0">
-          <div className="modal-header border-0 pb-0">
-            <div className="w-100 d-flex justify-content-between align-items-center">
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+
+
+          <div className="modal-header border-0 ">
+            <h5>{editData ? "Edit Loan Customer" : "Add Loan Customer"}</h5>
+            <div className="d-flex justify-content-between align-items-center">
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={setEditData(null)}></button>
             </div>
           </div>
 
@@ -95,6 +121,27 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
                   readOnly
                 />
               </div>
+
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">Customer</label>
+                <select
+                  name="customer_id"
+                  className="form-select"
+                  value={formData.customer_id || ""}
+                  onChange={onChange}
+                  required
+                >
+                  <option value="">Select Customer</option>
+                  {Array.isArray(customers) && customers.map(c => (
+                    <option key={c.customer_id} value={c.customer_id}>
+                      {c.firstName} {c.lastName} ({c.customer_id})
+                    </option>
+
+
+                  ))}
+                </select>
+              </div>
+
 
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Loan Amount</label>

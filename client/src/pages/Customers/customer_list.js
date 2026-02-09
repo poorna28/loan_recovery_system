@@ -4,11 +4,32 @@ import '../../App.css';
 import Layout from '../../components/Layout/Layout';
 import Customer_list_personal_details from './customer_list_personal_details';
 import Customer_list_view from './customer_list_view';
+import { Modal } from "bootstrap";
 
 const Basic_Info = () => {
     const [customers, setCustomers] = useState([]);
     const [editData, setEditData] = useState(null);
     const [viewData, setViewData] = useState(null);
+
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+const [customerLoans, setCustomerLoans] = useState([]);
+
+
+const openLoansModal = async (customer_id) => {
+  setSelectedCustomer(customer_id);
+
+  const res = await api.get(
+    `/loan_customers/customer/${customer_id}`
+  );
+
+  setCustomerLoans(res.data.loans);
+
+  const modal = new window.bootstrap.Modal(
+    document.getElementById('customerLoansModal')
+  );
+  modal.show();
+};
+
 
     useEffect(() => {
         api.get('customers')
@@ -16,14 +37,33 @@ const Basic_Info = () => {
             .catch(err => console.error('Failed to fetch customers:', err));
     }, []);
 
-    const handleEdit = (customer) => {
-        setEditData(customer);
-    };
+    // const handleEdit = (customer) => {
+    //     setEditData(customer);
+    // };
 
-    const handleView = (customer) => {
-        setViewData(customer);
-        console.log("Viewing customer:", customer);
-    };
+    const handleEdit = (customer) => {
+  fetchCustomerById(customer.customer_id);
+};
+
+
+    // const handleView = (customer) => {
+    //     setViewData(customer);
+    //     console.log("Viewing customer:", customer);
+    // };
+
+    const openViewCustomer = async (customer_id) => {
+  try {
+    const res = await api.get(`/customers/${customer_id}`);
+    setViewData(res.data);
+
+    // Open Bootstrap modal manually
+
+  } catch (err) {
+    console.error("Error fetching customer:", err);
+    alert("Failed to load customer details");
+  }
+};
+
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this customer?")) {
@@ -38,6 +78,18 @@ const Basic_Info = () => {
         }
     };
 
+const fetchCustomerById = async (customerId) => {
+  console.log(" Calling edit API for:", customerId);
+
+  try {
+    const res = await api.get(`/customers/${customerId}`);
+    console.log(" Edit API response:", res.data);
+
+    setEditData(res.data); // THIS fills modal
+  } catch (err) {
+    console.error(" Edit API error:", err);
+  }
+};
 
 
     return (
@@ -46,7 +98,7 @@ const Basic_Info = () => {
             <button
                 type="button"
                 className="btn btn-primary d-block mb-3"
-                 style={{marginLeft: "auto"}}
+                style={{ marginLeft: "auto" }}
                 data-bs-toggle="modal"
                 data-bs-target="#addCustomerModal"
                 onClick={() => setEditData(null)}
@@ -69,6 +121,7 @@ const Basic_Info = () => {
                             <th>Full Name</th>
                             <th>Phone No</th>
                             <th>Email</th>
+                            <th>Loan Count</th>
                             <th>Emp Status</th>
                             <th>Profile Status</th>
                             <th>Annual Income</th>
@@ -83,6 +136,18 @@ const Basic_Info = () => {
                                 <td>{customer.firstName}</td>
                                 <td>{customer.phoneNumber}</td>
                                 <td>{customer.email}</td>
+                                <td>
+                                    {customer.loan_count > 0 ? (
+                                        <button
+                                            className="btn btn-link p-0"
+                                            onClick={() => openLoansModal(customer.customer_id)}
+                                        >
+                                            {customer.loan_count}
+                                        </button>
+                                    ) : (
+                                        <span>0</span>
+                                    )}
+                                </td>
                                 <td>{customer.employmentStatus}</td>
                                 <td>{customer.profileStatus}</td>
                                 <td>{customer.annualIncome}</td>
@@ -101,7 +166,7 @@ const Basic_Info = () => {
 
                                         <button
                                             className="btn btn-sm btn-info"
-                                            onClick={() => handleView(customer)}
+                                            onClick={() => openViewCustomer(customer.customer_id)}
                                             data-bs-toggle="modal"
                                             data-bs-target="#viewCustomerModal"
                                             title="View"
@@ -116,6 +181,7 @@ const Basic_Info = () => {
                                         >
                                             <i className="bi bi-trash"></i>
                                         </button>
+                                        
                                     </div>
                                 </td>
 
@@ -124,6 +190,49 @@ const Basic_Info = () => {
                     </tbody>
                 </table>
             </div>
+
+            <div className="modal fade" id="customerLoansModal">
+  <div className="modal-dialog modal-lg">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title">
+          Loans for Customer: {selectedCustomer}
+        </h5>
+        <button className="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div className="modal-body">
+        {customerLoans.length === 0 ? (
+          <p>No loans found.</p>
+        ) : (
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>Loan ID</th>
+                <th>Amount</th>
+                <th>Purpose</th>
+                <th>Status</th>
+                <th>Term</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customerLoans.map(l => (
+                <tr key={l.id}>
+                  <td>{l.loan_id}</td>
+                  <td>{l.loan_amount}</td>
+                  <td>{l.loan_purpose}</td>
+                  <td>{l.status_approved}</td>
+                  <td>{l.loan_term}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
         </Layout>
     );
 };

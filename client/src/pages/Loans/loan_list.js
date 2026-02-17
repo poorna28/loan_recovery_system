@@ -68,7 +68,8 @@ const Loan_Details = () => {
     <Layout>
       <button
         type='button'
-        className='btn btn-primary mb-3'
+        className='btn btn-primary d-block mb-3'
+        style={{ marginLeft: "auto" }}
         data-bs-toggle="modal"
         data-bs-target="#addLoanCustomerModal"
         onClick={() => setEditLoanCustomer(null)}
@@ -88,8 +89,8 @@ const Loan_Details = () => {
         viewData={viewLoanCustomer}
       />
 
-      <div>
-        <table className="table table-striped">
+      <div className='table-responsive customer-table'>
+        <table className="table table-striped  table-hover align-middle">
           <thead>
             <tr>
               <th>Loan_Id</th>

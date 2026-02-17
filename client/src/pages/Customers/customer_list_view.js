@@ -29,7 +29,7 @@ const Customer_list_view = ({ viewData }) => {
             aria-labelledby="viewCustomerModalLabel"
             aria-hidden="true"
         >
-            <div className="modal-dialog modal-dialog-centered custom-modal-dialog">
+            <div className="modal-dialog modal-dialog-centered custom-modal-dialog-md">
                 <div className="modal-content elegant-modal shadow-lg border-0">
                     <div className="modal-header border-0">
                         <h5 className="modal-title" id="viewCustomerModalLabel">

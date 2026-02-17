@@ -1,3 +1,16 @@
+const calculateEMI = (principal, annualRate, months) => {
+  const r = annualRate / 12 / 100;
+
+  if (r === 0) return principal / months;
+
+  const emi =
+    (principal * r * Math.pow(1 + r, months)) /
+    (Math.pow(1 + r, months) - 1);
+
+  return Number(emi.toFixed(2));
+};
+  
+
 
 const db = require('./db');
 
@@ -15,6 +28,13 @@ const LoanCustomer = {
       nextPaymentDue,
       remainingBalance
     } = data;
+
+      const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
+
+  const safeStatus =
+    statusApproved && ALLOWED_STATUSES.includes(statusApproved)
+      ? statusApproved
+      : 'PENDING';
 
     return new Promise((resolve, reject) => {
       const sql = `INSERT INTO loan_customer (
@@ -37,14 +57,18 @@ const LoanCustomer = {
         interestRate,
         loanTerm,
         applicationDate || null,
-        statusApproved,
-        monthlyPayment,
+        // statusApproved,
+        safeStatus,
+        monthlyPayment || null,
         nextPaymentDue || null,
         remainingBalance
       ];
 
       db.query(sql, values, (err, results) => {
-        if (err) return reject(err);
+              if (err) {
+        console.error('❌ Insert Error:', err.sqlMessage || err.message);
+        return reject(err);
+      }
 
         const insertId = results.insertId;
         const loan_id = `USR${1000 + insertId}`;
@@ -53,7 +77,10 @@ const LoanCustomer = {
           'UPDATE loan_customer SET loan_id = ? WHERE id = ?',
           [loan_id, insertId],
           (err2) => {
-            if (err2) return reject(err2);
+                     if (err2) {
+            console.error('❌ Loan ID Update Error:', err2.sqlMessage || err2.message);
+            return reject(err2);
+          }
             resolve({ id: insertId, loan_id });
           }
         );
@@ -75,6 +102,14 @@ const LoanCustomer = {
       nextPaymentDue,
       remainingBalance
     } = data;
+
+
+      const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
+
+  const safeStatus =
+    statusApproved && ALLOWED_STATUSES.includes(statusApproved)
+      ? statusApproved
+      : 'PENDING';
 
     return new Promise((resolve, reject) => {
       const sql = `
@@ -99,10 +134,10 @@ const LoanCustomer = {
         interestRate,
         loanTerm,
         applicationDate || null,
-        statusApproved,
-        monthlyPayment,
+        safeStatus,
+        monthlyPayment || null,
         nextPaymentDue || null,
-        remainingBalance,
+        remainingBalance || null,
         id
       ];
 
@@ -157,8 +192,73 @@ const LoanCustomer = {
       }
     );
   });
+},
+
+
+updateStatus: async (id, status) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      'UPDATE loan_customer SET status_approved = ? WHERE id = ?',
+      [status, id],
+      (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      }
+    );
+  });
+},
+
+activateLoan: async (id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+  `SELECT loan_amount, interest_rate, loan_term, status_approved
+       FROM loan_customer WHERE id = ?`,
+      [id],
+      (err, results) => {
+        if (err) return reject(err);
+        if (!results.length) return reject(new Error('Loan not found'));
+
+
+if (loan.status_approved === 'ACTIVE') {
+  return reject(new Error('Loan already active'));
 }
 
+
+        const loan = results[0];
+
+        const monthlyPayment = calculateEMI(
+          loan.loan_amount,
+          loan.interest_rate,
+          loan.loan_term
+        );
+
+        const remainingBalance = loan.loan_amount;
+
+        const nextPaymentDue = new Date();
+        nextPaymentDue.setMonth(nextPaymentDue.getMonth() + 1);
+
+        db.query(
+          `UPDATE loan_customer SET
+             status_approved = 'ACTIVE',
+             monthly_payment = ?,
+             remaining_balance = ?,
+             next_payment_due = ?
+           WHERE id = ?`,
+          [
+            monthlyPayment,
+            remainingBalance,
+            nextPaymentDue,
+            id
+          ],
+          (err2, result) => {
+            if (err2) return reject(err2);
+            resolve(result);
+          }
+        );
+      }
+    );
+  });
+},
 
 
 };

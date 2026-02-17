@@ -205,9 +205,11 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
                 <label className="form-label fw-semibold">Status Approved</label>
                 <select className="form-select" name="statusApproved" value={formData.statusApproved} onChange={onChange}>
                   <option value="">Select Status</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Not Approved">Not Approved</option>
-                  <option value="Pending">Pending</option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="APPROVED">APPROVED</option>
+                  <option value="REJECTED">REJECTED</option>
+                  <option value="ACTIVE">ACTIVE</option>
+
                 </select>
               </div>
 
@@ -245,6 +247,8 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
                   onChange={onChange}
                 />
               </div>
+
+
             </div>
           </div>
 

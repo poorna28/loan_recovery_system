@@ -9,6 +9,8 @@ router.put('/loan_customers/:id', loanController.updateLoanCustomer);
 router.delete('/loan_customers/:id', loanController.deleteLoanCustomer);
 
 router.get('/loan_customers/customer/:customer_id', loanController.getLoansByCustomer);
+router.patch('/loan_customers/:id/status', loanController.updateLoanStatus);
+
 
 
 module.exports = router;

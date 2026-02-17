@@ -24,7 +24,7 @@ const Loan_List_View = ({ viewData }) => {
       aria-labelledby="viewLoanCustomerModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog modal-dialog-centered custom-modal-dialog">
+      <div className="modal-dialog modal-dialog-centered custom-modal-dialog-md">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="viewLoanCustomerModalLabel">View Loan Details</h5>

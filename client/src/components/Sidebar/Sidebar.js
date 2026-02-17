@@ -81,8 +81,8 @@ const Sidebar = () => {
         </li>
 
         <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            <i className="fas fa-cog"></i>
+          <a href="/payments" className="nav-link text-white">
+            <i className="bi bi-cash-stack"></i>
             {actualExpanded && <span className="ms-2">Payments</span>}
           </a>
         </li>

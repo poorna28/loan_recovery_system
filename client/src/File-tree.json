@@ -1,0 +1,686 @@
+{
+  "name": "loan_recovery_system",
+  "path": "c:\\ReactJS\\Loan_recovery_system\\loan_recovery_system",
+  "type": "directory",
+  "children": [
+    {
+      "name": "client",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "public",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "favicon.ico",
+              "type": "file",
+              "icon": "📄"
+            },
+            {
+              "name": "index.html",
+              "type": "file",
+              "icon": "🌐"
+            },
+            {
+              "name": "logo192.png",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "logo512.png",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "manifest.json",
+              "type": "file",
+              "icon": "⚙️"
+            },
+            {
+              "name": "robots.txt",
+              "type": "file",
+              "icon": "📄"
+            }
+          ]
+        },
+        {
+          "name": "src",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "components",
+              "type": "folder",
+              "icon": "📁",
+              "children": [
+                {
+                  "name": "Footer",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "Footer.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Forms",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "LoginForm.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "SignupForm.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Header",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "Header.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Layout",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "Layout.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Sidebar",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "Sidebar.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "pages",
+              "type": "folder",
+              "icon": "📁",
+              "children": [
+                {
+                  "name": "Customers",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "customer_list.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "customer_list_personal_details.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "customer_list_view.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Dashboard",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "Dashboard.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Loans",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "loan_list.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "loan_list_details.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "loan_list_view.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Settings",
+                  "type": "folder",
+                  "icon": "📁"
+                },
+                {
+                  "name": "Users",
+                  "type": "folder",
+                  "icon": "📁"
+                }
+              ]
+            },
+            {
+              "name": "services",
+              "type": "folder",
+              "icon": "📁",
+              "children": [
+                {
+                  "name": "api.js",
+                  "type": "file",
+                  "icon": "📜"
+                }
+              ]
+            },
+            {
+              "name": "App.css",
+              "type": "file",
+              "icon": "🎨"
+            },
+            {
+              "name": "App.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "App.test.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "index.css",
+              "type": "file",
+              "icon": "🎨"
+            },
+            {
+              "name": "index.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "logo.svg",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "privateRoute.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "reportWebVitals.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "routes.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "setupTests.js",
+              "type": "file",
+              "icon": "📜"
+            }
+          ]
+        },
+        {
+          "name": ".gitignore",
+          "type": "file",
+          "icon": "📁"
+        },
+        {
+          "name": "README.md",
+          "type": "file",
+          "icon": "📝"
+        },
+        {
+          "name": "package-lock.json",
+          "type": "file",
+          "icon": "⚙️"
+        },
+        {
+          "name": "package.json",
+          "type": "file",
+          "icon": "📦"
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "schema.sql",
+          "type": "file",
+          "icon": "📄"
+        },
+        {
+          "name": "seed.sql",
+          "type": "file",
+          "icon": "📄"
+        }
+      ]
+    },
+    {
+      "name": "server",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "config",
+          "type": "folder",
+          "icon": "📁"
+        },
+        {
+          "name": "controllers",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "authController.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "customerController.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "loanController.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "paymentController.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "userController.js",
+              "type": "file",
+              "icon": "📜"
+            }
+          ]
+        },
+        {
+          "name": "middlewares",
+          "type": "folder",
+          "icon": "📁"
+        },
+        {
+          "name": "models",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "customerModel.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "db.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "loanModel.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "paymentModel.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "userModel.js",
+              "type": "file",
+              "icon": "📜"
+            }
+          ]
+        },
+        {
+          "name": "routes",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "authRoutes.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "customerRoutes.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "loanRoutes.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "paymentRoutes.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "userRoutes.js",
+              "type": "file",
+              "icon": "📜"
+            }
+          ]
+        },
+        {
+          "name": "uploads",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "1769145735738-275155795.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769145735750-874717863.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769145735755-446373215.png",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769146457426-179170668.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769148058940-484198230.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769148139946-531103221.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769151661176-898818636.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769151760156-59837455.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769151760164-450667040.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769151760166-352019209.png",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769151803658-443714660.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769151955717-348448807.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769151992772-840779185.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769159473984-300723763.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769159587508-909282619.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160294922-121648160.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160294943-919048561.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160294945-722937858.png",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769160411421-988112769.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160411425-492539195.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160411427-233578411.png",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769160496404-513022992.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160496407-856491731.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160496422-728673683.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160851135-930222535.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160851139-999820078.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160851162-887121790.jpg",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769160865434-836741184.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160865436-33378868.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160865452-342254226.jpg",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769160981349-787921260.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769160981353-345142218.jpg",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1769881555591-437055061.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769881555612-444552475.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769881555629-910454031.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769891976754-20927913.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769891976766-210221891.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769891976769-557396620.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769892007300-511325386.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769892007306-313930912.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1769892007310-724503090.pdf",
+              "type": "file",
+              "icon": "📕"
+            }
+          ]
+        },
+        {
+          "name": "utils",
+          "type": "folder",
+          "icon": "📁",
+          "children": [
+            {
+              "name": "paymentEngine.js",
+              "type": "file",
+              "icon": "📜"
+            }
+          ]
+        },
+        {
+          "name": "app.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "hashPassword.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "package-lock.json",
+          "type": "file",
+          "icon": "⚙️"
+        },
+        {
+          "name": "package.json",
+          "type": "file",
+          "icon": "📦"
+        },
+        {
+          "name": "server.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "icon": "📝"
+    },
+    {
+      "name": "package-lock.json",
+      "type": "file",
+      "icon": "⚙️"
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "icon": "📦"
+    }
+  ],
+  "metadata": {
+    "generated": "2026-02-17T11:42:37.451Z",
+    "generator": "FileTree Pro Extension",
+    "version": "0.2.0",
+    "showIcons": true,
+    "maxDepth": 10
+  }
+}

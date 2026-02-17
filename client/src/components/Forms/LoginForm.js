@@ -15,10 +15,10 @@ const handleSubmit = async (e) => {
     const res = await api.post('/auth/login', form);
     toast.success(res.data.message);
 
-    // ✅ Store token
+    // Store token
     localStorage.setItem('authToken', res.data.token || 'logged-in');
 
-    // ✅ Navigate and replace history
+    // Navigate and replace history
     navigate('/dashboard', { replace: true });
   } catch (err) {
     toast.error(err.response?.data?.message || 'Login failed');

@@ -114,7 +114,7 @@ const fetchCustomerById = async (customerId) => {
 
             {/* Customer Table */}
             <div className="table-responsive customer-table">
-                <table className="table table-striped table-hover align-middle">
+                <table className="table table-striped  table-hover align-middle">
                     <thead>
                         <tr>
                             <th>Customer Id</th>

@@ -150,3 +150,17 @@ GROUP BY
   c.lastName,
   c.email,
   c.phoneNumber;
+
+
+
+CREATE TABLE loan_payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    loan_customer_id INT,
+    loan_id VARCHAR(20),
+    amount_paid DECIMAL(10,2),
+    payment_date DATE,
+    payment_method VARCHAR(50),
+    principal_component DECIMAL(10,2),
+    interest_component DECIMAL(10,2),
+    remaining_balance DECIMAL(10,2)
+);

@@ -106,88 +106,175 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
         customerPhoto: ""
     });
 
+    const validationRules = {
+  profileStatus: {
+    required: true,
+    label: "Profile Status",
+    step: 1
+  },
+  firstName: {
+    required: true,
+    label: "First Name",
+    step: 1
+  },
+  lastName: {
+    required: true,
+    label: "Last Name",
+    step: 1
+  },
+  phoneNumber: {
+    required: true,
+    label: "Phone Number",
+    step: 1,
+    pattern: /^[6-9]\d{9}$/,
+    message: "Enter valid 10-digit Indian mobile number"
+  },
 
-    const validate = () => {
-        const newErrors = {};
-        const missingFields = [];
+  email: {
+    required: true,
+    label: "Email",
+    step: 2,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: "Enter valid email address"
+  },
+  annualIncome: {
+    required: true,
+    label: "Annual Income",
+    step: 2
+  },
 
-        const requiredFields = [
-            { name: "profileStatus", label: "Profile Status", step: 1 },
-            { name: "firstName", label: "First Name", step: 1 },
-            { name: "lastName", label: "Last Name", step: 1 },
-            { name: "phoneNumber", label: "Phone Number", step: 1 },
-            { name: "email", label: "Email", step: 2 },
-            { name: "employmentStatus", label: "Employment Status", step: 4 },
-            { name: "annualIncome", label: "Annual Income", step: 2 },
-            // { name: "creditScore", label: "Credit Score", step: 2 }
-        ];
+  employmentStatus: {
+    required: true,
+    label: "Employment Status",
+    step: 4
+  }
+};
 
-        let firstErrorStep = null;
 
-        requiredFields.forEach(field => {
-            if (!formData[field.name]) {
-                newErrors[field.name] = `${field.label} is required`;
-                missingFields.push(field.label);
+    // const validate = () => {
+    //     const newErrors = {};
+    //     const missingFields = [];
 
-                if (!firstErrorStep) {
-                    firstErrorStep = field.step;
-                }
-            }
-        });
+    //     const requiredFields = [
+    //         { name: "profileStatus", label: "Profile Status", step: 1 },
+    //         { name: "firstName", label: "First Name", step: 1 },
+    //         { name: "lastName", label: "Last Name", step: 1 },
+    //         { name: "phoneNumber", label: "Phone Number", step: 1 },
+    //         { name: "email", label: "Email", step: 2 },
+    //         { name: "employmentStatus", label: "Employment Status", step: 4 },
+    //         { name: "annualIncome", label: "Annual Income", step: 2 },
+    //         // { name: "creditScore", label: "Credit Score", step: 2 }
+    //     ];
 
-        setErrors(newErrors);
+    //     let firstErrorStep = null;
 
-        if (missingFields.length > 0) {
-            alert(
-                "Please fill the following required fields:\n\n" +
-                missingFields.join(", ")
-            );
+    //     requiredFields.forEach(field => {
+    //         if (!formData[field.name]) {
+    //             newErrors[field.name] = `${field.label} is required`;
+    //             missingFields.push(field.label);
 
-            // Automatically jump to tab where first error exists
-            setStep(firstErrorStep);
-            return false;
-        }
+    //             if (!firstErrorStep) {
+    //                 firstErrorStep = field.step;
+    //             }
+    //         }
+    //     });
 
-        return true;
-    };
+    //     setErrors(newErrors);
+
+    //     if (missingFields.length > 0) {
+    //         alert(
+    //             "Please fill the following required fields:\n\n" +
+    //             missingFields.join(", ")
+    //         );
+
+    //         // Automatically jump to tab where first error exists
+    //         setStep(firstErrorStep);
+    //         return false;
+    //     }
+
+    //     return true;
+    // };
 
 
     const [step, setStep] = useState(1);
 
-    const onChange = (e) => {
-        const { name, value, type, files } = e.target;
+const onChange = (e) => {
+  const { name, value, type, files } = e.target;
 
-        if (type === "file") {
-            const file = files[0];
+  // Phone: digits only
+  if (name === "phoneNumber" && !/^\d*$/.test(value)) return;
 
-            setFormData({
-                ...formData,
-                [name]: file || null
-            });
+  if (type === "file") {
+    const file = files[0];
 
-            setSelectedFileNames({
-                ...selectedFileNames,
-                [name]: file?.name || ""
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value
-            });
-        }
+    setFormData(prev => ({
+      ...prev,
+      [name]: file || null
+    }));
 
-        if (errors[name]) {
-            setErrors({ ...errors, [name]: "" });
-        }
-    };
+    setSelectedFileNames(prev => ({
+      ...prev,
+      [name]: file?.name || ""
+    }));
+  } else {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }
 
-    
+  // Clear error on edit
+  if (errors[name]) {
+    setErrors(prev => ({ ...prev, [name]: "" }));
+  }
+};
+
+
+const validateStep = (currentStep) => {
+  const newErrors = {};
+
+  Object.entries(validationRules).forEach(([field, rule]) => {
+    if (rule.step !== currentStep) return;
+
+    const value = formData[field];
+
+    if (rule.required && !value) {
+      newErrors[field] = `${rule.label} is required`;
+      return;
+    }
+
+    if (rule.pattern && value && !rule.pattern.test(value)) {
+      newErrors[field] = rule.message;
+    }
+  });
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length > 0) {
+    alert(
+      "Please fix the following fields:\n\n" +
+      Object.values(newErrors).join("\n")
+    );
+    return false;
+  }
+
+  return true;
+};
+
+
+    const handleNext = () => {
+  if (!validateStep(step)) return;
+  setStep(prev => prev + 1);
+};
+
 
     const onSave = () => {
-
-        if (!validate()) {
-            return; // Stop submission
-        }
+  for (let s = 1; s <= steps.length; s++) {
+    if (!validateStep(s)) {
+      setStep(s);
+      return;
+    }
+  }
 
         // Ensure dateOfBirth is in 'YYYY-MM-DD' format
         const sanitizedDate = formData.dateOfBirth?.split('T')[0] || formData.dateOfBirth;
@@ -440,7 +527,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         </div>
 
                                         {/* Secondary Phone Number */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">Secondary Phone Number</label>
                                             <input
                                                 type="tel"
@@ -449,7 +536,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                                 value={formData.secondaryNumber}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* Email */}
                                         <div className="col-md-6">
@@ -498,7 +585,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         <div className="col-md-6">
                                             <label className="form-label">State</label>
                                             <select
-                                                className="form-control"
+                                                className="form-select"
                                                 name="state"
                                                 value={formData.state}
                                                 onChange={onChange}
@@ -605,7 +692,7 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                         <div className="col-md-6">
                                             <label className="form-label">Government ID Type</label>
                                             <select
-                                                className="form-control"
+                                                className="form-select"
                                                 name="govtIdType"
                                                 value={formData.govtIdType}
                                                 onChange={onChange}
@@ -849,7 +936,8 @@ const Customer_list_personal_details = ({ editData, setEditData }) => {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={() => setStep(step + 1)}
+                                    onClick={handleNext}
+
                                 >
                                     Next
                                 </button>

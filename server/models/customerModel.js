@@ -186,7 +186,7 @@ const Customer = {
   idDocumentUploadOriginal,
   addressProofOriginal,
   customerPhotoOriginal,
-  customerId // ✅ MUST be last (matches WHERE customer_id=?)
+  customerId // MUST be last (matches WHERE customer_id=?)
 ];
 
 

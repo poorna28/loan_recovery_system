@@ -20,10 +20,42 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
   const [showAlert, setShowAlert] = useState(false);
 
 
+  // useEffect(() => {
+  //   if (editData) {
+  //     setFormData({
+  //       customer_id: editData.customer_id || "",
+  //       loanAmount: editData.loanAmount || "",
+  //       loanPurpose: editData.loanPurpose || "",
+  //       interestRate: editData.interestRate || "",
+  //       loanTerm: editData.loanTerm || "",
+  //       applicationDate: editData.applicationDate || "",
+  //       statusApproved: editData.statusApproved || "",
+  //       monthlyPayment: editData.monthlyPayment || "",
+  //       nextPaymentDue: editData.nextPaymentDue || "",
+  //       remainingBalance: editData.remainingBalance || ""
+  //     });
+  //   } else {
+  //     setFormData({
+  //       customer_id: "",
+  //       loanAmount: "",
+  //       loanPurpose: "",
+  //       interestRate: "",
+  //       loanTerm: "",
+  //       applicationDate: "",
+  //       statusApproved: "",
+  //       monthlyPayment: "",
+  //       nextPaymentDue: "",
+  //       remainingBalance: ""
+  //     });
+  //   }
+  // }, [editData]);
+
+
+
   useEffect(() => {
     if (editData) {
       setFormData({
-        customer_id: editData.customer_id || "",
+        customer_id: editData.customerId || "",
         loanAmount: editData.loanAmount || "",
         loanPurpose: editData.loanPurpose || "",
         interestRate: editData.interestRate || "",
@@ -105,7 +137,7 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
           <div className="modal-header border-0 ">
             <h5>{editData ? "Edit Loan Customer" : "Add Loan Customer"}</h5>
             <div className="d-flex justify-content-between align-items-center">
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={setEditData(null)}></button>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() =>setEditData(null)}></button>
             </div>
           </div>
 
@@ -117,8 +149,7 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
                   type="text"
                   className="form-control"
                   name="loan_id"
-                  value={editData ? editData.loan_id : "Auto-generated"}
-                  readOnly
+                  value={editData ? editData.loanId  : "Auto-generated"}
                 />
               </div>
 
@@ -203,7 +234,13 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
 
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Status Approved</label>
-                <select className="form-select" name="statusApproved" value={formData.statusApproved} onChange={onChange}>
+                <select
+                  className="form-select"
+                  name="statusApproved"
+                  value={formData.statusApproved}
+                  onChange={onChange}
+                  disabled={editData && editData.statusApproved !== "PENDING"}
+                >
                   <option value="">Select Status</option>
                   <option value="PENDING">PENDING</option>
                   <option value="APPROVED">APPROVED</option>

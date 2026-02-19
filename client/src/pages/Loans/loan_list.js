@@ -42,9 +42,47 @@ const Loan_Details = () => {
     fetchAll();
   }, []);
 
+  // const handleEdit = (loanCustomer) => {
+  //   setEditLoanCustomer(loanCustomer);
+  // };
+
+  const fetchLoanCustomerById = async (id) => {
+  console.log("Calling edit API for loan customer ID:", id);
+
+  try {
+    const res = await api.get(`/loan_customers/${id}`);
+    const loan = res.data;
+
+    setEditLoanCustomer({
+      id: loan.id,
+      loanId: loan.loan_id,
+      loanAmount: loan.loan_amount,
+      loanPurpose: loan.loan_purpose,
+      interestRate: loan.interest_rate,
+      loanTerm: loan.loan_term,
+      applicationDate: loan.application_date
+        ? loan.application_date.substring(0, 10)
+        : '',
+      statusApproved: loan.status_approved,
+      monthlyPayment: loan.monthly_payment,
+      nextPaymentDue: loan.next_payment_due
+        ? loan.next_payment_due.substring(0, 10)
+        : '',
+      remainingBalance: loan.remaining_balance,
+      customerId: loan.customer_id
+    });
+
+  } catch (err) {
+    console.error('Failed to fetch loan customer by ID:', err);
+    alert('Failed to fetch loan customer details');
+  }
+};
+
+
   const handleEdit = (loanCustomer) => {
-    setEditLoanCustomer(loanCustomer);
-  };
+  fetchLoanCustomerById(loanCustomer.loan_customer_id);
+};
+
 
   const handleView = (loanCustomer) => {
     setViewLoanCustomer(loanCustomer);

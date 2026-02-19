@@ -9,6 +9,8 @@ const Payment_Page = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewPayment, setViewPayment] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(null);
+  const [alert, setAlert] = useState({ type: '', message: '' });
 
   const fetchAll = () => {
     setLoading(true);
@@ -47,12 +49,40 @@ const Payment_Page = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this payment?")) {
+      setDeleteLoading(id);
       try {
-        await api.delete(`/payments/${id}`);
+        const response = await api.delete(`/payments/${id}`);
+        
+        // Remove from list
         setPayments(prev => prev.filter(p => p.payment_id !== id));
+        
+        // Show success message
+        setAlert({
+          type: 'success',
+          message: 'Payment deleted successfully!'
+        });
+        
+        // Clear alert after 3 seconds
+        setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+        
       } catch (err) {
         console.error('Delete failed:', err);
-        alert('Failed to delete payment');
+        
+        let errorMessage = 'Failed to delete payment';
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        setAlert({
+          type: 'danger',
+          message: errorMessage
+        });
+        
+        setTimeout(() => setAlert({ type: '', message: '' }), 5000);
+      } finally {
+        setDeleteLoading(null);
       }
     }
   };
@@ -70,6 +100,17 @@ const Payment_Page = () => {
       <Payment_View viewData={viewPayment} />
 
       <div className='table-responsive customer-table'>
+        {alert.message && (
+          <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert">
+            {alert.message}
+            <button 
+              type="button" 
+              className="btn-close" 
+              onClick={() => setAlert({ type: '', message: '' })}
+            ></button>
+          </div>
+        )}
+
         <div className="mb-3 d-flex justify-content-between align-items-center">
           <h4>Payment History</h4>
           <button
@@ -124,9 +165,14 @@ const Payment_Page = () => {
                       <button
                         className="btn btn-sm btn-danger"
                         onClick={() => handleDelete(payment.payment_id)}
-                        title="Delete"
+                        disabled={deleteLoading === payment.payment_id}
+                        title={deleteLoading === payment.payment_id ? "Deleting..." : "Delete"}
                       >
-                        <i className="bi bi-trash"></i>
+                        {deleteLoading === payment.payment_id ? (
+                          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
                       </button>
 
                     </div>

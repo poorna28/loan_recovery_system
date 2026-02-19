@@ -3,6 +3,7 @@ import Layout from '../../components/Layout/Layout';
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import Payment_View from './payment_view';
+import Payment_Form from './payment_form';
 
 const Payment_Page = () => {
   const [payments, setPayments] = useState([]);
@@ -56,12 +57,29 @@ const Payment_Page = () => {
     }
   };
 
+  const handlePaymentSuccess = () => {
+    // Refresh payments list after successful payment
+    fetchAll();
+  };
+
   return (
     <Layout>
+
+      <Payment_Form onPaymentSuccess={handlePaymentSuccess} />
 
       <Payment_View viewData={viewPayment} />
 
       <div className='table-responsive customer-table'>
+        <div className="mb-3 d-flex justify-content-between align-items-center">
+          <h4>Payment History</h4>
+          <button
+            className="btn btn-success"
+            data-bs-toggle="modal"
+            data-bs-target="#makePaymentModal"
+          >
+            <i className="bi bi-plus-circle"></i> Make Payment
+          </button>
+        </div>
         <table className="table table-striped table-hover align-middle">
           <thead>
             <tr>

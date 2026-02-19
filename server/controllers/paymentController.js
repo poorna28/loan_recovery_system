@@ -4,34 +4,43 @@ exports.makePayment = async (req, res) => {
   try {
     const { loanId, amount, method } = req.body;
 
-    if (!loanId || !amount) {
-      return res.status(400).json({ message: 'Missing payment data' });
+    const numericLoanId = Number(loanId);
+    const numericAmount = Number(amount);
+
+    if (isNaN(numericLoanId)) {
+      return res.status(400).json({ message: 'Invalid loanId' });
+    }
+
+    if (isNaN(numericAmount) || numericAmount <= 0) {
+      return res.status(400).json({ message: 'Invalid payment amount' });
     }
 
     const result = await paymentModel.makePayment(
-      loanId,
-      Number(amount),
+      numericLoanId,
+      numericAmount,
       method
     );
 
     res.status(200).json({
       message: 'Payment successful',
-      payments: [result] // optional pattern consistency
+      payment: result
     });
 
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('Payment error:', err);
+
+    res.status(500).json({
+      message: err.message || 'Payment processing failed'
+    });
   }
 };
-
-
-/* ✅ REQUIRED FOR FRONTEND */
 
 exports.getAllPayments = async (req, res) => {
   try {
     const payments = await paymentModel.getAllPayments();
     res.status(200).json({ payments });
   } catch (err) {
+    console.error('Fetch payments error:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -44,6 +53,7 @@ exports.deletePayment = async (req, res) => {
 
     res.status(200).json({ message: 'Payment deleted' });
   } catch (err) {
+    console.error('Delete payment error:', err);
     res.status(500).json({ message: err.message });
   }
 };

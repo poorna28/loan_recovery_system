@@ -31,10 +31,11 @@ const LoanCustomer = {
 
       const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
 
-  const safeStatus =
-    statusApproved && ALLOWED_STATUSES.includes(statusApproved)
-      ? statusApproved
-      : 'PENDING';
+const safeStatus =
+  statusApproved && ALLOWED_STATUSES.includes(statusApproved)
+    ? statusApproved
+    : undefined;   //  DO NOT OVERRIDE EXISTING STATUS
+
 
     return new Promise((resolve, reject) => {
       const sql = `INSERT INTO loan_customer (
@@ -106,10 +107,11 @@ const LoanCustomer = {
 
       const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
 
-  const safeStatus =
-    statusApproved && ALLOWED_STATUSES.includes(statusApproved)
-      ? statusApproved
-      : 'PENDING';
+const safeStatus =
+  statusApproved && ALLOWED_STATUSES.includes(statusApproved)
+    ? statusApproved
+    : undefined;   //  DO NOT OVERRIDE EXISTING STATUS
+
 
     return new Promise((resolve, reject) => {
       const sql = `
@@ -120,7 +122,7 @@ const LoanCustomer = {
           interest_rate = ?,
           loan_term = ?,
           application_date = ?,
-          status_approved = ?,
+    status_approved = COALESCE(?, status_approved),
           monthly_payment = ?,
           next_payment_due = ?,
           remaining_balance = ?
@@ -210,29 +212,28 @@ updateStatus: async (id, status) => {
 
 activateLoan: async (id) => {
   return new Promise((resolve, reject) => {
+
     db.query(
-  `SELECT loan_amount, interest_rate, loan_term, status_approved
+      `SELECT loan_amount, interest_rate, loan_term, status_approved
        FROM loan_customer WHERE id = ?`,
       [id],
       (err, results) => {
         if (err) return reject(err);
         if (!results.length) return reject(new Error('Loan not found'));
 
+        const loan = results[0];   // ✅ MUST COME FIRST
 
-if (loan.status_approved === 'ACTIVE') {
-  return reject(new Error('Loan already active'));
-}
-
-
-        const loan = results[0];
+        if (loan.status_approved === 'ACTIVE') {
+          return reject(new Error('Loan already active'));
+        }
 
         const monthlyPayment = calculateEMI(
-          loan.loan_amount,
-          loan.interest_rate,
-          loan.loan_term
+          Number(loan.loan_amount),
+          Number(loan.interest_rate),
+          Number(loan.loan_term)
         );
 
-        const remainingBalance = loan.loan_amount;
+        const remainingBalance = Number(loan.loan_amount);
 
         const nextPaymentDue = new Date();
         nextPaymentDue.setMonth(nextPaymentDue.getMonth() + 1);
@@ -244,12 +245,7 @@ if (loan.status_approved === 'ACTIVE') {
              remaining_balance = ?,
              next_payment_due = ?
            WHERE id = ?`,
-          [
-            monthlyPayment,
-            remainingBalance,
-            nextPaymentDue,
-            id
-          ],
+          [monthlyPayment, remainingBalance, nextPaymentDue, id],
           (err2, result) => {
             if (err2) return reject(err2);
             resolve(result);
@@ -259,6 +255,7 @@ if (loan.status_approved === 'ACTIVE') {
     );
   });
 },
+
 
 
 };

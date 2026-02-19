@@ -41,6 +41,7 @@ const router = express.Router();
 const customerController = require('../controllers/customerController');
 const multer = require('multer');
 const path = require('path');
+const { validateCustomer, validateIdParam } = require('../middlewares/validationMiddleware');
 
 /* ========= Multer config (unchanged) ========= */
 
@@ -61,25 +62,28 @@ const uploadFields = upload.fields([
   { name: 'customerPhoto', maxCount: 1 }
 ]);
 
-/* ========= ROUTES (FIXED) ========= */
+/* ========= ROUTES WITH VALIDATION ========= */
 
-// Create
-router.post('/basic_info', uploadFields, customerController.createCustomer);
+// Create with validation
+router.post('/basic_info', uploadFields, validateCustomer, customerController.createCustomer);
 
 // Read
 router.get('/customers', customerController.getAllCustomers);
-router.get('/customers/:customer_id', customerController.getCustomerById);
+router.get('/customers/:customer_id', validateIdParam, customerController.getCustomerById);
 
-// Update (FIXED param)
+// Update with validation
 router.put(
   '/customers/:customer_id',
+  validateIdParam,
   uploadFields,
+  validateCustomer,
   customerController.updateCustomer
 );
 
-// Delete (FIXED param)
+// Delete with validation
 router.delete(
   '/customers/:customer_id',
+  validateIdParam,
   customerController.deleteCustomer
 );
 

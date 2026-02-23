@@ -2,8 +2,49 @@ const db = require('./db');
 
 const Customer = {
   // Create a new customer
-  createCustomer: async (data) => {
-    const {
+createCustomer: async (data) => {
+  const {
+    firstName,
+    lastName,
+    title,
+    email,
+    phoneNumber,
+    primaryNumber,
+    secondaryNumber,
+    dateOfBirth,
+    gender,
+    nationality,
+    address,
+    city,
+    state,
+    postalCode,
+    profileStatus,
+    employmentStatus,
+    jobTitle,
+    annualIncome,
+    incomeProofDocument,
+    creditScore,
+    govtIdType,
+    govtIdNumber,
+    addressProof,
+    idDocumentUpload,
+    customerPhoto,
+    idDocumentUploadOriginal,
+    addressProofOriginal,
+    customerPhotoOriginal
+  } = data;
+
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO customers (
+      firstName, lastName, title, email, phoneNumber, primaryNumber, secondaryNumber,
+      dateOfBirth, gender, nationality, address, city, state, postalCode, profileStatus,
+      employmentStatus, jobTitle, annualIncome, incomeProofDocument,
+      creditScore, govtIdType, govtIdNumber,
+      addressProof, idDocumentUpload, customerPhoto,
+      idDocumentUploadOriginal, addressProofOriginal, customerPhotoOriginal
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+    const values = [
       firstName,
       lastName,
       title,
@@ -11,7 +52,7 @@ const Customer = {
       phoneNumber,
       primaryNumber,
       secondaryNumber,
-      dateOfBirth,
+      dateOfBirth || null,
       gender,
       nationality,
       address,
@@ -20,87 +61,83 @@ const Customer = {
       postalCode,
       profileStatus,
       employmentStatus,
-      companyName,
       jobTitle,
-      monthlyIncome,
-      annualIncome,
+      annualIncome || null,
       incomeProofDocument,
-      creditScore,
-      creditScoreBand,
+      creditScore || null,
       govtIdType,
       govtIdNumber,
-      idIssueDate,
-      idExpiryDate,
       addressProof,
       idDocumentUpload,
       customerPhoto,
       idDocumentUploadOriginal,
       addressProofOriginal,
       customerPhotoOriginal
-    } = data;
-    return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO customers (
-        firstName, lastName, title, email, phoneNumber, primaryNumber, secondaryNumber,
-        dateOfBirth, gender, nationality, address, city, state, postalCode, profileStatus,
-        employmentStatus, companyName, jobTitle, monthlyIncome, annualIncome, incomeProofDocument,
-        creditScore, creditScoreBand, govtIdType, govtIdNumber, idIssueDate, idExpiryDate,
-        addressProof, idDocumentUpload, customerPhoto, idDocumentUploadOriginal, addressProofOriginal, customerPhotoOriginal
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-      const values = [
-        firstName,
-        lastName,
-        title,
-        email,
-        phoneNumber,
-        primaryNumber,
-        secondaryNumber,
-        dateOfBirth || null,
-        gender,
-        nationality,
-        address,
-        city,
-        state,
-        postalCode,
-        profileStatus,
-        employmentStatus,
-        companyName,
-        jobTitle,
-        monthlyIncome || null,
-        annualIncome || null,
-        incomeProofDocument,
-        creditScore || null,
-        creditScoreBand,
-        govtIdType,
-        govtIdNumber,
-        idIssueDate || null,
-        idExpiryDate || null,
-        addressProof,
-        idDocumentUpload,
-        customerPhoto,
-        idDocumentUploadOriginal,
-        addressProofOriginal,
-        customerPhotoOriginal
-      ];
-      db.query(sql, values, (err, results) => {
-        if (err) return reject(err);
-        const insertId = results.insertId;
-        const customerId = `USR${1000 + insertId}`;
-        db.query(
-          'UPDATE customers SET customer_id = ? WHERE id = ?',
-          [customerId, insertId],
-          (err2) => {
-            if (err2) return reject(err2);
-            resolve({ id: insertId, customerId });
-          }
-        );
-      });
+    ];
+
+    db.query(sql, values, (err, results) => {
+      if (err) return reject(err);
+
+      const insertId = results.insertId;
+      const customerId = `customer-delete-USR${1000 + insertId}`;
+
+      db.query(
+        'UPDATE customers SET customer_id = ? WHERE id = ?',
+        [customerId, insertId],
+        (err2) => {
+          if (err2) return reject(err2);
+          resolve({ id: insertId, customerId });
+        }
+      );
     });
-  },
+  });
+},
 
   
   // Update existing customer
-  updateCustomer: async (customerId, data) => {
-    const {
+updateCustomer: async (customerId, data) => {
+  const {
+    firstName,
+    lastName,
+    title,
+    email,
+    phoneNumber,
+    primaryNumber,
+    secondaryNumber,
+    dateOfBirth,
+    gender,
+    nationality,
+    address,
+    city,
+    state,
+    postalCode,
+    profileStatus,
+    employmentStatus,
+    jobTitle,
+    annualIncome,
+    incomeProofDocument,
+    creditScore,
+    govtIdType,
+    govtIdNumber,
+    addressProof,
+    idDocumentUpload,
+    customerPhoto,
+    idDocumentUploadOriginal,
+    addressProofOriginal,
+    customerPhotoOriginal
+  } = data;
+
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE customers SET
+      firstName=?, lastName=?, title=?, email=?, phoneNumber=?, primaryNumber=?, secondaryNumber=?,
+      dateOfBirth=?, gender=?, nationality=?, address=?, city=?, state=?, postalCode=?, profileStatus=?,
+      employmentStatus=?, jobTitle=?, annualIncome=?, incomeProofDocument=?,
+      creditScore=?, govtIdType=?, govtIdNumber=?,
+      addressProof=?, idDocumentUpload=?, customerPhoto=?,
+      idDocumentUploadOriginal=?, addressProofOriginal=?, customerPhotoOriginal=?
+      WHERE customer_id=?`;
+
+    const values = [
       firstName,
       lastName,
       title,
@@ -108,7 +145,7 @@ const Customer = {
       phoneNumber,
       primaryNumber,
       secondaryNumber,
-      dateOfBirth,
+      dateOfBirth || null,
       gender,
       nationality,
       address,
@@ -117,77 +154,27 @@ const Customer = {
       postalCode,
       profileStatus,
       employmentStatus,
-      companyName,
       jobTitle,
-      monthlyIncome,
-      annualIncome,
+      annualIncome || null,
       incomeProofDocument,
-      creditScore,
-      creditScoreBand,
+      creditScore || null,
       govtIdType,
       govtIdNumber,
-      idIssueDate,
-      idExpiryDate,
       addressProof,
       idDocumentUpload,
       customerPhoto,
       idDocumentUploadOriginal,
       addressProofOriginal,
-      customerPhotoOriginal
-    } = data;
-    return new Promise((resolve, reject) => {
-      const sql = `UPDATE customers SET
-        firstName=?, lastName=?, title=?, email=?, phoneNumber=?, primaryNumber=?, secondaryNumber=?,
-        dateOfBirth=?, gender=?, nationality=?, address=?, city=?, state=?, postalCode=?, profileStatus=?,
-        employmentStatus=?, companyName=?, jobTitle=?, monthlyIncome=?, annualIncome=?, incomeProofDocument=?,
-        creditScore=?, creditScoreBand=?, govtIdType=?, govtIdNumber=?, idIssueDate=?, idExpiryDate=?,
-        addressProof=?, idDocumentUpload=?, customerPhoto=? , idDocumentUploadOriginal=?, addressProofOriginal=?, customerPhotoOriginal=?
-        WHERE customer_id=?`;
-      const values = [
-        firstName,
-        lastName,
-        title,
-        email,
-        phoneNumber,
-        primaryNumber,
-        secondaryNumber,
-        dateOfBirth || null,
-        gender,
-        nationality,
-        address,
-        city,
-        state,
-        postalCode,
-        profileStatus,
-        employmentStatus,
-        companyName,
-        jobTitle,
-        monthlyIncome || null,
-        annualIncome || null,
-        incomeProofDocument,
-        creditScore || null,
-        creditScoreBand,
-        govtIdType,
-        govtIdNumber,
-        idIssueDate || null,
-        idExpiryDate || null,
-        addressProof,
-        idDocumentUpload,
-        customerPhoto,
-        idDocumentUploadOriginal,
-        addressProofOriginal,
-        customerPhotoOriginal,
-        customerId // MUST be last (matches WHERE customer_id=?)
-      ];
-      db.query(sql, values, (err, results) => {
-        if (err) {
-          console.error('❌ SQL Error:', err.sqlMessage || err.message);
-          return reject(err);
-        }
-        resolve(results);
-      });
+      customerPhotoOriginal,
+      customerId
+    ];
+
+    db.query(sql, values, (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
     });
-  },
+  });
+},
 
   // Get all customers
   getAllCustomers: async () => {

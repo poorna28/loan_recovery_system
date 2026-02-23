@@ -20,20 +20,20 @@ const Customer_details = ({ editData, setEditData }) => {
         state: '',
         postalCode: '',
         addressProof: null,
-        idExpiryDate: '',
+        // idExpiryDate: '',
         annualIncome: '',
         creditScore: '',
-        idIssueDate: '',
+        // idIssueDate: '',
         govtIdNumber: '',
         govtIdType: '',
         idDocumentUpload: null,
         customerPhoto: null,
         employmentStatus: '',
-        companyName: '',
+        // companyName: '',
         jobTitle: '',
-        monthlyIncome: '',
+        // monthlyIncome: '',
         incomeProofDocument: '',
-        creditScoreBand: '',
+        // creditScoreBand: '',
     });
 
     const emptyForm = {
@@ -56,17 +56,17 @@ const Customer_details = ({ editData, setEditData }) => {
         state: '',
         postalCode: '',
         addressProof: null,
-        idExpiryDate: '',
-        idIssueDate: '',
+        // idExpiryDate: '',
+        // idIssueDate: '',
         govtIdNumber: '',
         govtIdType: '',
         idDocumentUpload: null,
         customerPhoto: null,
-        companyName: '',
+        // companyName: '',
         jobTitle: '',
-        monthlyIncome: '',
+        // monthlyIncome: '',
         incomeProofDocument: '',
-        creditScoreBand: '',
+        // creditScoreBand: '',
     };
 
 
@@ -297,16 +297,15 @@ const validateStep = (currentStep) => {
         const method = editData ? api.put : api.post;
         const url = editData ? `/customers/${editData.customer_id}` : '/customers';
 
-        method(url, formPayload, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        })
+        method(url, formPayload)
             .then(() => {
+                alert('Customer saved successfully!');
                 setEditData(null);
                 window.location.reload(); // Optional: consider refreshing only the customer list instead
             })
             .catch(err => {
                 console.error('Error saving customer:', err);
-                alert('Error saving customer');
+                alert('Error saving customer: ' + (err.response?.data?.message || err.message));
             });
     };
 
@@ -718,7 +717,7 @@ const validateStep = (currentStep) => {
                                         </div>
 
                                         {/* ID Issue Date */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">ID Issue Date</label>
                                             <input
                                                 type="date"
@@ -727,10 +726,10 @@ const validateStep = (currentStep) => {
                                                 value={formData.idIssueDate}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* ID Expiry Date */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">ID Expiry Date</label>
                                             <input
                                                 type="date"
@@ -739,7 +738,7 @@ const validateStep = (currentStep) => {
                                                 value={formData.idExpiryDate}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                          <div className="col-md-6">
                                             <label className="form-label"> Document Id Upload</label>
@@ -842,7 +841,7 @@ const validateStep = (currentStep) => {
                                         </div>
 
                                         {/* Company Name */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">Company Name</label>
                                             <input
                                                 type="text"
@@ -851,7 +850,7 @@ const validateStep = (currentStep) => {
                                                 value={formData.companyName}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* Job Title */}
                                         <div className="col-md-6">
@@ -866,7 +865,7 @@ const validateStep = (currentStep) => {
                                         </div>
 
                                         {/* Monthly Income */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">Monthly Income</label>
                                             <input
                                                 type="number"
@@ -875,7 +874,7 @@ const validateStep = (currentStep) => {
                                                 value={formData.monthlyIncome}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* Income Proof Document */}
                                         <div className="col-md-6">
@@ -894,7 +893,7 @@ const validateStep = (currentStep) => {
                                         </div>
 
                                         {/* Credit Score */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">Credit Score</label>
                                             <input
                                                 type="text"
@@ -903,10 +902,10 @@ const validateStep = (currentStep) => {
                                                 value={formData.creditScore}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                         {/* Credit Score Band */}
-                                        <div className="col-md-6">
+                                        {/* <div className="col-md-6">
                                             <label className="form-label">Credit Score Band</label>
                                             <input
                                                 type="text"
@@ -915,7 +914,7 @@ const validateStep = (currentStep) => {
                                                 value={formData.creditScoreBand}
                                                 onChange={onChange}
                                             />
-                                        </div>
+                                        </div> */}
 
                                     </div>
                                 </div>

@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS users (
     monthlyIncome DECIMAL(10, 2),
     annualIncome DECIMAL(10, 2),
     incomeProofDocument VARCHAR(255),
-    creditScore INT,
+    creditScore VARCHAR(50),
     creditScoreBand VARCHAR(50),
 
     -- KYC/Verification Info

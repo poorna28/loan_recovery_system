@@ -73,7 +73,7 @@ const uploadFields = upload.fields([
 /* ========= ROUTES WITH VALIDATION ========= */
 
 // Create with validation
-router.post('/basic_info', uploadFields, validateCustomer, customerController.createCustomer);
+router.post('/customers', uploadFields, validateCustomer, customerController.createCustomer);
 
 // Read
 router.get('/customers', customerController.getAllCustomers);

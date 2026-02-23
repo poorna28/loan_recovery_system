@@ -8,11 +8,11 @@ const validatePayment = (req, res, next) => {
 
   const errors = [];
 
-  if (!loanId || isNaN(loanId)) {
+  if (loanId === undefined || loanId === null || loanId === '' || isNaN(Number(loanId))) {
     errors.push('loanId is required and must be a number');
   }
 
-  if (!amount || isNaN(amount) || Number(amount) <= 0) {
+  if (amount === undefined || amount === null || amount === '' || isNaN(Number(amount)) || Number(amount) <= 0) {
     errors.push('amount is required and must be greater than 0');
   }
 
@@ -41,8 +41,8 @@ const validateLoan = (req, res, next) => {
 
   const errors = [];
 
-  if (!customer_id || isNaN(customer_id)) {
-    errors.push('customer_id is required and must be a number');
+  if (customer_id === undefined || customer_id === null || (typeof customer_id === 'string' && customer_id.trim() === '')) {
+    errors.push('customer_id is required');
   }
 
   if (loanAmount && (isNaN(loanAmount) || Number(loanAmount) <= 0)) {
@@ -99,7 +99,7 @@ const validateCustomer = (req, res, next) => {
 const validateIdParam = (req, res, next) => {
   const { id } = req.params;
 
-  if (!id || isNaN(id)) {
+  if (id === undefined || id === null || id === '' || isNaN(Number(id))) {
     return res.status(400).json({
       success: false,
       message: 'Invalid ID parameter. Must be a number.'
@@ -115,3 +115,19 @@ module.exports = {
   validateCustomer,
   validateIdParam
 };
+
+
+// This file defines multiple Express validation middleware functions.
+// Their job is to inspect incoming requests, detect invalid data early, and block bad requests before controllers run.
+
+//  Core Validation Strategy Used
+
+// All validators follow the same logical model:
+
+// 1️⃣ Read values from req.body or req.params
+// 2️⃣ Build an errors array
+// 3️⃣ Push messages for invalid fields
+// 4️⃣ If errors exist → Return 400 Bad Request
+// 5️⃣ Otherwise → Call next()
+
+// This is a fail-fast design.

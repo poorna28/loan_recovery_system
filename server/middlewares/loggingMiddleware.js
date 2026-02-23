@@ -44,3 +44,30 @@ const loggingMiddleware = (req, res, next) => {
 };
 
 module.exports = loggingMiddleware;
+
+
+
+//  Overall Logic Flow
+
+// For each HTTP request:
+
+// 1️⃣ Middleware starts timer
+// 2️⃣ Generates request ID
+// 3️⃣ Logs request details
+// 4️⃣ Waits for controller to respond
+// 5️⃣ Intercepts res.json()
+// 6️⃣ Calculates duration
+// 7️⃣ Logs status & timing
+// 8️⃣ Sends response normally
+
+// Request arrives
+//     ↓
+// loggingMiddleware runs
+//     ↓
+// Controller executes
+//     ↓
+// Controller calls res.json()
+//     ↓
+// Your wrapper logs response
+//     ↓
+// Original res.json sends data

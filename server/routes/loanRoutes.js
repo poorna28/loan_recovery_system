@@ -24,4 +24,4 @@ router.get('/loan_customers/customer/:customer_id', loanController.getLoansByCus
 // Update loan status
 router.patch('/loan_customers/:id/status', validateIdParam, loanController.updateLoanStatus);
 
-module.exports = router;
+module.exports = router; // export statement at the end of the file

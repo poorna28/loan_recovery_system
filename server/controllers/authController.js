@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const userModel = require('../models/userModel');
+const jwt = require('jsonwebtoken'); //Dependencies //Creates authentication tokens
+const bcrypt = require('bcrypt'); //Dependencies //Safely compares hashed passwords 
+const userModel = require('../models/userModel'); //Dependencies //Database access layer
 
 exports.signup = async (req, res) => {
     try {
@@ -30,3 +30,45 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
+
+
+
+//  What a Controller Structurally Does
+
+// A controller typically:
+
+// 1️⃣ Reads data from request (req.body, req.params)
+// 2️⃣ Calls model / services
+// 3️⃣ Applies business rules
+// 4️⃣ Sends HTTP response (res.json(), res.status())
+// 5️⃣ Handles errors
+
+// Controllers are the bridge between HTTP and business logic.
+
+
+//  Complete Login Lifecycle (Conceptual)
+
+// Client → POST /login
+//         ↓
+// Controller reads email/password
+//         ↓
+// Fetch user from DB
+//         ↓
+// Compare password via bcrypt
+//         ↓
+// Generate JWT
+//         ↓
+// Return token
+
+// Client → Authorization: Bearer TOKEN
+//         ↓
+// Auth middleware verifies token
+//         ↓
+// req.user populated
+//         ↓
+// Protected controller executes
+
+
+
+// exports.signup = async (req, res) => { ... }
+// exports.login = async (req, res) => { ... }   This uses CommonJS named exports.

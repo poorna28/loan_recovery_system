@@ -38,7 +38,6 @@ const Customer = {
       addressProofOriginal,
       customerPhotoOriginal
     } = data;
-
     return new Promise((resolve, reject) => {
       const sql = `INSERT INTO customers (
         firstName, lastName, title, email, phoneNumber, primaryNumber, secondaryNumber,
@@ -47,7 +46,6 @@ const Customer = {
         creditScore, creditScoreBand, govtIdType, govtIdNumber, idIssueDate, idExpiryDate,
         addressProof, idDocumentUpload, customerPhoto, idDocumentUploadOriginal, addressProofOriginal, customerPhotoOriginal
       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-
       const values = [
         firstName,
         lastName,
@@ -83,16 +81,10 @@ const Customer = {
         addressProofOriginal,
         customerPhotoOriginal
       ];
-
-
-
-
       db.query(sql, values, (err, results) => {
         if (err) return reject(err);
-
         const insertId = results.insertId;
         const customerId = `USR${1000 + insertId}`;
-
         db.query(
           'UPDATE customers SET customer_id = ? WHERE id = ?',
           [customerId, insertId],
@@ -105,6 +97,7 @@ const Customer = {
     });
   },
 
+  
   // Update existing customer
   updateCustomer: async (customerId, data) => {
     const {
@@ -142,7 +135,6 @@ const Customer = {
       addressProofOriginal,
       customerPhotoOriginal
     } = data;
-
     return new Promise((resolve, reject) => {
       const sql = `UPDATE customers SET
         firstName=?, lastName=?, title=?, email=?, phoneNumber=?, primaryNumber=?, secondaryNumber=?,
@@ -151,45 +143,42 @@ const Customer = {
         creditScore=?, creditScoreBand=?, govtIdType=?, govtIdNumber=?, idIssueDate=?, idExpiryDate=?,
         addressProof=?, idDocumentUpload=?, customerPhoto=? , idDocumentUploadOriginal=?, addressProofOriginal=?, customerPhotoOriginal=?
         WHERE customer_id=?`;
-
-  const values = [
-  firstName,
-  lastName,
-  title,
-  email,
-  phoneNumber,
-  primaryNumber,
-  secondaryNumber,
-  dateOfBirth || null,
-  gender,
-  nationality,
-  address,
-  city,
-  state,
-  postalCode,
-  profileStatus,
-  employmentStatus,
-  companyName,
-  jobTitle,
-  monthlyIncome || null,
-  annualIncome || null,
-  incomeProofDocument,
-  creditScore || null,
-  creditScoreBand,
-  govtIdType,
-  govtIdNumber,
-  idIssueDate || null,
-  idExpiryDate || null,
-  addressProof,
-  idDocumentUpload,
-  customerPhoto,
-  idDocumentUploadOriginal,
-  addressProofOriginal,
-  customerPhotoOriginal,
-  customerId // MUST be last (matches WHERE customer_id=?)
-];
-
-
+      const values = [
+        firstName,
+        lastName,
+        title,
+        email,
+        phoneNumber,
+        primaryNumber,
+        secondaryNumber,
+        dateOfBirth || null,
+        gender,
+        nationality,
+        address,
+        city,
+        state,
+        postalCode,
+        profileStatus,
+        employmentStatus,
+        companyName,
+        jobTitle,
+        monthlyIncome || null,
+        annualIncome || null,
+        incomeProofDocument,
+        creditScore || null,
+        creditScoreBand,
+        govtIdType,
+        govtIdNumber,
+        idIssueDate || null,
+        idExpiryDate || null,
+        addressProof,
+        idDocumentUpload,
+        customerPhoto,
+        idDocumentUploadOriginal,
+        addressProofOriginal,
+        customerPhotoOriginal,
+        customerId // MUST be last (matches WHERE customer_id=?)
+      ];
       db.query(sql, values, (err, results) => {
         if (err) {
           console.error('❌ SQL Error:', err.sqlMessage || err.message);
@@ -220,9 +209,9 @@ const Customer = {
     });
   },
 
-getCustomersWithLoanCount: async () => {
-  return new Promise((resolve, reject) => {
-    const sql = `
+  getCustomersWithLoanCount: async () => {
+    return new Promise((resolve, reject) => {
+      const sql = `
       SELECT 
         c.customer_id,
         c.firstName,
@@ -248,27 +237,26 @@ getCustomersWithLoanCount: async () => {
         c.annualIncome,
         c.creditScore
     `;
-
-    db.query(sql, (err, results) => {
-      if (err) return reject(err);
-      resolve(results);
-    });
-  });
-},
-
-
-getCustomerById: async (customer_id) => {
-  return new Promise((resolve, reject) => {
-    db.query(
-      'SELECT * FROM customers WHERE customer_id = ?',
-      [customer_id],
-      (err, results) => {
+      db.query(sql, (err, results) => {
         if (err) return reject(err);
-        resolve(results[0] || null);
-      }
-    );
-  });
-}
+        resolve(results);
+      });
+    });
+  },
+
+
+  getCustomerById: async (customer_id) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT * FROM customers WHERE customer_id = ?',
+        [customer_id],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results[0] || null);
+        }
+      );
+    });
+  }
 
 
 };

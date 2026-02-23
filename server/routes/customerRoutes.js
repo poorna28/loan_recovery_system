@@ -41,6 +41,7 @@ const router = express.Router();
 const customerController = require('../controllers/customerController');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { validateCustomer, validateIdParam } = require('../middlewares/validationMiddleware');
 
 /* ========= Multer config (unchanged) ========= */
@@ -49,7 +50,6 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads');
     // Create uploads folder if it doesn't exist
-    const fs = require('fs');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

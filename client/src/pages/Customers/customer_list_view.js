@@ -194,10 +194,10 @@ const Customer_list_view = ({ viewData }) => {
                                         <p className="form-control-plaintext">{formData.govtIdNumber || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
+                                    {/* <div className="mb-3 col-sm-6">
                                         <label className="form-label">ID Issue Date</label>
                                         <p className="form-control-plaintext">{formData.idIssueDate || "--"}</p>
-                                    </div>
+                                    </div> */}
 
                                     <div className="mb-3 col-sm-6">
                                         <label className="form-label">ID Expiry Date</label>
@@ -249,27 +249,27 @@ const Customer_list_view = ({ viewData }) => {
                                         <p className="form-control-plaintext">{formData.employmentStatus || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
+                                    {/* <div className="mb-3 col-sm-6">
                                         <label className="form-label">Company Name</label>
                                         <p className="form-control-plaintext">{formData.companyName || "--"}</p>
-                                    </div>
+                                    </div> */}
 
                                     <div className="mb-3 col-sm-6">
                                         <label className="form-label">Job Title</label>
                                         <p className="form-control-plaintext">{formData.jobTitle || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
+                                    {/* <div className="mb-3 col-sm-6">
                                         <label className="form-label">Monthly Income</label>
                                         <p className="form-control-plaintext">{formData.monthlyIncome || "--"}</p>
-                                    </div>
+                                    </div> */}
 
                                     <div className="mb-3 col-sm-6">
                                         <label className="form-label">Income Proof Document</label>
                                         <p className="form-control-plaintext">{formData.incomeProof || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
+                                    {/* <div className="mb-3 col-sm-6">
                                         <label className="form-label">Credit Score</label>
                                         <p className="form-control-plaintext">{formData.creditScore || "--"}</p>
                                     </div>
@@ -277,7 +277,7 @@ const Customer_list_view = ({ viewData }) => {
                                     <div className="mb-3 col-sm-6">
                                         <label className="form-label">Credit Score Band</label>
                                         <p className="form-control-plaintext">{formData.creditScoreBand || "--"}</p>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

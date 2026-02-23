@@ -1,7 +1,7 @@
 import api from "../../services/api";
 import "../../App.css";
 import React, { useEffect, useState } from 'react';
-const Customer_list_personal_details = ({ editData, setEditData }) => {
+const Customer_details = ({ editData, setEditData }) => {
     const [formData, setFormData] = useState({
         // Step 1
         firstName: '',
@@ -295,7 +295,7 @@ const validateStep = (currentStep) => {
         });
 
         const method = editData ? api.put : api.post;
-        const url = editData ? `/customers/${editData.customer_id}` : '/basic_info';
+        const url = editData ? `/customers/${editData.customer_id}` : '/customers';
 
         method(url, formPayload, {
             headers: { 'Content-Type': 'multipart/form-data' }
@@ -973,4 +973,4 @@ const validateStep = (currentStep) => {
     );
 }
 
-export default Customer_list_personal_details;
+export default Customer_details;

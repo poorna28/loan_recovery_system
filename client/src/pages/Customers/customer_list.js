@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import '../../App.css';
 import Layout from '../../components/Layout/Layout';
-import Customer_list_personal_details from './customer_list_personal_details';
+import Customer_details from './customer_details';
 import Customer_list_view from './customer_list_view';
 import { Modal } from "bootstrap";
 
-const Basic_Info = () => {
+// const Basic_Info = () => {
+
+  const Customers = () => {
     const [customers, setCustomers] = useState([]);
     const [editData, setEditData] = useState(null);
     const [viewData, setViewData] = useState(null);
@@ -107,7 +109,7 @@ const fetchCustomerById = async (customerId) => {
             </button>
 
             {/* Add/Edit Modal */}
-            <Customer_list_personal_details editData={editData} setEditData={setEditData} />
+            <Customer_details editData={editData} setEditData={setEditData} />
 
             {/* View Modal */}
             <Customer_list_view viewData={viewData} />
@@ -237,4 +239,6 @@ const fetchCustomerById = async (customerId) => {
     );
 };
 
-export default Basic_Info;
+// export default Basic_Info;
+
+export default Customers;

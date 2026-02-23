@@ -80,7 +80,7 @@ Validates:
 ```
 
 #### `validateCustomer`
-Used on: `POST /api/basic_info`, `PUT /api/customers/:id`
+Used on: `POST /api/customers`, `PUT /api/customers/:id`
 ```javascript
 Validates:
 - firstName: required, non-empty

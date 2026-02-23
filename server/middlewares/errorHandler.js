@@ -52,3 +52,18 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = errorHandler;
+
+
+
+//  Environment-Aware Details
+// let details =
+//   process.env.NODE_ENV === 'development'
+//     ? err.stack
+//     : null;
+
+// Purpose:
+
+// ✔ Show full stack trace in development
+// ✔ Hide internals in production (security best practice)
+
+// Never expose stack traces publicly in real systems.

@@ -1,10 +1,39 @@
 const customerModel = require('../models/customerModel');
 
+// Helper function to convert credit score band to numeric value
+const getCreditScoreFromBand = (creditScoreOrBand) => {
+  if (!creditScoreOrBand) return null;
+  
+  // If already a number, return it
+  const numValue = Number(creditScoreOrBand);
+  if (!isNaN(numValue) && numValue > 0) {
+    return numValue;
+  }
+  
+  // If it's a band string, extract the numeric range
+  const bandMap = {
+    'Excellent (750+)': 750,
+    'Very Good (700-749)': 720,
+    'Good (650-699)': 675,
+    'Fair (600-649)': 625,
+    'Poor (Below 600)': 500,
+    'Poor (<600)': 500
+  };
+  
+  return bandMap[creditScoreOrBand] || null;
+};
+
 exports.createCustomer = async (req, res) => {
   try {
-const payload = {
-  ...req.body,
-// Address Proof
+    // Normalize credit score if it's a band string
+    const normalizedCreditScore = req.body.creditScore 
+      ? getCreditScoreFromBand(req.body.creditScore)
+      : null;
+
+    const payload = {
+      ...req.body,
+      creditScore: normalizedCreditScore,
+      // Address Proof
       addressProof:
         req.files?.addressProof?.[0]?.savedAs ||
         req.body.addressProof ||
@@ -36,7 +65,7 @@ const payload = {
         req.files?.customerPhoto?.[0]?.originalname ||
         req.body.customerPhotoOriginal ||
         null
-};
+    };
 
 
     const customer = await customerModel.createCustomer(payload);
@@ -86,8 +115,14 @@ exports.updateCustomer = async (req, res) => {
 
     const { customer_id  } = req.params;
 
+    // Normalize credit score if it's a band string
+    const normalizedCreditScore = req.body.creditScore 
+      ? getCreditScoreFromBand(req.body.creditScore)
+      : undefined;
+
     const payload = {
       ...req.body,
+      ...(normalizedCreditScore !== undefined && { creditScore: normalizedCreditScore }),
 
       // Address Proof
       addressProof:

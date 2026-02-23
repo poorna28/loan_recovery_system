@@ -46,7 +46,15 @@ const { validateCustomer, validateIdParam } = require('../middlewares/validation
 /* ========= Multer config (unchanged) ========= */
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, '../uploads');
+    // Create uploads folder if it doesn't exist
+    const fs = require('fs');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
     file.savedAs = uniqueName + path.extname(file.originalname);
@@ -69,12 +77,11 @@ router.post('/basic_info', uploadFields, validateCustomer, customerController.cr
 
 // Read
 router.get('/customers', customerController.getAllCustomers);
-router.get('/customers/:customer_id', validateIdParam, customerController.getCustomerById);
+router.get('/customers/:customer_id', customerController.getCustomerById);
 
 // Update with validation
 router.put(
   '/customers/:customer_id',
-  validateIdParam,
   uploadFields,
   validateCustomer,
   customerController.updateCustomer
@@ -83,7 +90,6 @@ router.put(
 // Delete with validation
 router.delete(
   '/customers/:customer_id',
-  validateIdParam,
   customerController.deleteCustomer
 );
 

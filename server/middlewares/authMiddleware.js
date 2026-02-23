@@ -3,7 +3,7 @@
  * Verifies JWT token and attaches user info to request
  */
 
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // dependency for JWT handling. //require('jsonwebtoken') → Loads external package
 
 const authMiddleware = (req, res, next) => {
   try {
@@ -22,13 +22,16 @@ const authMiddleware = (req, res, next) => {
 
     // Attach user info to request
     req.user = decoded;
+    console.log('Decoded JWT payload:', decoded);
+    
     req.userId = decoded.id || decoded.userId;
+    console.log('User ID from token:', req.userId);
 
-    console.log('✅ User authenticated:', req.userId);
+    console.log(' User authenticated:', req.userId);
     next();
 
   } catch (err) {
-    console.error('❌ Auth error:', err.message);
+    console.error(' Auth error:', err.message);
 
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({
@@ -52,3 +55,26 @@ const authMiddleware = (req, res, next) => {
 };
 
 module.exports = authMiddleware;
+
+
+//  Logic Flow (Simplified)
+
+// When a request hits a protected route:
+
+// 1️⃣ Read token from Authorization header
+// 2️⃣ If missing → Respond 401 Unauthorized
+// 3️⃣ Verify JWT using secret key
+// 4️⃣ If invalid / expired → Respond 401
+// 5️⃣ If valid → Extract payload
+// 6️⃣ Attach user info to req
+// 7️⃣ Call next() → Continue request
+
+
+// Authorization header → Standard HTTP place to send credentials like tokens (Authorization: Bearer <token>).
+
+// JWT → A signed token that safely carries user identity/data without storing sessions on the server.
+
+// Secret key → Used by the server to verify the token is genuine and not tampered with
+
+
+// Authorization header is used to send authentication credentials (like a JWT token) from the client to the server in a standard, secure way.

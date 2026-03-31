@@ -79,7 +79,7 @@ createCustomer: async (data) => {
       if (err) return reject(err);
 
       const insertId = results.insertId;
-      const customerId = `customer-delete-USR${1000 + insertId}`;
+      const customerId = `CUST${1000 + insertId}`;
 
       db.query(
         'UPDATE customers SET customer_id = ? WHERE id = ?',

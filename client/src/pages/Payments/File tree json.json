@@ -133,12 +133,17 @@
                   "icon": "📁",
                   "children": [
                     {
-                      "name": "customer_list.js",
+                      "name": "Issues list.litcoffee",
+                      "type": "file",
+                      "icon": "📄"
+                    },
+                    {
+                      "name": "customer_details.js",
                       "type": "file",
                       "icon": "📜"
                     },
                     {
-                      "name": "customer_details.js",
+                      "name": "customer_list.js",
                       "type": "file",
                       "icon": "📜"
                     },
@@ -178,6 +183,33 @@
                     },
                     {
                       "name": "loan_list_view.js",
+                      "type": "file",
+                      "icon": "📜"
+                    }
+                  ]
+                },
+                {
+                  "name": "Payments",
+                  "type": "folder",
+                  "icon": "📁",
+                  "children": [
+                    {
+                      "name": "payment-text.ini",
+                      "type": "file",
+                      "icon": "📄"
+                    },
+                    {
+                      "name": "payment_form.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "payment_page.js",
+                      "type": "file",
+                      "icon": "📜"
+                    },
+                    {
+                      "name": "payment_view.js",
                       "type": "file",
                       "icon": "📜"
                     }
@@ -343,7 +375,39 @@
         {
           "name": "middlewares",
           "type": "folder",
-          "icon": "📁"
+          "icon": "📁",
+          "children": [
+            {
+              "name": "MIDDLEWARE_DOCS.md",
+              "type": "file",
+              "icon": "📝"
+            },
+            {
+              "name": "authMiddleware.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "errorHandler.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "loggingMiddleware.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "rateLimitMiddleware.js",
+              "type": "file",
+              "icon": "📜"
+            },
+            {
+              "name": "validationMiddleware.js",
+              "type": "file",
+              "icon": "📜"
+            }
+          ]
         },
         {
           "name": "models",
@@ -618,6 +682,21 @@
               "name": "1769892007310-724503090.pdf",
               "type": "file",
               "icon": "📕"
+            },
+            {
+              "name": "1774865085832-789843940.jpg",
+              "type": "file",
+              "icon": "🖼️"
+            },
+            {
+              "name": "1774865085906-86834977.pdf",
+              "type": "file",
+              "icon": "📕"
+            },
+            {
+              "name": "1774865085976-251927806.png",
+              "type": "file",
+              "icon": "🖼️"
             }
           ]
         },
@@ -677,7 +756,7 @@
     }
   ],
   "metadata": {
-    "generated": "2026-02-17T11:42:37.451Z",
+    "generated": "2026-03-30T11:37:52.760Z",
     "generator": "FileTree Pro Extension",
     "version": "0.2.0",
     "showIcons": true,

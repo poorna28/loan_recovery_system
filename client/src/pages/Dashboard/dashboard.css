@@ -1,0 +1,180 @@
+.dashboard-ui {
+  background: #07090f;
+  color: #eceef6;
+  font-family: 'DM Mono', monospace;
+  padding: 28px;
+}
+
+/* Topbar */
+.dashboard-ui .topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dashboard-ui .greeting {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.dashboard-ui .greeting span {
+  color: #4f8dff;
+}
+
+.dashboard-ui .sub {
+  font-size: 12px;
+  color: #7880a0;
+}
+
+.dashboard-ui .top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dashboard-ui .live {
+  background: rgba(24,216,139,0.1);
+  color: #18d88b;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.dashboard-ui .refresh {
+  background: #131720;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #7880a0;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+/* KPI */
+.dashboard-ui .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.dashboard-ui .kpi {
+  background: #0d1018;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.dashboard-ui .kpi-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dashboard-ui .icon {
+  font-size: 18px;
+}
+
+.dashboard-ui .change {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.dashboard-ui .change.up {
+  background: rgba(24,216,139,0.1);
+  color: #18d88b;
+}
+
+.dashboard-ui .change.down {
+  background: rgba(240,80,90,0.1);
+  color: #f0505a;
+}
+
+.dashboard-ui .label {
+  font-size: 10px;
+  color: #7880a0;
+}
+
+.dashboard-ui .value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.dashboard-ui .subtext {
+  font-size: 11px;
+  color: #7880a0;
+}
+
+/* Bottom */
+.dashboard-ui .bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Card */
+.dashboard-ui .card {
+  background: #0d1018;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+}
+
+.dashboard-ui .card-head {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+}
+
+.dashboard-ui .card-head.red {
+  color: #f0505a;
+}
+
+/* Activity */
+.dashboard-ui .activity .item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.dashboard-ui .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dashboard-ui .dot.green { background: #18d88b; }
+.dashboard-ui .dot.blue { background: #4f8dff; }
+
+.dashboard-ui .name {
+  font-weight: 500;
+}
+
+.dashboard-ui .desc {
+  color: #7880a0;
+  font-size: 11px;
+}
+
+.dashboard-ui .time {
+  font-size: 10px;
+  color: #4a506a;
+}
+
+/* Overdue */
+.dashboard-ui .overdue .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.dashboard-ui .loan {
+  font-size: 10px;
+  color: #7880a0;
+}
+
+.dashboard-ui .amt {
+  color: #f0505a;
+  font-weight: 600;
+}
+
+.main-content:has(.dashboard-ui) {
+  padding: 0px !important;
+}

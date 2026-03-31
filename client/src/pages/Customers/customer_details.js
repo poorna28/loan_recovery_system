@@ -79,11 +79,11 @@ const Customer_details = ({ editData, setEditData }) => {
                 dateOfBirth: normalizedDate
             });
 
-                setSelectedFileNames({
-      addressProof: "",
-      idDocumentUpload: "",
-      customerPhoto: ""
-    });
+            setSelectedFileNames({
+                addressProof: "",
+                idDocumentUpload: "",
+                customerPhoto: ""
+            });
 
 
 
@@ -107,48 +107,60 @@ const Customer_details = ({ editData, setEditData }) => {
     });
 
     const validationRules = {
-  profileStatus: {
-    required: true,
-    label: "Profile Status",
-    step: 1
-  },
-  firstName: {
-    required: true,
-    label: "First Name",
-    step: 1
-  },
-  lastName: {
-    required: true,
-    label: "Last Name",
-    step: 1
-  },
-  phoneNumber: {
-    required: true,
-    label: "Phone Number",
-    step: 1,
-    pattern: /^[6-9]\d{9}$/,
-    message: "Enter valid 10-digit Indian mobile number"
-  },
+        profileStatus: {
+            required: true,
+            label: "Profile Status",
+            step: 1
+        },
+        firstName: {
+            required: true,
+            label: "First Name",
+            step: 1
+        },
+        lastName: {
+            required: true,
+            label: "Last Name",
+            step: 1
+        },
+        phoneNumber: {
+            required: true,
+            label: "Phone Number",
+            step: 1,
+            pattern: /^[6-9]\d{9}$/,
+            message: "Enter valid 10-digit Indian mobile number"
+        },
 
-  email: {
-    required: true,
-    label: "Email",
-    step: 2,
-    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    message: "Enter valid email address"
-  },
-  annualIncome: {
-    required: true,
-    label: "Annual Income",
-    step: 2
-  },
+        email: {
+            required: true,
+            label: "Email",
+            step: 2,
+            pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Enter valid email address"
+        },
+        annualIncome: {
+            required: true,
+            label: "Annual Income",
+            step: 2
+        },
 
-  employmentStatus: {
-    required: true,
-    label: "Employment Status",
-    step: 4
-  }
-};
+        employmentStatus: {
+            required: true,
+            label: "Employment Status",
+            step: 4
+        },
+
+        govtIdType: {
+            require: false,
+            label: "Government ID Type",
+            step: 3
+        },
+
+        govtIdNumber: {
+            require: false,
+            label: "Government ID Number",
+            step: 3
+        },
+    };
 
 
     // const validate = () => {
@@ -198,83 +210,123 @@ const Customer_details = ({ editData, setEditData }) => {
 
     const [step, setStep] = useState(1);
 
-const onChange = (e) => {
-  const { name, value, type, files } = e.target;
+    const onChange = (e) => {
+        const { name, value, type, files } = e.target;
 
-  // Phone: digits only
-  if (name === "phoneNumber" && !/^\d*$/.test(value)) return;
+        // Phone: digits only
+        if (name === "phoneNumber" && !/^\d*$/.test(value)) return;
 
-  if (type === "file") {
-    const file = files[0];
+        if (type === "file") {
+            const file = files[0];
 
-    setFormData(prev => ({
-      ...prev,
-      [name]: file || null
-    }));
+            setFormData(prev => ({
+                ...prev,
+                [name]: file || null
+            }));
 
-    setSelectedFileNames(prev => ({
-      ...prev,
-      [name]: file?.name || ""
-    }));
-  } else {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  }
+            setSelectedFileNames(prev => ({
+                ...prev,
+                [name]: file?.name || ""
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
 
-  // Clear error on edit
-  if (errors[name]) {
-    setErrors(prev => ({ ...prev, [name]: "" }));
-  }
-};
+        // Clear error on edit
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: "" }));
+        }
+    };
 
 
-const validateStep = (currentStep) => {
-  const newErrors = {};
+    const validateStep = (currentStep) => {
+        const newErrors = {};
 
-  Object.entries(validationRules).forEach(([field, rule]) => {
-    if (rule.step !== currentStep) return;
+        Object.entries(validationRules).forEach(([field, rule]) => {
+            if (rule.step !== currentStep) return;
 
-    const value = formData[field];
+            const value = formData[field];
 
-    if (rule.required && !value) {
-      newErrors[field] = `${rule.label} is required`;
-      return;
-    }
+            if (rule.required && !value) {
+                newErrors[field] = `${rule.label} is required`;
+                return;
+            }
 
-    if (rule.pattern && value && !rule.pattern.test(value)) {
-      newErrors[field] = rule.message;
-    }
-  });
+            if (rule.pattern && value && !rule.pattern.test(value)) {
+                newErrors[field] = rule.message;
+            }
+        });
 
-  setErrors(newErrors);
+        if (currentStep === 3 && formData.govtIdNumber) {
 
-  if (Object.keys(newErrors).length > 0) {
-    alert(
-      "Please fix the following fields:\n\n" +
-      Object.values(newErrors).join("\n")
-    );
-    return false;
-  }
+            const idType = formData.govtIdType;
+            const idNumber = formData.govtIdNumber;
 
-  return true;
-};
+            switch (idType) {
+
+                case "National ID": // Aadhaar
+                    if (!/^\d{12}$/.test(idNumber)) {
+                        newErrors.govtIdNumber =
+                            "Aadhaar must be exactly 12 digits";
+                    }
+                    break;
+
+                case "Passport":
+                    if (!/^[A-Z][0-9]{7}$/i.test(idNumber)) {
+                        newErrors.govtIdNumber =
+                            "Passport must be 1 letter followed by 7 digits";
+                    }
+                    break;
+
+                case "Driver's License":
+                    if (!/^[A-Z0-9]{15,16}$/i.test(idNumber)) {
+                        newErrors.govtIdNumber =
+                            "Driving License must be 15–16 characters";
+                    }
+                    break;
+
+                case "Voter ID":
+                    if (!/^[A-Z]{3}[0-9]{7}$/i.test(idNumber)) {
+                        newErrors.govtIdNumber =
+                            "Voter ID must be 3 letters followed by 7 digits";
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) {
+            alert(
+                "Please fix the following fields:\n\n" +
+                Object.values(newErrors).join("\n")
+            );
+            return false;
+        }
+
+        return true;
+    };
 
 
     const handleNext = () => {
-  if (!validateStep(step)) return;
-  setStep(prev => prev + 1);
-};
+        if (!validateStep(step)) return;
+        setStep(prev => prev + 1);
+    };
 
 
     const onSave = () => {
-  for (let s = 1; s <= steps.length; s++) {
-    if (!validateStep(s)) {
-      setStep(s);
-      return;
-    }
-  }
+        for (let s = 1; s <= steps.length; s++) {
+            if (!validateStep(s)) {
+                setStep(s);
+                return;
+            }
+        }
 
         // Ensure dateOfBirth is in 'YYYY-MM-DD' format
         const sanitizedDate = formData.dateOfBirth?.split('T')[0] || formData.dateOfBirth;
@@ -289,6 +341,8 @@ const validateStep = (currentStep) => {
 
         const formPayload = new FormData();
         Object.entries(sanitizedFormData).forEach(([key, value]) => {
+            // Exclude customer_id and id from payload (auto-generated by server)
+            if ((key === 'customer_id' || key === 'id') && !editData) return;
             if (value !== null && value !== undefined) {
                 formPayload.append(key, value);
             }
@@ -620,29 +674,29 @@ const validateStep = (currentStep) => {
                                                 onChange={onChange}
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
-                                               {/* Show filename below input */}
-                                        <div className="mt-1">
+                                            {/* Show filename below input */}
+                                            <div className="mt-1">
 
-                                            {/* If user selected a new file */}
-                                            {selectedFileNames.addressProof && (
-                                                <small>{selectedFileNames.addressProof}</small>
-                                            )}
+                                                {/* If user selected a new file */}
+                                                {selectedFileNames.addressProof && (
+                                                    <small>{selectedFileNames.addressProof}</small>
+                                                )}
 
-                                            {/* Otherwise show existing file from backend */}
-                                            {!selectedFileNames.addressProof && editData?.addressProofOriginal && (
-                                                <a
-                                                    href={`http://localhost:5000/uploads/${editData.addressProof}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    {editData.addressProofOriginal}
-                                                </a>
-                                            )}
+                                                {/* Otherwise show existing file from backend */}
+                                                {!selectedFileNames.addressProof && editData?.addressProofOriginal && (
+                                                    <a
+                                                        href={`http://localhost:5000/uploads/${editData.addressProof}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        {editData.addressProofOriginal}
+                                                    </a>
+                                                )}
 
+                                            </div>
                                         </div>
-                                        </div>
 
-                                     
+
 
 
 
@@ -740,7 +794,7 @@ const validateStep = (currentStep) => {
                                             />
                                         </div> */}
 
-                                         <div className="col-md-6">
+                                        <div className="col-md-6">
                                             <label className="form-label"> Document Id Upload</label>
                                             <input
                                                 type="file"
@@ -749,31 +803,31 @@ const validateStep = (currentStep) => {
                                                 onChange={onChange}
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
-                                               {/* Show filename below input */}
-                                        <div className="mt-1">
+                                            {/* Show filename below input */}
+                                            <div className="mt-1">
 
-                                            {/* If user selected a new file */}
-                                            {selectedFileNames.idDocumentUpload && (
-                                                <small>{selectedFileNames.idDocumentUpload}</small>
-                                            )}
+                                                {/* If user selected a new file */}
+                                                {selectedFileNames.idDocumentUpload && (
+                                                    <small>{selectedFileNames.idDocumentUpload}</small>
+                                                )}
 
-                                            {/* Otherwise show existing file from backend */}
-                                            {!selectedFileNames.idDocumentUpload && editData?.idDocumentUploadOriginal && (
-                                                <a
-                                                    href={`http://localhost:5000/uploads/${editData.idDocumentUpload}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    {editData.idDocumentUploadOriginal}
-                                                </a>
-                                            )}
+                                                {/* Otherwise show existing file from backend */}
+                                                {!selectedFileNames.idDocumentUpload && editData?.idDocumentUploadOriginal && (
+                                                    <a
+                                                        href={`http://localhost:5000/uploads/${editData.idDocumentUpload}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        {editData.idDocumentUploadOriginal}
+                                                    </a>
+                                                )}
 
+                                            </div>
                                         </div>
-                                        </div>
 
-                                      
 
-                                     
+
+
 
 
                                         {/* Customer Photo */}
@@ -786,31 +840,31 @@ const validateStep = (currentStep) => {
                                                 onChange={onChange}
                                                 accept=".pdf,.jpg,.jpeg,.png"
                                             />
-                                            
-                                          {/* Show filename below input */}
-                                        <div className="mt-1">
 
-                                            {/* If user selected a new file */}
-                                            {selectedFileNames.customerPhoto && (
-                                                <small>{selectedFileNames.customerPhoto}</small>
-                                            )}
+                                            {/* Show filename below input */}
+                                            <div className="mt-1">
 
-                                            {/* Otherwise show existing file from backend */}
-                                            {!selectedFileNames.customerPhoto && editData?.customerPhotoOriginal && (
-                                                <a
-                                                    href={`http://localhost:5000/uploads/${editData.customerPhoto}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    {editData.customerPhotoOriginal}
-                                                </a>
-                                            )}
+                                                {/* If user selected a new file */}
+                                                {selectedFileNames.customerPhoto && (
+                                                    <small>{selectedFileNames.customerPhoto}</small>
+                                                )}
+
+                                                {/* Otherwise show existing file from backend */}
+                                                {!selectedFileNames.customerPhoto && editData?.customerPhotoOriginal && (
+                                                    <a
+                                                        href={`http://localhost:5000/uploads/${editData.customerPhoto}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        {editData.customerPhotoOriginal}
+                                                    </a>
+                                                )}
+
+                                            </div>
 
                                         </div>
 
-                                        </div>
 
-                                        
 
                                     </div>
                                 </div>

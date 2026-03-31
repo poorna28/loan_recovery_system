@@ -18,9 +18,11 @@ const Payment_Form = ({ onPaymentSuccess }) => {
     const fetchLoans = () => {
       api.get('/loan_customers')
         .then(res => {
+            console.log("Raw loan_customers response:", res.data);
           const activeLoans = res.data.loan_customers.filter(
             loan => loan.status_approved === 'ACTIVE'
           );
+           console.log("Filtered active loans:", activeLoans);
           setLoans(activeLoans);
         })
         .catch(err => {

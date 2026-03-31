@@ -2,39 +2,42 @@ const customerModel = require('../models/customerModel');
 
 exports.createCustomer = async (req, res) => {
   try {
+    // Remove auto-generated fields that should not be set by client
+    const { customer_id, id, ...bodyData } = req.body;
+    
     const payload = {
-      ...req.body,
+      ...bodyData,
       // Address Proof
       addressProof:
         req.files?.addressProof?.[0]?.savedAs ||
-        req.body.addressProof ||
+        bodyData.addressProof ||
         null,
 
       addressProofOriginal:
         req.files?.addressProof?.[0]?.originalname ||
-        req.body.addressProofOriginal ||
+        bodyData.addressProofOriginal ||
         null,
 
       // ID Document
       idDocumentUpload:
         req.files?.idDocumentUpload?.[0]?.savedAs ||
-        req.body.idDocumentUpload ||
+        bodyData.idDocumentUpload ||
         null,
 
       idDocumentUploadOriginal:
         req.files?.idDocumentUpload?.[0]?.originalname ||
-        req.body.idDocumentUploadOriginal ||
+        bodyData.idDocumentUploadOriginal ||
         null,
 
       // Customer Photo
       customerPhoto:
         req.files?.customerPhoto?.[0]?.savedAs ||
-        req.body.customerPhoto ||
+        bodyData.customerPhoto ||
         null,
 
       customerPhotoOriginal:
         req.files?.customerPhoto?.[0]?.originalname ||
-        req.body.customerPhotoOriginal ||
+        bodyData.customerPhotoOriginal ||
         null
     };
 

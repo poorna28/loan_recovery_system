@@ -11,10 +11,10 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Log request
-    console.log(`📤 [${config.method.toUpperCase()}] ${config.url}`, {
-      params: config.params,
-      data: config.data
-    });
+    // console.log(`📤 [${config.method.toUpperCase()}] ${config.url}`, {
+    //   params: config.params,
+    //   data: config.data
+    // });
 
     // Add token if available
     const token = localStorage.getItem('token');
@@ -37,9 +37,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // Log successful response
-    console.log(`✅ [${response.status}] ${response.config.method.toUpperCase()} ${response.config.url}`, {
-      data: response.data
-    });
+    // console.log(`✅ [${response.status}] ${response.config.method.toUpperCase()} ${response.config.url}`, {
+    //   data: response.data
+    // });
 
     return response;
   },

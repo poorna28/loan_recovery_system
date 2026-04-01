@@ -32,29 +32,32 @@ const validatePayment = (req, res, next) => {
 };
 
 const validateLoan = (req, res, next) => {
-  const {
-    customer_id,
-    loanAmount,
-    interestRate,
-    loanTerm
-  } = req.body;
+  // Read BOTH snake_case (what frontend sends) and camelCase (fallback)
+  const customer_id  = req.body.customer_id  ?? req.body.customerId;
+  const loanAmount   = req.body.loan_amount   ?? req.body.loanAmount;
+  const interestRate = req.body.interest_rate ?? req.body.interestRate;
+  const loanTerm     = req.body.loan_term     ?? req.body.loanTerm;
 
   const errors = [];
 
-  if (customer_id === undefined || customer_id === null || (typeof customer_id === 'string' && customer_id.trim() === '')) {
+  if (
+    customer_id === undefined ||
+    customer_id === null ||
+    (typeof customer_id === 'string' && customer_id.trim() === '')
+  ) {
     errors.push('customer_id is required');
   }
 
   if (loanAmount && (isNaN(loanAmount) || Number(loanAmount) <= 0)) {
-    errors.push('loanAmount must be a positive number');
+    errors.push('loan_amount must be a positive number');
   }
 
   if (interestRate && (isNaN(interestRate) || Number(interestRate) < 0)) {
-    errors.push('interestRate must be a non-negative number');
+    errors.push('interest_rate must be a non-negative number');
   }
 
   if (loanTerm && (isNaN(loanTerm) || Number(loanTerm) <= 0)) {
-    errors.push('loanTerm must be a positive number (months)');
+    errors.push('loan_term must be a positive number (months)');
   }
 
   if (errors.length > 0) {

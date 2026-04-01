@@ -5,6 +5,7 @@ import Layout from '../../components/Layout/Layout';
 import Customer_details from './customer_details';
 import Customer_list_view from './customer_list_view';
 import { Modal } from "bootstrap";
+import { toast } from 'react-toastify';
 
 // const Basic_Info = () => {
 
@@ -50,11 +51,6 @@ const Customers = () => {
   };
 
 
-  // const handleView = (customer) => {
-  //     setViewData(customer);
-  //     console.log("Viewing customer:", customer);
-  // };
-
   const openViewCustomer = async (customer_id) => {
     try {
       const res = await api.get(`/customers/${customer_id}`);
@@ -64,7 +60,7 @@ const Customers = () => {
 
     } catch (err) {
       console.error("Error fetching customer:", err);
-      alert("Failed to load customer details");
+      toast.error("Failed to load customer details");
     }
   };
 
@@ -73,21 +69,21 @@ const Customers = () => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       try {
         await api.delete(`/customers/${id}`);
-        console.log(`Deleting: /customers/${id}`);
+        // console.log(`Deleting: /customers/${id}`);
 
         setCustomers(prev => prev.filter(c => c.customer_id !== id));
       } catch (err) {
-        alert('Failed to delete customer');
+        toast.error("Failed to delete customer");
       }
     }
   };
 
   const fetchCustomerById = async (customerId) => {
-    console.log(" Calling edit API for:", customerId);
+    // console.log(" Calling edit API for:", customerId);
 
     try {
       const res = await api.get(`/customers/${customerId}`);
-      console.log(" Edit API response:", res.data);
+      // console.log(" Edit API response:", res.data);
 
       setEditData(res.data); // THIS fills modal
     } catch (err) {
@@ -137,7 +133,7 @@ const Customers = () => {
             {customers.map((customer) => (
               <tr key={customer.customer_id}>
                 <td>{customer.customer_id}</td>
-                <td>{customer.firstName}</td>
+                <td>{customer.firstName} {customer.lastName}</td>
                 <td>{customer.phoneNumber}</td>
                 <td>{customer.email}</td>
                 <td>

@@ -1,6 +1,8 @@
 import api from "../../services/api";
 import "../../App.css";
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
 const Customer_details = ({ editData, setEditData }) => {
     const [formData, setFormData] = useState({
         // Step 1
@@ -163,51 +165,6 @@ const Customer_details = ({ editData, setEditData }) => {
     };
 
 
-    // const validate = () => {
-    //     const newErrors = {};
-    //     const missingFields = [];
-
-    //     const requiredFields = [
-    //         { name: "profileStatus", label: "Profile Status", step: 1 },
-    //         { name: "firstName", label: "First Name", step: 1 },
-    //         { name: "lastName", label: "Last Name", step: 1 },
-    //         { name: "phoneNumber", label: "Phone Number", step: 1 },
-    //         { name: "email", label: "Email", step: 2 },
-    //         { name: "employmentStatus", label: "Employment Status", step: 4 },
-    //         { name: "annualIncome", label: "Annual Income", step: 2 },
-    //         // { name: "creditScore", label: "Credit Score", step: 2 }
-    //     ];
-
-    //     let firstErrorStep = null;
-
-    //     requiredFields.forEach(field => {
-    //         if (!formData[field.name]) {
-    //             newErrors[field.name] = `${field.label} is required`;
-    //             missingFields.push(field.label);
-
-    //             if (!firstErrorStep) {
-    //                 firstErrorStep = field.step;
-    //             }
-    //         }
-    //     });
-
-    //     setErrors(newErrors);
-
-    //     if (missingFields.length > 0) {
-    //         alert(
-    //             "Please fill the following required fields:\n\n" +
-    //             missingFields.join(", ")
-    //         );
-
-    //         // Automatically jump to tab where first error exists
-    //         setStep(firstErrorStep);
-    //         return false;
-    //     }
-
-    //     return true;
-    // };
-
-
     const [step, setStep] = useState(1);
 
     const onChange = (e) => {
@@ -303,10 +260,7 @@ const Customer_details = ({ editData, setEditData }) => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length > 0) {
-            alert(
-                "Please fix the following fields:\n\n" +
-                Object.values(newErrors).join("\n")
-            );
+            Object.values(newErrors).forEach(err => toast.error(err));
             return false;
         }
 
@@ -336,8 +290,8 @@ const Customer_details = ({ editData, setEditData }) => {
             dateOfBirth: sanitizedDate
         };
 
-        console.log('PUT URL:', `/customers/${editData?.customer_id}`);
-        console.log('Updating customer with:', sanitizedFormData);
+        // console.log('PUT URL:', `/customers/${editData?.customer_id}`);
+        // console.log('Updating customer with:', sanitizedFormData);
 
         const formPayload = new FormData();
         Object.entries(sanitizedFormData).forEach(([key, value]) => {
@@ -353,13 +307,14 @@ const Customer_details = ({ editData, setEditData }) => {
 
         method(url, formPayload)
             .then(() => {
-                alert('Customer saved successfully!');
+                toast.success('Customer saved successfully!');
+
                 setEditData(null);
                 window.location.reload(); // Optional: consider refreshing only the customer list instead
             })
             .catch(err => {
                 console.error('Error saving customer:', err);
-                alert('Error saving customer: ' + (err.response?.data?.message || err.message));
+                toast.error('Error saving customer: ' + (err.response?.data?.error || err.error));
             });
     };
 

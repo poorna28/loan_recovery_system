@@ -120,10 +120,6 @@ const Customer_list_view = ({ viewData }) => {
                                         <p className="form-control-plaintext">{formData.primaryNumber || "--"}</p>
                                     </div>
 
-                                    <div className="mb-3 col-sm-6">
-                                        <label className="form-label">Secondary Phone Number</label>
-                                        <p className="form-control-plaintext">{formData.secondaryNumber || "--"}</p>
-                                    </div>
 
                                     <div className="mb-3 col-sm-6">
                                         <label className="form-label">Email</label>
@@ -153,13 +149,13 @@ const Customer_list_view = ({ viewData }) => {
                                     <div className="mb-3 col-sm-6 d-flex flex-column">
                                         <label className="form-label">Address Proof Document</label>
                                         <span>
-                                        <a
-                                            href={`http://localhost:5000/uploads/${formData.addressProofOriginal}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {formData.addressProofOriginal || '---'}
-                                        </a>
+                                            <a
+                                                href={`http://localhost:5000/uploads/${formData.addressProof}`}
+                                                target="_blank"
+                                                rel=" noreferrer"
+                                            >
+                                                {formData.addressProofOriginal || '---'}
+                                            </a>
                                         </span>
                                     </div>
 
@@ -199,34 +195,30 @@ const Customer_list_view = ({ viewData }) => {
                                         <p className="form-control-plaintext">{formData.idIssueDate || "--"}</p>
                                     </div> */}
 
-                                    <div className="mb-3 col-sm-6">
-                                        <label className="form-label">ID Expiry Date</label>
-                                        <p className="form-control-plaintext">{formData.idExpiryDate || "--"}</p>
-                                    </div>
 
                                     <div className="mb-3 col-sm-6 d-flex flex-column">
                                         <label className="form-label">Document Id Upload</label>
                                         <span>
-                                        <a
-                                            href={`http://localhost:5000/uploads/${formData.idDocumentUploadOriginal}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {formData.idDocumentUploadOriginal || '---'}
-                                        </a>
+                                            <a
+                                                href={`http://localhost:5000/uploads/${formData.idDocumentUpload}`}
+                                                target="_blank"
+                                                rel=" noreferrer"
+                                            >
+                                                {formData.idDocumentUploadOriginal || '---'}
+                                            </a>
                                         </span>
                                     </div>
 
                                     <div className="mb-3 col-sm-6 d-flex flex-column">
                                         <label className="form-label">Photo of Customer</label>
                                         <span>
-                                        <a
-                                            href={`http://localhost:5000/uploads/${formData.customerPhotoOriginal}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {formData.customerPhotoOriginal || '---'}
-                                        </a>
+                                            <a
+                                                href={`http://localhost:5000/uploads/${formData.customerPhoto}`}
+                                                target="_blank"
+                                                rel=" noreferrer"
+                                            >
+                                                {formData.customerPhotoOriginal || '---'}
+                                            </a>
                                         </span>
                                     </div>
 
@@ -266,7 +258,7 @@ const Customer_list_view = ({ viewData }) => {
 
                                     <div className="mb-3 col-sm-6">
                                         <label className="form-label">Income Proof Document</label>
-                                        <p className="form-control-plaintext">{formData.incomeProof || "--"}</p>
+                                        <p className="form-control-plaintext">{formData.incomeProofDocument || "--"}</p>
                                     </div>
 
                                     {/* <div className="mb-3 col-sm-6">

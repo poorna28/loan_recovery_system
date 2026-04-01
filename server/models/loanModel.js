@@ -1,75 +1,74 @@
+const db = require('./db');
+
 const calculateEMI = (principal, annualRate, months) => {
   const r = annualRate / 12 / 100;
-
   if (r === 0) return principal / months;
-
   const emi =
     (principal * r * Math.pow(1 + r, months)) /
     (Math.pow(1 + r, months) - 1);
-
   return Number(emi.toFixed(2));
 };
-  
-
-
-const db = require('./db');
 
 const LoanCustomer = {
+
+  // POST — createLoan
+  // Receives already-normalized snake_case payload from controller
   createLoan: async (data) => {
     const {
       customer_id,
-      loanAmount,
-      loanPurpose,
-      interestRate,
-      loanTerm,
-      applicationDate,
-      statusApproved,
-      monthlyPayment,
-      nextPaymentDue,
-      remainingBalance
+      loan_amount,
+      loan_purpose,
+      interest_rate,
+      loan_term,
+      application_date,
+      status_approved,
+      monthly_payment,
+      next_payment_due,
+      remaining_balance,
     } = data;
 
-      const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
-
-const safeStatus =
-  statusApproved && ALLOWED_STATUSES.includes(statusApproved)
-    ? statusApproved
-    : undefined;   //  DO NOT OVERRIDE EXISTING STATUS
-
+    const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
+    const safeStatus =
+      status_approved && ALLOWED_STATUSES.includes(status_approved)
+        ? status_approved
+        : 'PENDING';
 
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO loan_customer (
-        customer_id,
-        loan_amount,
-        loan_purpose,
-        interest_rate,
-        loan_term,
-        application_date,
-        status_approved,
-        monthly_payment,
-        next_payment_due,
-        remaining_balance
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const sql = `
+        INSERT INTO loan_customer (
+          customer_id,
+          loan_amount,
+          loan_purpose,
+          interest_rate,
+          loan_term,
+          application_date,
+          status_approved,
+          monthly_payment,
+          next_payment_due,
+          remaining_balance
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
 
       const values = [
         customer_id,
-        loanAmount,
-        loanPurpose,
-        interestRate,
-        loanTerm,
-        applicationDate || null,
-        // statusApproved,
+        loan_amount       ?? null,
+        loan_purpose      ?? null,
+        interest_rate     ?? null,
+        loan_term         ?? null,
+        application_date  || null,
         safeStatus,
-        monthlyPayment || null,
-        nextPaymentDue || null,
-        remainingBalance
+        monthly_payment   ?? null,
+        next_payment_due  || null,
+        remaining_balance ?? null,
       ];
 
+      console.log("🗄️ INSERT values:", values);
+
       db.query(sql, values, (err, results) => {
-              if (err) {
-        console.error('❌ Insert Error:', err.sqlMessage || err.message);
-        return reject(err);
-      }
+        if (err) {
+          console.error('❌ Insert Error:', err.sqlMessage || err.message);
+          return reject(err);
+        }
 
         const insertId = results.insertId;
         const loan_id = `USR${1000 + insertId}`;
@@ -78,10 +77,10 @@ const safeStatus =
           'UPDATE loan_customer SET loan_id = ? WHERE id = ?',
           [loan_id, insertId],
           (err2) => {
-                     if (err2) {
-            console.error('❌ Loan ID Update Error:', err2.sqlMessage || err2.message);
-            return reject(err2);
-          }
+            if (err2) {
+              console.error('❌ Loan ID Update Error:', err2.sqlMessage || err2.message);
+              return reject(err2);
+            }
             resolve({ id: insertId, loan_id });
           }
         );
@@ -89,63 +88,64 @@ const safeStatus =
     });
   },
 
-  // Update by numeric primary id
+  // PUT — updateLoanCustomerById
+  // Receives already-normalized snake_case payload from controller
   updateLoanCustomerById: async (id, data) => {
     const {
       customer_id,
-      loanAmount,
-      loanPurpose,
-      interestRate,
-      loanTerm,
-      applicationDate,
-      statusApproved,
-      monthlyPayment,
-      nextPaymentDue,
-      remainingBalance
+      loan_amount,
+      loan_purpose,
+      interest_rate,
+      loan_term,
+      application_date,
+      status_approved,
+      monthly_payment,
+      next_payment_due,
+      remaining_balance,
     } = data;
 
-
-      const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
-
-const safeStatus =
-  statusApproved && ALLOWED_STATUSES.includes(statusApproved)
-    ? statusApproved
-    : undefined;   //  DO NOT OVERRIDE EXISTING STATUS
-
+    const ALLOWED_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'];
+    // undefined → COALESCE in SQL keeps existing DB value unchanged
+    const safeStatus =
+      status_approved && ALLOWED_STATUSES.includes(status_approved)
+        ? status_approved
+        : null;
 
     return new Promise((resolve, reject) => {
       const sql = `
         UPDATE loan_customer SET
-         customer_id = ?,
-          loan_amount = ?,
-          loan_purpose = ?,
-          interest_rate = ?,
-          loan_term = ?,
-          application_date = ?,
-    status_approved = COALESCE(?, status_approved),
-          monthly_payment = ?,
-          next_payment_due = ?,
+          customer_id       = ?,
+          loan_amount       = ?,
+          loan_purpose      = ?,
+          interest_rate     = ?,
+          loan_term         = ?,
+          application_date  = ?,
+          status_approved   = COALESCE(?, status_approved),
+          monthly_payment   = ?,
+          next_payment_due  = ?,
           remaining_balance = ?
         WHERE id = ?
       `;
 
       const values = [
         customer_id,
-        loanAmount,
-        loanPurpose,
-        interestRate,
-        loanTerm,
-        applicationDate || null,
-        safeStatus,
-        monthlyPayment || null,
-        nextPaymentDue || null,
-        remainingBalance || null,
-        id
+        loan_amount       ?? null,
+        loan_purpose      ?? null,
+        interest_rate     ?? null,
+        loan_term         ?? null,
+        application_date  || null,
+        safeStatus,               // null → COALESCE keeps existing status
+        monthly_payment   ?? null,
+        next_payment_due  || null,
+        remaining_balance ?? null,
+        id,
       ];
+
+      console.log("🗄️ UPDATE values:", values);
 
       db.query(sql, values, (err, results) => {
         if (err) {
-          console.error('❌ SQL Error:', err.sqlMessage || err.message);
+          console.error('❌ SQL Update Error:', err.sqlMessage || err.message);
           return reject(err);
         }
         resolve(results);
@@ -153,7 +153,7 @@ const safeStatus =
     });
   },
 
-  // Get all customers
+  // GET all
   getAllLoanCustomers: async () => {
     return new Promise((resolve, reject) => {
       db.query('SELECT * FROM loan_customer', (err, results) => {
@@ -163,101 +163,107 @@ const safeStatus =
     });
   },
 
-  // Get one by id (primary key)
+  // GET one by numeric PK
   getLoanCustomerById: async (id) => {
     return new Promise((resolve, reject) => {
-      db.query('SELECT * FROM loan_customer WHERE id = ?', [id], (err, results) => {
-        if (err) return reject(err);
-        resolve(results[0] || null);
-      });
+      db.query(
+        'SELECT * FROM loan_customer WHERE id = ?',
+        [id],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results[0] || null);
+        }
+      );
     });
   },
 
-  // Delete by numeric primary id
+  // DELETE by numeric PK
   deleteLoanCustomerById: async (id) => {
     return new Promise((resolve, reject) => {
-      db.query('DELETE FROM loan_customer WHERE id = ?', [id], (err, results) => {
-        if (err) return reject(err);
-        resolve(results);
-      });
+      db.query(
+        'DELETE FROM loan_customer WHERE id = ?',
+        [id],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results);
+        }
+      );
     });
   },
 
+  // GET loans by customer_id
   getLoansByCustomerId: async (customer_id) => {
-  return new Promise((resolve, reject) => {
-    db.query(
-      "SELECT * FROM loan_customer WHERE customer_id = ?",
-      [customer_id],
-      (err, results) => {
-        if (err) return reject(err);
-        resolve(results);
-      }
-    );
-  });
-},
-
-
-updateStatus: async (id, status) => {
-  return new Promise((resolve, reject) => {
-    db.query(
-      'UPDATE loan_customer SET status_approved = ? WHERE id = ?',
-      [status, id],
-      (err, results) => {
-        if (err) return reject(err);
-        resolve(results);
-      }
-    );
-  });
-},
-
-activateLoan: async (id) => {
-  return new Promise((resolve, reject) => {
-
-    db.query(
-      `SELECT loan_amount, interest_rate, loan_term, status_approved
-       FROM loan_customer WHERE id = ?`,
-      [id],
-      (err, results) => {
-        if (err) return reject(err);
-        if (!results.length) return reject(new Error('Loan not found'));
-
-        const loan = results[0];   // ✅ MUST COME FIRST
-
-        if (loan.status_approved === 'ACTIVE') {
-          return reject(new Error('Loan already active'));
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT * FROM loan_customer WHERE customer_id = ?',
+        [customer_id],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results);
         }
+      );
+    });
+  },
 
-        const monthlyPayment = calculateEMI(
-          Number(loan.loan_amount),
-          Number(loan.interest_rate),
-          Number(loan.loan_term)
-        );
+  // PATCH — update status only
+  updateStatus: async (id, status) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'UPDATE loan_customer SET status_approved = ? WHERE id = ?',
+        [status, id],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results);
+        }
+      );
+    });
+  },
 
-        const remainingBalance = Number(loan.loan_amount);
+  // PATCH — activate loan (auto-calculate EMI fields)
+  activateLoan: async (id) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        `SELECT loan_amount, interest_rate, loan_term, status_approved
+         FROM loan_customer WHERE id = ?`,
+        [id],
+        (err, results) => {
+          if (err) return reject(err);
+          if (!results.length) return reject(new Error('Loan not found'));
 
-        const nextPaymentDue = new Date();
-        nextPaymentDue.setMonth(nextPaymentDue.getMonth() + 1);
+          const loan = results[0];
 
-        db.query(
-          `UPDATE loan_customer SET
-             status_approved = 'ACTIVE',
-             monthly_payment = ?,
-             remaining_balance = ?,
-             next_payment_due = ?
-           WHERE id = ?`,
-          [monthlyPayment, remainingBalance, nextPaymentDue, id],
-          (err2, result) => {
-            if (err2) return reject(err2);
-            resolve(result);
+          if (loan.status_approved === 'ACTIVE') {
+            return reject(new Error('Loan already active'));
           }
-        );
-      }
-    );
-  });
-},
 
+          const monthlyPayment = calculateEMI(
+            Number(loan.loan_amount),
+            Number(loan.interest_rate),
+            Number(loan.loan_term)
+          );
 
+          const remainingBalance = Number(loan.loan_amount);
 
+          const nextPaymentDue = new Date();
+          nextPaymentDue.setMonth(nextPaymentDue.getMonth() + 1);
+
+          db.query(
+            `UPDATE loan_customer SET
+               status_approved   = 'ACTIVE',
+               monthly_payment   = ?,
+               remaining_balance = ?,
+               next_payment_due  = ?
+             WHERE id = ?`,
+            [monthlyPayment, remainingBalance, nextPaymentDue, id],
+            (err2, result) => {
+              if (err2) return reject(err2);
+              resolve(result);
+            }
+          );
+        }
+      );
+    });
+  },
 };
 
 module.exports = LoanCustomer;

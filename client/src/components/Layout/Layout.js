@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
       <Header />
       <div className="content-wrapper">
         <Sidebar />
-        <main className="main-content p-3">
+        <main className="main-content p-0">
           {children}  {/* Page content goes here */}
         </main>
       </div>

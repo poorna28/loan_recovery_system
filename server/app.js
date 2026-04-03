@@ -41,4 +41,10 @@ app.use((err, req, res, next) => {
   errorHandler(err, req, res, next);
 });
 
+const reportRoutes = require('./routes/reportRoutes');
+ 
+// Register BEFORE your generic error handler
+app.use('/api/reports', reportRoutes);
+
+
 module.exports = app;

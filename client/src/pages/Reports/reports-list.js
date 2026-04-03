@@ -1,114 +1,153 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import "../Reports/reports.css";
 import Layout from "../../components/Layout/Layout";
-// import {
-//   Chart,
-//   ArcElement,
-//   BarElement,
-//   LineElement,
-//   PointElement,
-//   CategoryScale,
-//   LinearScale,
-//   Tooltip,
-//   Legend,
-//   Filler,
-// } from "chart.js";
-
-// Chart.register(
-//   ArcElement,
-//   BarElement,
-//   LineElement,
-//   PointElement,
-//   CategoryScale,
-//   LinearScale,
-//   Tooltip,
-//   Legend,
-//   Filler
-// );
-
-// ─── Data ───────────────────────────────────────────────────────────────────
-
-const LOANS = [
-  { id: "#LN-0142", customer: "Ravi Kumar",   principal: "₹2,50,000", emi: "₹8,400",  start: "Jan 2024", status: "active",  progress: 68 },
-  { id: "#LN-0141", customer: "Priya Sharma", principal: "₹1,00,000", emi: "₹3,800",  start: "Feb 2024", status: "overdue", progress: 32 },
-  { id: "#LN-0139", customer: "Anil Mehta",   principal: "₹75,000",   emi: "₹3,100",  start: "Nov 2023", status: "closed",  progress: 100 },
-  { id: "#LN-0138", customer: "Sunita Devi",  principal: "₹5,00,000", emi: "₹15,200", start: "Mar 2024", status: "active",  progress: 18 },
-  { id: "#LN-0136", customer: "Mohan Rao",    principal: "₹3,00,000", emi: "₹9,800",  start: "Oct 2023", status: "active",  progress: 55 },
-];
-
-const PAYMENTS = [
-  { txn: "#TXN-8821", customer: "Ravi Kumar",   loan: "#LN-0142", amount: "₹8,400",  amountColor: "var(--green)", mode: "UPI",  modeBadge: "badge-blue",  date: "15 Jun 2024", status: "Paid",    statusBadge: "badge-active" },
-  { txn: "#TXN-8820", customer: "Sunita Devi",  loan: "#LN-0138", amount: "₹15,200", amountColor: "var(--green)", mode: "Bank", modeBadge: "badge-bank",  date: "14 Jun 2024", status: "Paid",    statusBadge: "badge-active" },
-  { txn: "#TXN-8819", customer: "Priya Sharma", loan: "#LN-0141", amount: "₹3,800",  amountColor: "var(--amber)", mode: "Cash", modeBadge: "badge-amber", date: "13 Jun 2024", status: "Partial", statusBadge: "badge-pending" },
-  { txn: "#TXN-8818", customer: "Mohan Rao",    loan: "#LN-0136", amount: "₹9,800",  amountColor: "var(--green)", mode: "UPI",  modeBadge: "badge-blue",  date: "12 Jun 2024", status: "Paid",    statusBadge: "badge-active" },
-];
-
-const OVERDUE = [
-  { id: "#LN-0141", customer: "Priya Sharma", phone: "98765 43210", amount: "₹11,400", amountColor: "var(--red)",   days: "92 days", daysColor: "var(--red)",   due: "15 Mar 2024", dot: "sev-high", label: "Critical", labelClass: "sev-text-high" },
-  { id: "#LN-0133", customer: "Deepak Singh", phone: "87654 32109", amount: "₹7,200",  amountColor: "var(--amber)", days: "64 days", daysColor: "var(--amber)", due: "22 Apr 2024", dot: "sev-med",  label: "High",     labelClass: "sev-text-med"  },
-  { id: "#LN-0128", customer: "Lakshmi Bai",  phone: "76543 21098", amount: "₹5,500",  amountColor: "var(--amber)", days: "38 days", daysColor: "var(--amber)", due: "08 May 2024", dot: "sev-med",  label: "Medium",   labelClass: "sev-text-med"  },
-  { id: "#LN-0125", customer: "Ramesh Gupta", phone: "65432 10987", amount: "₹4,100",  amountColor: "var(--green)", days: "12 days", daysColor: "var(--green)", due: "04 Jun 2024", dot: "sev-low",  label: "Low",      labelClass: "sev-text-low"  },
-];
-
-const CUSTOMERS = [
-  { name: "Ravi Kumar",   id: "CUS-001", phone: "98765 43210", loans: 3, principal: "₹6,50,000", paid: "₹4,42,000", pending: "₹2,08,000", pendingColor: "var(--amber)", progress: 68, progressClass: "green", progressColor: "var(--green)", status: "Good",    statusBadge: "badge-active"  },
-  { name: "Priya Sharma", id: "CUS-002", phone: "87654 32109", loans: 1, principal: "₹1,00,000", paid: "₹32,000",   pending: "₹68,000",   pendingColor: "var(--red)",   progress: 32, progressClass: "red",   progressColor: "var(--red)",   status: "Overdue", statusBadge: "badge-overdue" },
-  { name: "Anil Mehta",   id: "CUS-003", phone: "76543 21098", loans: 2, principal: "₹1,75,000", paid: "₹1,75,000", pending: "₹0",        pendingColor: "var(--muted2)",progress: 100,progressClass: "green", progressColor: "var(--green)", status: "Cleared", statusBadge: "badge-closed"  },
-  { name: "Sunita Devi",  id: "CUS-004", phone: "65432 10987", loans: 1, principal: "₹5,00,000", paid: "₹90,000",   pending: "₹4,10,000", pendingColor: "var(--amber)", progress: 18, progressClass: "amber", progressColor: "var(--amber)", status: "Active",  statusBadge: "badge-active"  },
-];
+import api from "../../services/api";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const statusBadgeClass = (s) => {
-  if (s === "active")  return "badge-active";
-  if (s === "overdue") return "badge-overdue";
-  if (s === "closed")  return "badge-closed";
+const fmtINR = (val) => {
+  const n = Number(val || 0);
+  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+  if (n >= 1000)   return `₹${n.toLocaleString('en-IN')}`;
+  return `₹${n}`;
+};
+
+const statusBadgeClass = (s = "") => {
+  const lower = s.toLowerCase();
+  if (lower === "active")   return "badge-active";
+  if (lower === "overdue")  return "badge-overdue";
+  if (lower === "closed" || lower === "rejected") return "badge-closed";
+  if (lower === "approved") return "badge-active";
   return "badge-pending";
 };
 
-const statusLabel = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const statusLabel = (s = "") =>
+  s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
-const progressColor = (p) => (p >= 70 ? "green" : p >= 35 ? "amber" : "red");
+const progressColorClass = (p) => (p >= 70 ? "green" : p >= 35 ? "amber" : "red");
 
-// ─── Sub-components ──────────────────────────────────────────────────────────
+const severityFromDays = (days) => {
+  if (days >= 90) return { dot: "sev-high", label: "Critical", labelClass: "sev-text-high" };
+  if (days >= 30) return { dot: "sev-med",  label: "High",     labelClass: "sev-text-med"  };
+  if (days >= 15) return { dot: "sev-med",  label: "Medium",   labelClass: "sev-text-med"  };
+  return            { dot: "sev-low",  label: "Low",      labelClass: "sev-text-low"  };
+};
+
+const customerStatusBadge = (status = "") => {
+  if (!status) return "badge-pending";
+  const s = status.toUpperCase();
+  if (s === "ACTIVE")   return "badge-active";
+  if (s === "REJECTED") return "badge-closed";
+  if (s === "APPROVED") return "badge-active";
+  return "badge-pending";
+};
+
+// ─── Shared Sub-components ────────────────────────────────────────────────────
 
 const ProgressCell = ({ value, colorClass }) => (
   <div className="progress-wrap">
-    <div className="progress-label" style={{ color: `var(--${colorClass === "green" ? "green" : colorClass === "red" ? "red" : "amber"})` }}>{value}%</div>
+    <div
+      className="progress-label"
+      style={{
+        color: `var(--${colorClass === "green" ? "green" : colorClass === "red" ? "red" : "amber"})`,
+      }}
+    >
+      {value}%
+    </div>
     <div className="progress-bar">
-      <div className={`progress-fill ${colorClass}`} style={{ width: `${value}%` }} />
+      <div className={`progress-fill ${colorClass}`} style={{ width: `${Math.min(value, 100)}%` }} />
     </div>
   </div>
 );
 
-const Pagination = ({ showing, total, label }) => (
+const Pagination = ({ total, label }) => (
   <div className="pagination">
-    <span>Showing {showing} of {total} {label}</span>
+    <span>Showing {total} {label}</span>
     <div className="page-btns">
-      <button className="page-btn">‹</button>
       <button className="page-btn active">1</button>
-      <button className="page-btn">2</button>
-      <button className="page-btn">3</button>
-      <button className="page-btn">›</button>
     </div>
   </div>
 );
 
-const TabSummary = () => {
-  const pieRef = useRef(null);
-  const barRef = useRef(null);
-//   usePieChart(pieRef);
-//   useBarChart(barRef);
+const LoadingSpinner = () => (
+  <div className="text-center py-5">
+    <div className="spinner-border spinner-border-sm me-2" role="status" />
+    <span>Loading...</span>
+  </div>
+);
+
+const ErrorMsg = ({ msg }) => (
+  <div className="alert alert-danger m-3">{msg}</div>
+);
+
+// ─── TAB 1: Loan Summary ──────────────────────────────────────────────────────
+
+const TabSummary = ({ data, loading, error }) => {
+  const [search, setSearch] = useState("");
+
+  if (loading) return <LoadingSpinner />;
+  if (error)   return <ErrorMsg msg={error} />;
+  if (!data)   return null;
+
+  const { kpis, loans = [] } = data;
+
+  const cards = [
+    {
+      color: "blue",
+      label: "Total Amount Issued",
+      badge: "badge-blue",
+      badgeText: `${kpis.total_loans || 0} loans`,
+      value: fmtINR(kpis.total_issued),
+      sub: `${kpis.total_loans || 0} loans total`,
+    },
+    {
+      color: "green",
+      label: "Active Loans",
+      badge: "badge-green",
+      badgeText: "Running",
+      value: kpis.active_loans || 0,
+      sub: `${fmtINR(kpis.outstanding)} outstanding`,
+    },
+    {
+      color: "amber",
+      label: "Approved Loans",
+      badge: "badge-blue",
+      badgeText: "Awaiting",
+      value: kpis.approved_loans || 0,
+      sub: "Awaiting activation",
+    },
+    {
+      color: "red",
+      label: "Pending Loans",
+      badge: "badge-red",
+      badgeText: "⚠ Alert",
+      value: kpis.pending_loans || 0,
+      sub: "Awaiting approval",
+    },
+  ];
+
+  const filtered = loans.filter((l) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      (l.loan_id || "").toLowerCase().includes(q) ||
+      (l.customer_name || "").toLowerCase().includes(q)
+    );
+  });
+
+  // Compute repayment progress per loan: (loan_amount - remaining_balance) / loan_amount * 100
+  const withProgress = filtered.map((l) => {
+    const principal = Number(l.loan_amount || 0);
+    const remaining = Number(l.remaining_balance || 0);
+    const progress =
+      principal > 0 ? Math.round(((principal - remaining) / principal) * 100) : 0;
+    return { ...l, progress };
+  });
 
   return (
     <>
       <div className="kpi-grid">
-        {[
-          { color: "blue",  label: "Total Issued",  badge: "badge-blue",  badgeText: "↑ 12%",   value: "₹48.2L", sub: "142 loans total" },
-          { color: "green", label: "Active Loans",  badge: "badge-green", badgeText: "Running",  value: "89",     sub: "₹32.1L outstanding" },
-          { color: "amber", label: "Closed Loans",  badge: "badge-blue",  badgeText: "Settled",  value: "41",     sub: "₹16.1L recovered" },
-          { color: "red",   label: "Overdue",       badge: "badge-red",   badgeText: "⚠ Alert",  value: "12",     sub: "₹4.8L at risk" },
-        ].map((k) => (
+        {cards.map((k) => (
           <div className={`kpi-card ${k.color}`} key={k.label}>
             <div className="kpi-top">
               <span className="kpi-label">{k.label}</span>
@@ -118,23 +157,6 @@ const TabSummary = () => {
             <div className="kpi-sub">{k.sub}</div>
           </div>
         ))}
-      </div>
-
-      <div className="charts-row">
-        <div className="chart-card">
-          <div className="card-header">
-            <span className="card-title">Loans by Status</span>
-            <span className="card-meta">Pie breakdown</span>
-          </div>
-          <canvas ref={pieRef} height={200} />
-        </div>
-        <div className="chart-card">
-          <div className="card-header">
-            <span className="card-title">Monthly Loan Disbursement</span>
-            <span className="card-meta">Last 6 months</span>
-          </div>
-          <canvas ref={barRef} height={200} />
-        </div>
       </div>
 
       <div className="table-card">
@@ -142,9 +164,14 @@ const TabSummary = () => {
           <span className="card-title">All Loans</span>
           <div className="table-header-actions">
             <div className="search-box">
-              🔍 <input type="text" placeholder="Search loan ID..." />
+              🔍{" "}
+              <input
+                type="text"
+                placeholder="Search loan ID or customer..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-            <button className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 12px" }}>Filter</button>
           </div>
         </div>
         <table>
@@ -152,46 +179,117 @@ const TabSummary = () => {
             <tr>
               <th>Loan ID</th>
               <th>Customer</th>
-              <th>Principal</th>
-              <th>EMI</th>
-              <th>Start Date</th>
+              <th>Loan Amount</th>
+              <th>Interest Rate</th>
+              <th>Application Date</th>
               <th>Status</th>
-              <th>Progress</th>
+              <th>Repayment</th>
             </tr>
           </thead>
           <tbody>
-            {LOANS.map((l) => (
-              <tr key={l.id}>
-                <td className="td-primary">{l.id}</td>
-                <td>{l.customer}</td>
-                <td className="td-amount" style={{ color: "var(--text)" }}>{l.principal}</td>
-                <td className="td-amount">{l.emi}</td>
-                <td className="td-mono">{l.start}</td>
-                <td><span className={`badge ${statusBadgeClass(l.status)}`}>{statusLabel(l.status)}</span></td>
-                <td><ProgressCell value={l.progress} colorClass={progressColor(l.progress)} /></td>
+            {withProgress.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-4 text-muted">
+                  No loans found.
+                </td>
               </tr>
-            ))}
+            ) : (
+              withProgress.map((l) => (
+                <tr key={l.id}>
+                  <td className="td-primary">{l.loan_id}</td>
+                  <td>{l.customer_name || "—"}</td>
+                  <td className="td-amount">{fmtINR(l.loan_amount)}</td>
+                  <td className="td-amount">{l.interest_rate}%</td>
+                  <td className="td-mono">{l.application_date || "—"}</td>
+                  <td>
+                    <span className={`badge ${statusBadgeClass(l.status_approved)}`}>
+                      {statusLabel(l.status_approved)}
+                    </span>
+                  </td>
+                  <td>
+                    <ProgressCell
+                      value={l.progress}
+                      colorClass={progressColorClass(l.progress)}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-        <Pagination showing="1–5" total={142} label="loans" />
+        <Pagination total={filtered.length} label="loans" />
       </div>
     </>
   );
 };
 
-const TabPayments = () => {
-  const lineRef = useRef(null);
-//   useLineChart(lineRef);
+// ─── TAB 2: Payments ──────────────────────────────────────────────────────────
+
+const PAYMENT_METHOD_BADGE = {
+  CASH:     "badge-amber",
+  CHECK:    "badge-blue",
+  TRANSFER: "badge-bank",
+  CARD:     "badge-blue",
+  ONLINE:   "badge-blue",
+};
+
+const TabPayments = ({ data, loading, error }) => {
+  const [search, setSearch] = useState("");
+
+  if (loading) return <LoadingSpinner />;
+  if (error)   return <ErrorMsg msg={error} />;
+  if (!data)   return null;
+
+  const { kpis, payments = [] } = data;
+
+  const cards = [
+    {
+      color: "green",
+      label: "Total Collected",
+      badge: "badge-green",
+      badgeText: "All time",
+      value: fmtINR(kpis.total_collected),
+      sub: `${kpis.total_transactions || 0} transactions`,
+    },
+    {
+      color: "blue",
+      label: "Transactions",
+      badge: "badge-blue",
+      badgeText: "Count",
+      value: kpis.total_transactions || 0,
+      sub: "Across all loans",
+    },
+    {
+      color: "amber",
+      label: "Avg Payment",
+      badge: "badge-amber",
+      badgeText: "Avg",
+      value: fmtINR(kpis.avg_payment),
+      sub: "Per transaction",
+    },
+    {
+      color: "red",
+      label: "Overdue Active Loans",
+      badge: "badge-red",
+      badgeText: "⚠",
+      value: kpis.missed_emis || 0,
+      sub: "Next payment past due",
+    },
+  ];
+
+  const filtered = payments.filter((p) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      (p.loan_id || "").toLowerCase().includes(q) ||
+      (p.customer_name || "").toLowerCase().includes(q)
+    );
+  });
 
   return (
     <>
       <div className="kpi-grid">
-        {[
-          { color: "green", label: "Total Collected", badge: "badge-green", badgeText: "↑ 8%",  value: "₹12.4L", sub: "This month" },
-          { color: "blue",  label: "Transactions",    badge: "badge-blue",  badgeText: "Count", value: "386",     sub: "Across all loans" },
-          { color: "amber", label: "Avg Payment",     badge: "badge-amber", badgeText: "Avg",   value: "₹3,212",  sub: "Per transaction" },
-          { color: "red",   label: "Missed EMIs",     badge: "badge-red",   badgeText: "⚠",     value: "23",      sub: "₹78,400 pending" },
-        ].map((k) => (
+        {cards.map((k) => (
           <div className={`kpi-card ${k.color}`} key={k.label}>
             <div className="kpi-top">
               <span className="kpi-label">{k.label}</span>
@@ -203,22 +301,19 @@ const TabPayments = () => {
         ))}
       </div>
 
-      <div className="charts-row">
-        <div className="chart-card wide">
-          <div className="card-header">
-            <span className="card-title">Payment Collections — Daily (Last 30 days)</span>
-            <span className="card-meta">GET /api/reports/payments</span>
-          </div>
-          <canvas ref={lineRef} height={120} />
-        </div>
-      </div>
-
       <div className="table-card">
         <div className="table-header">
           <span className="card-title">Payment Transactions</span>
           <div className="table-header-actions">
-            <div className="search-box">🔍 <input type="text" placeholder="Search..." /></div>
-            <button className="btn btn-ghost" style={{ fontSize: 11, padding: "6px 12px" }}>⬇ Export</button>
+            <div className="search-box">
+              🔍{" "}
+              <input
+                type="text"
+                placeholder="Search loan ID or customer..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
         </div>
         <table>
@@ -227,233 +322,480 @@ const TabPayments = () => {
               <th>Txn ID</th>
               <th>Customer</th>
               <th>Loan ID</th>
-              <th>Amount</th>
+              <th>Amount Paid</th>
               <th>Mode</th>
-              <th>Date</th>
-              <th>Status</th>
+              <th>Payment Date</th>
+              <th>Remaining Balance</th>
             </tr>
           </thead>
           <tbody>
-            {PAYMENTS.map((p) => (
-              <tr key={p.txn}>
-                <td className="td-primary">{p.txn}</td>
-                <td>{p.customer}</td>
-                <td className="td-link">{p.loan}</td>
-                <td className="td-amount" style={{ color: p.amountColor }}>{p.amount}</td>
-                <td><span className={`badge ${p.modeBadge}`}>{p.mode}</span></td>
-                <td className="td-mono">{p.date}</td>
-                <td><span className={`badge ${p.statusBadge}`}>{p.status}</span></td>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-4 text-muted">
+                  No payment transactions found.
+                </td>
               </tr>
-            ))}
+            ) : (
+              filtered.map((p) => (
+                <tr key={p.id}>
+                  <td className="td-primary">#{p.id}</td>
+                  <td>{p.customer_name || "—"}</td>
+                  <td className="td-link">{p.loan_id}</td>
+                  <td className="td-amount" style={{ color: "var(--green)" }}>
+                    {fmtINR(p.amount_paid)}
+                  </td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        PAYMENT_METHOD_BADGE[p.payment_method] || "badge-pending"
+                      }`}
+                    >
+                      {p.payment_method}
+                    </span>
+                  </td>
+                  <td className="td-mono">{p.payment_date || "—"}</td>
+                  <td className="td-amount" style={{ color: "var(--amber)" }}>
+                    {fmtINR(p.remaining_balance)}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-        <Pagination showing="1–4" total={386} label="transactions" />
+        <Pagination total={filtered.length} label="transactions" />
       </div>
     </>
   );
 };
 
-const TabOverdue = () => (
-  <>
-    <div className="kpi-grid">
-      {[
-        { color: "red",   label: "Total Overdue",  badge: "badge-red",   badgeText: "Critical", value: "12",     sub: "Loans overdue today" },
-        { color: "red",   label: "At Risk Amount", badge: "badge-red",   badgeText: "₹",        value: "₹4.8L",  sub: "Total overdue principal" },
-        { color: "amber", label: "30+ Days",       badge: "badge-amber", badgeText: "Watch",    value: "7",      sub: "Moderate risk" },
-        { color: "red",   label: "90+ Days",       badge: "badge-red",   badgeText: "NPA Risk", value: "3",      sub: "Immediate action needed" },
-      ].map((k) => (
-        <div className={`kpi-card ${k.color}`} key={k.label}>
-          <div className="kpi-top">
-            <span className="kpi-label">{k.label}</span>
-            <span className={`kpi-badge ${k.badge}`}>{k.badgeText}</span>
+// ─── TAB 3: Overdue Loans ─────────────────────────────────────────────────────
+
+const TabOverdue = ({ data, loading, error }) => {
+  const [search, setSearch] = useState("");
+
+  if (loading) return <LoadingSpinner />;
+  if (error)   return <ErrorMsg msg={error} />;
+  if (!data)   return null;
+
+  const { kpis, loans = [] } = data;
+
+  const cards = [
+    {
+      color: "red",
+      label: "Total Overdue",
+      badge: "badge-red",
+      badgeText: "Critical",
+      value: kpis.total_overdue || 0,
+      sub: "Loans overdue today",
+    },
+    {
+      color: "red",
+      label: "At Risk Amount",
+      badge: "badge-red",
+      badgeText: "₹",
+      value: fmtINR(kpis.at_risk_amount),
+      sub: "Total overdue balance",
+    },
+    {
+      color: "amber",
+      label: "30+ Days",
+      badge: "badge-amber",
+      badgeText: "Watch",
+      value: kpis.over_30 || 0,
+      sub: "Moderate risk",
+    },
+    {
+      color: "red",
+      label: "90+ Days",
+      badge: "badge-red",
+      badgeText: "NPA Risk",
+      value: kpis.over_90 || 0,
+      sub: "Immediate action needed",
+    },
+  ];
+
+  const filtered = loans.filter((o) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      (o.loan_id || "").toLowerCase().includes(q) ||
+      (o.customer_name || "").toLowerCase().includes(q)
+    );
+  });
+
+  return (
+    <>
+      <div className="kpi-grid">
+        {cards.map((k) => (
+          <div className={`kpi-card ${k.color}`} key={k.label}>
+            <div className="kpi-top">
+              <span className="kpi-label">{k.label}</span>
+              <span className={`kpi-badge ${k.badge}`}>{k.badgeText}</span>
+            </div>
+            <div className="kpi-value">{k.value}</div>
+            <div className="kpi-sub">{k.sub}</div>
           </div>
-          <div className="kpi-value">{k.value}</div>
-          <div className="kpi-sub">{k.sub}</div>
-        </div>
-      ))}
-    </div>
-
-    <div className="table-card">
-      <div className="table-header">
-        <span className="card-title">Overdue Loans — next_payment_due &lt; today</span>
-        <div className="table-header-actions">
-          <div className="search-box">🔍 <input type="text" placeholder="Search..." /></div>
-        </div>
+        ))}
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Loan ID</th>
-            <th>Customer</th>
-            <th>Phone</th>
-            <th>Overdue Amount</th>
-            <th>Days Overdue</th>
-            <th>Next Due Date</th>
-            <th>Severity</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {OVERDUE.map((o) => (
-            <tr key={o.id}>
-              <td className="td-primary">{o.id}</td>
-              <td>{o.customer}</td>
-              <td className="td-mono">{o.phone}</td>
-              <td className="td-amount" style={{ color: o.amountColor }}>{o.amount}</td>
-              <td className="td-mono" style={{ color: o.daysColor }}>{o.days}</td>
-              <td className="td-mono">{o.due}</td>
-              <td>
-                <div className="severity">
-                  <div className={`severity-dot ${o.dot}`} />
-                  <span className={o.labelClass}>{o.label}</span>
-                </div>
-              </td>
-              <td>
-                <button className="btn btn-ghost" style={{ fontSize: 10, padding: "5px 10px" }}>
-                  Send Reminder
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Pagination showing="1–4" total={12} label="overdue loans" />
-    </div>
-  </>
-);
 
-const TabCustomer = () => (
-  <>
-    <div className="summary-row">
-      {[
-        { icon: "👥", iconClass: "icon-blue",  label: "Total Customers", val: "98", valClass: "val-blue"  },
-        { icon: "✅", iconClass: "icon-green", label: "Good Standing",   val: "79", valClass: "val-green" },
-        { icon: "⚠️", iconClass: "icon-red",   label: "Defaulters",      val: "19", valClass: "val-red"   },
-      ].map((s) => (
-        <div className="summary-item" key={s.label}>
-          <div className={`summary-icon ${s.iconClass}`}>{s.icon}</div>
-          <div>
-            <div className="summary-label">{s.label}</div>
-            <div className={`summary-val ${s.valClass}`}>{s.val}</div>
+      <div className="table-card">
+        <div className="table-header">
+          <span className="card-title">
+            Overdue Loans — next_payment_due &lt; today
+          </span>
+          <div className="table-header-actions">
+            <div className="search-box">
+              🔍{" "}
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-      ))}
-    </div>
-
-    <div className="table-card">
-      <div className="table-header">
-        <span className="card-title">Customer-wise Loan Report</span>
-        <div className="table-header-actions">
-          <div className="search-box">🔍 <input type="text" placeholder="Search customer..." /></div>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Phone</th>
-            <th>Total Loans</th>
-            <th>Total Principal</th>
-            <th>Total Paid</th>
-            <th>Pending</th>
-            <th>Collection %</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {CUSTOMERS.map((c) => (
-            <tr key={c.id}>
-              <td>
-                <div className="customer-name">{c.name}</div>
-                <div className="customer-id">{c.id}</div>
-              </td>
-              <td className="td-mono">{c.phone}</td>
-              <td style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--accent2)" }}>{c.loans}</td>
-              <td className="td-amount" style={{ color: "var(--text)" }}>{c.principal}</td>
-              <td className="td-amount" style={{ color: "var(--green)" }}>{c.paid}</td>
-              <td className="td-amount" style={{ color: c.pendingColor }}>{c.pending}</td>
-              <td>
-                <ProgressCell value={c.progress} colorClass={c.progressClass} />
-              </td>
-              <td><span className={`badge ${c.statusBadge}`}>{c.status}</span></td>
+        <table>
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Balance</th>
+              <th>Days Overdue</th>
+              <th>Next Due Date</th>
+              <th>Severity</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <Pagination showing="1–4" total={98} label="customers" />
-    </div>
-  </>
-);
+          </thead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-4 text-muted">
+                  No overdue loans. 🎉
+                </td>
+              </tr>
+            ) : (
+              filtered.map((o) => {
+                const days = Number(o.days_overdue || 0);
+                const sev = severityFromDays(days);
+                const amtColor =
+                  days >= 90
+                    ? "var(--red)"
+                    : days >= 30
+                    ? "var(--amber)"
+                    : "var(--green)";
+                const daysColor = amtColor;
+                return (
+                  <tr key={o.id}>
+                    <td className="td-primary">{o.loan_id}</td>
+                    <td>{o.customer_name || "—"}</td>
+                    <td className="td-mono">{o.phone || "—"}</td>
+                    <td className="td-amount" style={{ color: amtColor }}>
+                      {fmtINR(o.remaining_balance)}
+                    </td>
+                    <td className="td-mono" style={{ color: daysColor }}>
+                      {days} days
+                    </td>
+                    <td className="td-mono">{o.next_payment_due || "—"}</td>
+                    <td>
+                      <div className="severity">
+                        <div className={`severity-dot ${sev.dot}`} />
+                        <span className={sev.labelClass}>{sev.label}</span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+        <Pagination total={filtered.length} label="overdue loans" />
+      </div>
+    </>
+  );
+};
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// ─── TAB 4: Customer-wise ─────────────────────────────────────────────────────
+
+const TabCustomer = ({ data, loading, error }) => {
+  const [search, setSearch] = useState("");
+
+  if (loading) return <LoadingSpinner />;
+  if (error)   return <ErrorMsg msg={error} />;
+  if (!data)   return null;
+
+  const { kpis, customers = [] } = data;
+
+  const filtered = customers.filter((c) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      (c.customer_name || "").toLowerCase().includes(q) ||
+      (c.customer_id || "").toLowerCase().includes(q)
+    );
+  });
+
+  return (
+    <>
+      <div className="summary-row">
+        {[
+          {
+            icon: "👥",
+            iconClass: "icon-blue",
+            label: "Total Customers",
+            val: kpis.total_customers || 0,
+            valClass: "val-blue",
+          },
+          {
+            icon: "✅",
+            iconClass: "icon-green",
+            label: "Good Standing",
+            val: kpis.good_standing || 0,
+            valClass: "val-green",
+          },
+          {
+            icon: "⚠️",
+            iconClass: "icon-red",
+            label: "Defaulters",
+            val: kpis.defaulters || 0,
+            valClass: "val-red",
+          },
+        ].map((s) => (
+          <div className="summary-item" key={s.label}>
+            <div className={`summary-icon ${s.iconClass}`}>{s.icon}</div>
+            <div>
+              <div className="summary-label">{s.label}</div>
+              <div className={`summary-val ${s.valClass}`}>{s.val}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="table-card">
+        <div className="table-header">
+          <span className="card-title">Customer-wise Loan Report</span>
+          <div className="table-header-actions">
+            <div className="search-box">
+              🔍{" "}
+              <input
+                type="text"
+                placeholder="Search customer..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Total Loans</th>
+              <th>Total Principal</th>
+              <th>Total Paid</th>
+              <th>Pending</th>
+              <th>Collection %</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="text-center py-4 text-muted">
+                  No customers found.
+                </td>
+              </tr>
+            ) : (
+              filtered.map((c) => {
+                const pct = Number(c.collection_pct || 0);
+                const pendingAmt = Number(c.pending_amount || 0);
+                const pendingColor =
+                  pendingAmt === 0
+                    ? "var(--muted2)"
+                    : pct >= 70
+                    ? "var(--amber)"
+                    : "var(--red)";
+
+                return (
+                  <tr key={c.customer_id}>
+                    <td>
+                      <div className="customer-name">{c.customer_name}</div>
+                      <div className="customer-id">{c.customer_id}</div>
+                    </td>
+                    <td className="td-mono">{c.phone || "—"}</td>
+                    <td
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 13,
+                        color: "var(--accent2)",
+                      }}
+                    >
+                      {c.total_loans}
+                    </td>
+                    <td className="td-amount" style={{ color: "var(--text)" }}>
+                      {fmtINR(c.total_principal)}
+                    </td>
+                    <td className="td-amount" style={{ color: "var(--green)" }}>
+                      {fmtINR(c.total_paid)}
+                    </td>
+                    <td className="td-amount" style={{ color: pendingColor }}>
+                      {fmtINR(c.pending_amount)}
+                    </td>
+                    <td>
+                      <ProgressCell
+                        value={pct}
+                        colorClass={progressColorClass(pct)}
+                      />
+                    </td>
+                    <td>
+                      <span className={`badge ${customerStatusBadge(c.status)}`}>
+                        {statusLabel(c.status || "N/A")}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+        <Pagination total={filtered.length} label="customers" />
+      </div>
+    </>
+  );
+};
+
+// ─── Main Reports Component ───────────────────────────────────────────────────
 
 const TABS = [
-  { id: "summary",  label: "Loan Summary" },
-  { id: "payments", label: "Payments"     },
-  { id: "overdue",  label: "Overdue Loans"},
-  { id: "customer", label: "Customer-wise"},
+  { id: "summary",  label: "Loan Summary",   endpoint: "/reports/summary"  },
+  { id: "payments", label: "Payments",        endpoint: "/reports/payments" },
+  { id: "overdue",  label: "Overdue Loans",   endpoint: "/reports/overdue"  },
+  { id: "customer", label: "Customer-wise",   endpoint: "/reports/customers"},
 ];
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("summary");
 
+  // Per-tab state: { data, loading, error }
+  const [tabState, setTabState] = useState({
+    summary:  { data: null, loading: false, error: null },
+    payments: { data: null, loading: false, error: null },
+    overdue:  { data: null, loading: false, error: null },
+    customer: { data: null, loading: false, error: null },
+  });
+
+  const fetchTab = useCallback(async (tabId) => {
+    const tab = TABS.find((t) => t.id === tabId);
+    if (!tab) return;
+
+    // Don't re-fetch if we already have data
+    if (tabState[tabId].data) return;
+
+    setTabState((prev) => ({
+      ...prev,
+      [tabId]: { ...prev[tabId], loading: true, error: null },
+    }));
+
+    try {
+      const res = await api.get(tab.endpoint);
+      setTabState((prev) => ({
+        ...prev,
+        [tabId]: { data: res.data, loading: false, error: null },
+      }));
+    } catch (err) {
+      console.error(`❌ Failed to fetch ${tabId} report:`, err);
+      setTabState((prev) => ({
+        ...prev,
+        [tabId]: {
+          data: null,
+          loading: false,
+          error: err.response?.data?.message || "Failed to load data.",
+        },
+      }));
+    }
+  }, [tabState]);
+
+  // Fetch on tab switch
+  useEffect(() => {
+    fetchTab(activeTab);
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Also fetch summary immediately on mount
+  useEffect(() => {
+    fetchTab("summary");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+  };
+
+  // Force refresh current tab
+  const handleRefresh = () => {
+    setTabState((prev) => ({
+      ...prev,
+      [activeTab]: { data: null, loading: false, error: null },
+    }));
+    // useEffect will re-trigger on next render because data is now null
+    setTimeout(() => fetchTab(activeTab), 0);
+  };
+
+  const { data, loading, error } = tabState[activeTab];
+
   const renderPanel = () => {
     switch (activeTab) {
-      case "summary":  return <TabSummary />;
-      case "payments": return <TabPayments />;
-      case "overdue":  return <TabOverdue />;
-      case "customer": return <TabCustomer />;
+      case "summary":  return <TabSummary  data={data} loading={loading} error={error} />;
+      case "payments": return <TabPayments data={data} loading={loading} error={error} />;
+      case "overdue":  return <TabOverdue  data={data} loading={loading} error={error} />;
+      case "customer": return <TabCustomer data={data} loading={loading} error={error} />;
       default:         return null;
     }
   };
 
   return (
     <Layout>
-    <div className="reports-body">
-      <div className="reports-layout">
+      <div className="reports-body">
+        <div className="reports-layout">
+          <main className="reports-main">
 
-        {/* Main */}
-        <main className="reports-main">
-          {/* Header */}
-          <div className="page-header">
-            <div>
-              <div className="page-title">Reports</div>
-              <div className="page-subtitle">GET /api/reports — Last updated just now</div>
-            </div>
-            <div className="header-actions">
-              <div className="date-filter">
-                📅&nbsp;
-                <select onChange={(e) => console.log("Filter:", e.target.value)}>
-                  <option>This Month</option>
-                  <option>Last 3 Months</option>
-                  <option>Last 6 Months</option>
-                  <option>This Year</option>
-                  <option>Custom Range</option>
-                </select>
+            {/* Header */}
+            <div className="page-header">
+              <div>
+                <div className="page-title">Reports</div>
+                <div className="page-subtitle">
+                  Live data from your loan system
+                </div>
               </div>
-              <button className="btn btn-ghost">⬇ Export PDF</button>
-              <button className="btn btn-primary">⬇ Export Excel</button>
-            </div>
-          </div>
-
-          {/* Tab Nav */}
-          <div className="tab-nav">
-            {TABS.map((t) => (
-              <div
-                key={t.id}
-                className={`tab${activeTab === t.id ? " active" : ""}`}
-                onClick={() => setActiveTab(t.id)}
-              >
-                {t.label}
+              <div className="header-actions">
+                <button
+                  className="btn btn-ghost"
+                  onClick={handleRefresh}
+                  title="Refresh current tab"
+                >
+                  ↺ Refresh
+                </button>
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* Active Panel */}
-          {renderPanel()}
-        </main>
+            {/* Tab Nav */}
+            <div className="tab-nav">
+              {TABS.map((t) => (
+                <div
+                  key={t.id}
+                  className={`tab${activeTab === t.id ? " active" : ""}`}
+                  onClick={() => handleTabChange(t.id)}
+                >
+                  {t.label}
+                </div>
+              ))}
+            </div>
+
+            {/* Active Panel */}
+            {renderPanel()}
+
+          </main>
+        </div>
       </div>
-    </div>
     </Layout>
   );
 };

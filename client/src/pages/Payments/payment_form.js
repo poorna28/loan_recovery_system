@@ -131,7 +131,7 @@ const Payment_Form = ({ onPaymentSuccess }) => {
                 <select
                   id="loanId"
                   name="loanId"
-                  className="form-control"
+                  className="form-select"
                   value={formData.loanId}
                   onChange={handleChange}
                   required
@@ -170,7 +170,7 @@ const Payment_Form = ({ onPaymentSuccess }) => {
                 <select
                   id="method"
                   name="method"
-                  className="form-control"
+                  className="form-select"
                   value={formData.method}
                   onChange={handleChange}
                 >

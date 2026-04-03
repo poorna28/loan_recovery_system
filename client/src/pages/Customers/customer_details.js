@@ -22,20 +22,15 @@ const Customer_details = ({ editData, setEditData }) => {
         state: '',
         postalCode: '',
         addressProof: null,
-        // idExpiryDate: '',
         annualIncome: '',
         creditScore: '',
-        // idIssueDate: '',
         govtIdNumber: '',
         govtIdType: '',
         idDocumentUpload: null,
         customerPhoto: null,
         employmentStatus: '',
-        // companyName: '',
         jobTitle: '',
-        // monthlyIncome: '',
         incomeProofDocument: '',
-        // creditScoreBand: '',
     });
 
     const emptyForm = {

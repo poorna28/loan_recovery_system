@@ -779,3 +779,8 @@
   background: var(--bg4);
   border-radius: 4px;
 }
+
+
+.settings{
+  padding: 30px;
+}

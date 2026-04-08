@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     idDocumentUploadOriginal VARCHAR(255),
     addressProofOriginal VARCHAR(255),
-    customerPhotoOriginal VARCHAR(255
+    customerPhotoOriginal VARCHAR(255)
 );
 
 ALTER TABLE customers
@@ -124,17 +124,18 @@ UPDATE users SET password = 'your_bcrypt_hash' WHERE email = 'user@example.com';
 CREATE TABLE loan_customer (
     id INT AUTO_INCREMENT PRIMARY KEY,
     loan_id VARCHAR(20) UNIQUE,
+    customer_id VARCHAR(20) NOT NULL,
     loan_amount DECIMAL(10,2) NOT NULL,
     loan_purpose VARCHAR(100) NOT NULL,
     interest_rate DECIMAL(5,2) NOT NULL,
     loan_term INT NOT NULL,
     application_date DATE,
-    status_approved ENUM('Approved', 'Not Approved', 'Pending') DEFAULT 'Pending',
+    status_approved ENUM('PENDING', 'APPROVED', 'REJECTED', 'ACTIVE') DEFAULT 'PENDING',
     monthly_payment DECIMAL(10,2),
     next_payment_due DATE,
     remaining_balance DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    customer_id VARCHAR(20) NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- PART 1 — SQL (Customer list with loan count)

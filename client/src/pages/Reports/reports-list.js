@@ -139,8 +139,10 @@ const TabSummary = ({ data, loading, error }) => {
   const withProgress = filtered.map((l) => {
     const principal = Number(l.loan_amount || 0);
     const remaining = Number(l.remaining_balance || 0);
-    const progress =
+    let progress =
       principal > 0 ? Math.round(((principal - remaining) / principal) * 100) : 0;
+    // Ensure progress is a valid number between 0-100
+    progress = Number.isNaN(progress) ? 0 : Math.min(100, Math.max(0, progress));
     return { ...l, progress };
   });
 

@@ -2,26 +2,17 @@ const paymentModel = require('../models/paymentModel');
 
 exports.makePayment = async (req, res) => {
   try {
+    // Validation is handled by middleware, proceed directly
     const { loanId, amount, method } = req.body;
 
-    const numericLoanId = Number(loanId);
-    const numericAmount = Number(amount);
-
-    if (isNaN(numericLoanId)) {
-      return res.status(400).json({ message: 'Invalid loanId' });
-    }
-
-    if (isNaN(numericAmount) || numericAmount <= 0) {
-      return res.status(400).json({ message: 'Invalid payment amount' });
-    }
-
     const result = await paymentModel.makePayment(
-      numericLoanId,
-      numericAmount,
+      Number(loanId),
+      Number(amount),
       method
     );
 
     res.status(200).json({
+      success: true,
       message: 'Payment successful',
       payment: result
     });
@@ -30,7 +21,9 @@ exports.makePayment = async (req, res) => {
     console.error('Payment error:', err);
 
     res.status(500).json({
-      message: err.message || 'Payment processing failed'
+      success: false,
+      message: err.message || 'Payment processing failed',
+      errors: [err.message]
     });
   }
 };
@@ -38,10 +31,10 @@ exports.makePayment = async (req, res) => {
 exports.getAllPayments = async (req, res) => {
   try {
     const payments = await paymentModel.getAllPayments();
-    res.status(200).json({ payments });
+    res.status(200).json({ success: true, payments });
   } catch (err) {
     console.error('Fetch payments error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message, errors: [err.message] });
   }
 };
 
@@ -51,9 +44,10 @@ exports.deletePayment = async (req, res) => {
 
     await paymentModel.deletePaymentById(id);
 
-    res.status(200).json({ message: 'Payment deleted' });
+    res.status(200).json({ success: true, message: 'Payment deleted' });
   } catch (err) {
     console.error('Delete payment error:', err);
-    res.status(500).json({ message: err.message });
+    const statusCode = err.message === 'Payment not found' ? 404 : 500;
+    res.status(statusCode).json({ success: false, message: err.message, errors: [err.message] });
   }
 };

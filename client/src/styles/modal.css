@@ -1,0 +1,370 @@
+/* ─── Unified Modal Styling ─── */
+
+.modal {
+  --bs-modal-bg: #0d1018 !important;
+  --bs-modal-border-color: rgba(255,255,255,0.06) !important;
+  --bs-modal-backdrop-bg: #000 !important;
+}
+
+.modal-content {
+  background: #0d1018 !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  color: #eceef6 !important;
+  border-radius: 12px !important;
+  font-family: 'DM Mono', monospace !important;
+}
+
+.modal-header {
+  background: #07090f !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  padding: 16px !important;
+}
+
+.modal-title {
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 16px !important;
+}
+
+.modal-body {
+  background: #0d1018 !important;
+  padding: 20px !important;
+  color: #eceef6 !important;
+}
+
+.modal-footer {
+  background: #0d1018 !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+  padding: 16px !important;
+}
+
+.btn-close {
+  filter: invert(0.8) !important;
+}
+
+.btn-close:focus {
+  box-shadow: 0 0 0 0.25rem rgba(79,141,255,0.25) !important;
+}
+
+/* ─── Form Elements ─── */
+
+.form-label {
+  color: #dfe6f0 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  margin-bottom: 8px !important;
+}
+
+.form-control,
+.form-select {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  color: #eceef6 !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 13px !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  transition: all 0.2s !important;
+}
+
+.form-control:hover,
+.form-select:hover {
+  border-color: rgba(79,141,255,0.3) !important;
+  background: rgba(255,255,255,0.09) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background: rgba(79,141,255,0.05) !important;
+  border-color: #4f8dff !important;
+  box-shadow: 0 0 0 0.2rem rgba(79,141,255,0.25) !important;
+  color: #eceef6 !important;
+}
+
+.form-control::placeholder {
+  color: #8a92b0 !important;
+}
+
+.form-select option {
+  background: #0d1018 !important;
+  color: #eceef6 !important;
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background: rgba(120,128,160,0.12) !important;
+  border-color: rgba(120,128,160,0.2) !important;
+  color: #a8b0c8 !important;
+  cursor: not-allowed !important;
+}
+
+.auto-generated {
+  background: rgba(120,128,160,0.15) !important;
+  color: #b8c0d8 !important;
+}
+
+/* ─── Form Validation ─── */
+
+.is-invalid {
+  border-color: #f0505a !important;
+}
+
+.is-invalid:focus {
+  border-color: #f0505a !important;
+  box-shadow: 0 0 0 0.2rem rgba(240,80,90,0.25) !important;
+}
+
+.invalid-feedback,
+.text-danger {
+  color: #f0505a !important;
+  font-size: 12px !important;
+  display: block !important;
+  margin-top: 4px !important;
+}
+
+/* ─── Buttons ─── */
+
+.btn {
+  font-family: 'DM Mono', monospace !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  transition: all 0.2s !important;
+  border: none !important;
+}
+
+.btn-primary {
+  background: #4f8dff !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover {
+  background: #3d6dcc !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-primary:disabled {
+  background: rgba(79,141,255,0.5) !important;
+  cursor: not-allowed !important;
+}
+
+.btn-success {
+  background: #18d88b !important;
+  color: #000 !important;
+}
+
+.btn-success:hover {
+  background: #10a870 !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-success:disabled {
+  background: rgba(24,216,139,0.5) !important;
+  cursor: not-allowed !important;
+}
+
+.btn-danger {
+  background: #f0505a !important;
+  color: #fff !important;
+}
+
+.btn-danger:hover {
+  background: #d64056 !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-danger:disabled {
+  background: rgba(240,80,90,0.5) !important;
+  cursor: not-allowed !important;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.1) !important;
+  color: #eceef6 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.15) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+}
+
+/* ─── Alert Messages ─── */
+
+.alert {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #eceef6 !important;
+  padding: 12px 16px !important;
+  font-size: 13px !important;
+}
+
+.alert-success {
+  border-color: rgba(24,216,139,0.3) !important;
+  background: rgba(24,216,139,0.1) !important;
+  color: #18d88b !important;
+}
+
+.alert-danger {
+  border-color: rgba(240,80,90,0.3) !important;
+  background: rgba(240,80,90,0.1) !important;
+  color: #f0505a !important;
+}
+
+.alert-warning {
+  border-color: rgba(255,181,71,0.3) !important;
+  background: rgba(255,181,71,0.1) !important;
+  color: #ffb547 !important;
+}
+
+.alert-info {
+  border-color: rgba(79,141,255,0.3) !important;
+  background: rgba(79,141,255,0.1) !important;
+  color: #4f8dff !important;
+}
+
+.alert-close {
+  color: #7880a0 !important;
+  opacity: 0.7 !important;
+}
+
+.alert-close:hover {
+  opacity: 1 !important;
+}
+
+/* ─── Step Tabs (for multi-step forms) ─── */
+
+.modal-tabs {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 8px;
+}
+
+.tab-item {
+  color: #7880a0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 12px !important;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-item:hover {
+  color: #4f8dff;
+}
+
+.tab-item.active {
+  color: #4f8dff;
+  border-bottom-color: #4f8dff;
+}
+
+/* ─── Step Section ─── */
+
+.step-section {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── File Input ─── */
+
+.custom-file-input {
+  display: none;
+}
+
+.file-input-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(79,141,255,0.1);
+  border: 1px dashed rgba(79,141,255,0.3);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #4f8dff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.file-input-label:hover {
+  background: rgba(79,141,255,0.15);
+  border-color: rgba(79,141,255,0.5);
+}
+
+/* ─── Badge Styles ─── */
+
+.badge {
+  font-family: 'DM Mono', monospace !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+}
+
+.badge-success {
+  background: rgba(24,216,139,0.15) !important;
+  color: #18d88b !important;
+}
+
+.badge-danger {
+  background: rgba(240,80,90,0.15) !important;
+  color: #f0505a !important;
+}
+
+.badge-info {
+  background: rgba(79,141,255,0.15) !important;
+  color: #4f8dff !important;
+}
+
+.badge-warning {
+  background: rgba(255,181,71,0.15) !important;
+  color: #ffb547 !important;
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 0.5rem !important;
+  }
+
+  .modal-body {
+    padding: 16px !important;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+  }
+
+  .btn {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* ─── Spinner Loading ─── */
+
+.spinner-border {
+  border-color: rgba(79,141,255,0.3) !important;
+  border-right-color: #4f8dff !important;
+}
+
+.spinner-border-sm {
+  width: 1rem !important;
+  height: 1rem !important;
+}

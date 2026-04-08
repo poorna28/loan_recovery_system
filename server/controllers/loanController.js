@@ -27,7 +27,14 @@ exports.createLoan = async (req, res) => {
     // Read customer_id (snake only — consistent between frontend and middleware)
     const customer_id = req.body.customer_id;
     if (!customer_id) {
-      return res.status(400).json({ message: 'Loan must belong to a customer' });
+      return res.status(400).json({ message: 'Loan must belong to a customer', statusCode: 400 });
+    }
+
+    // Check if customer exists first
+    const customerModel = require('../models/customerModel');
+    const customer = await customerModel.getCustomerById(customer_id);
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found', statusCode: 404 });
     }
 
     // FIX: Use pick() to read BOTH snake_case and camelCase variants.
@@ -39,7 +46,7 @@ exports.createLoan = async (req, res) => {
       interest_rate:     toNum(pick(req.body, 'interest_rate',     'interestRate')),
       loan_term:         toNum(pick(req.body, 'loan_term',         'loanTerm')),
       application_date:  pick(req.body, 'application_date',  'applicationDate') || null,
-      status_approved:   pick(req.body, 'status_approved',   'statusApproved'),
+      status_approved:   pick(req.body, 'status_approved',   'statusApproved') || 'PENDING',
       monthly_payment:   toNum(pick(req.body, 'monthly_payment',   'monthlyPayment')),
       next_payment_due:  pick(req.body, 'next_payment_due',  'nextPaymentDue')  || null,
       remaining_balance: toNum(pick(req.body, 'remaining_balance', 'remainingBalance')),
@@ -57,6 +64,9 @@ exports.createLoan = async (req, res) => {
 
   } catch (err) {
     console.error(err);
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ message: 'Duplicate loan record', error: err.message });
+    }
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
@@ -95,11 +105,16 @@ exports.updateLoanCustomer = async (req, res) => {
 
     const existing = await loanModel.getLoanCustomerById(id);
     if (!existing) {
-      return res.status(404).json({ message: 'Loan not found' });
+      return res.status(404).json({ message: 'Loan not found', statusCode: 404 });
     }
 
+    // LOCK: Cannot update ACTIVE or REJECTED loans
     if (existing.status_approved === 'ACTIVE') {
-      return res.status(400).json({ message: 'ACTIVE loans cannot be updated' });
+      return res.status(400).json({ message: 'ACTIVE loans cannot be updated', statusCode: 400 });
+    }
+
+    if (existing.status_approved === 'REJECTED') {
+      return res.status(400).json({ message: 'REJECTED loans cannot be updated', statusCode: 400 });
     }
 
     // FIX: Same dual-key reading as createLoan — resilient to middleware transforms.
@@ -117,6 +132,26 @@ exports.updateLoanCustomer = async (req, res) => {
       next_payment_due:  pick(req.body, 'next_payment_due',  'nextPaymentDue')  || null,
       remaining_balance: toNum(pick(req.body, 'remaining_balance', 'remainingBalance')),
     };
+
+    // Validate status transition if status is being changed
+    if (updatePayload.status_approved && updatePayload.status_approved !== existing.status_approved) {
+      const currentStatus = existing.status_approved;
+      const newStatus = updatePayload.status_approved;
+
+      const VALID_TRANSITIONS = {
+        PENDING:  ['APPROVED', 'REJECTED'],
+        APPROVED: ['ACTIVE', 'REJECTED'],
+        ACTIVE:   [],
+        REJECTED: [],
+      };
+
+      if (!VALID_TRANSITIONS[currentStatus]?.includes(newStatus)) {
+        return res.status(400).json({
+          message: `Invalid status transition: ${currentStatus} → ${newStatus}`,
+          statusCode: 400
+        });
+      }
+    }
 
     console.log("📦 Normalized payload for UPDATE:", updatePayload);
 
@@ -137,18 +172,27 @@ exports.deleteLoanCustomer = async (req, res) => {
 
     const existing = await loanModel.getLoanCustomerById(id);
     if (!existing) {
-      return res.status(404).json({ message: 'Loan not found' });
+      return res.status(404).json({ message: 'Loan not found', statusCode: 404 });
     }
 
+    // Prevent deletion of ACTIVE loans
     if (existing.status_approved === 'ACTIVE') {
-      return res.status(400).json({ message: 'ACTIVE loans cannot be deleted' });
+      return res.status(400).json({ message: 'ACTIVE loans cannot be deleted', statusCode: 400 });
+    }
+
+    // Prevent deletion of REJECTED loans
+    if (existing.status_approved === 'REJECTED') {
+      return res.status(400).json({ message: 'REJECTED loans cannot be deleted', statusCode: 400 });
     }
 
     await loanModel.deleteLoanCustomerById(id);
     res.status(200).json({ message: 'Loan deleted' });
 
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    if (err.message.includes('foreign key')) {
+      return res.status(409).json({ message: 'Cannot delete loan with related payments', statusCode: 409 });
+    }
+    res.status(500).json({ message: err.message, statusCode: 500 });
   }
 };
 

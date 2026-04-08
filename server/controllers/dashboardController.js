@@ -8,13 +8,8 @@ const query = (sql, params = []) =>
 // GET /api/dashboard
 exports.getDashboard = async (req, res) => {
   try {
-    const [
-      kpisArr,
-      recentPayments,
-      overdueLoans,
-      loanStatusBreakdown,
-      monthlyTrend,
-    ] = await Promise.all([
+    // Use Promise.allSettled to handle individual query failures gracefully
+    const results = await Promise.allSettled([
 
       // ── KPI Cards ──────────────────────────────────────────────────────────
       query(`
@@ -83,8 +78,23 @@ exports.getDashboard = async (req, res) => {
       `),
     ]);
 
+    // Extract results, with fallback values if queries fail
+    const kpisArr = results[0].status === 'fulfilled' ? results[0].value : [{}];
+    const recentPayments = results[1].status === 'fulfilled' ? results[1].value : [];
+    const overdueLoans = results[2].status === 'fulfilled' ? results[2].value : [];
+    const loanStatusBreakdown = results[3].status === 'fulfilled' ? results[3].value : [];
+    const monthlyTrend = results[4].status === 'fulfilled' ? results[4].value : [];
+
+    // Log any failures for debugging
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        console.warn(`⚠️ Dashboard query ${i} failed:`, r.reason);
+      }
+    });
+
     res.set('Cache-Control', 'no-store');
     res.json({
+      success: true,
       kpis: kpisArr[0] || {},
       recentPayments,
       overdueLoans,
@@ -94,6 +104,10 @@ exports.getDashboard = async (req, res) => {
 
   } catch (err) {
     console.error('❌ Dashboard error:', err);
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error',
+      errors: [err.message]
+    });
   }
 };

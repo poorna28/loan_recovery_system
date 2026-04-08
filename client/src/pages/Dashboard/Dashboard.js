@@ -3,22 +3,22 @@ import Layout from '../../components/Layout/Layout';
 import '../Dashboard/dashboard.css';
 import api from '../../services/api';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────── ──────────────────────────── ──────────
 
 const fmtINR = (val) => {
   const n = Number(val || 0);
   if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
-  if (n >= 100000)   return `₹${(n / 100000).toFixed(1)}L`;
-  if (n >= 1000)     return `₹${n.toLocaleString('en-IN')}`;
+  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+  if (n >= 1000) return `₹${n.toLocaleString('en-IN')}`;
   return `₹${n}`;
 };
 
 const timeAgo = (minutes) => {
-  const m = Number(minutes || 0);
-  if (m < 1)    return 'just now';
-  if (m < 60)   return `${m} min ago`;
+  const m = Math.max(0, Number(minutes || 0));
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m} min ago`;
   const h = Math.floor(m / 60);
-  if (h < 24)   return `${h}h ago`;
+  if (h < 24) return `${h}h ago`;
   const d = Math.floor(h / 24);
   return `${d}d ago`;
 };
@@ -36,21 +36,22 @@ const getTodayStr = () =>
   });
 
 const statusColor = (status = '') => {
-  switch (status.toUpperCase()) {
-    case 'ACTIVE':   return 'green';
+  const normalizedStatus = (status || '').toUpperCase();
+  switch (normalizedStatus) {
+    case 'ACTIVE': return 'green';
     case 'APPROVED': return 'blue';
-    case 'PENDING':  return 'violet';
+    case 'PENDING': return 'violet';
     case 'REJECTED': return 'red';
-    default:         return 'blue';
+    default: return 'blue';
   }
 };
 
 // ─── DashboardPage ────────────────────────────────────────────────────────────
 
 const DashboardPage = () => {
-  const [data, setData]       = useState(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
 
   const fetchDashboard = useCallback(async () => {
@@ -58,7 +59,7 @@ const DashboardPage = () => {
     setError(null);
     try {
       const res = await api.get('/dashboard');
-      setData(res.data);
+      setData(res.data || {});
       setLastUpdated(new Date());
     } catch (err) {
       console.error('❌ Dashboard fetch error:', err);
@@ -70,52 +71,54 @@ const DashboardPage = () => {
 
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [fetchDashboard]);
 
-  // ── Derived values ─────────────────────────────────────────────────────────
-  const kpis               = data?.kpis               || {};
-  const recentPayments     = data?.recentPayments      || [];
-  const overdueLoans       = data?.overdueLoans        || [];
+  // ── Derived values ────────────────────────────────────────────────────────
+  const kpis = data?.kpis || {};
+  const recentPayments = data?.recentPayments || [];
+  const overdueLoans = data?.overdueLoans || [];
   const loanStatusBreakdown = data?.loanStatusBreakdown || [];
-  const monthlyTrend       = data?.monthlyTrend        || [];
+  const monthlyTrend = data?.monthlyTrend || [];
 
   const kpiCards = [
     {
-      color:   'blue',
-      icon:    '👥',
-      label:   'Total Customers',
-      value:   loading ? '—' : (kpis.total_customers ?? 0),
+      color: 'blue',
+      icon: '👥',
+      label: 'Total Customers',
+      value: loading ? '—' : (kpis.total_customers ?? 0),
       subtext: 'Registered borrowers',
-      change:  null,
+      change: null,
     },
     {
-      color:   'violet',
-      icon:    '🏦',
-      label:   'Total Loans',
-      value:   loading ? '—' : (kpis.total_loans ?? 0),
+      color: 'violet',
+      icon: '🏦',
+      label: 'Total Loans',
+      value: loading ? '—' : (kpis.total_loans ?? 0),
       subtext: `${kpis.active_loans ?? 0} active`,
-      change:  null,
+      change: null,
     },
     {
-      color:   'green',
-      icon:    '💰',
-      label:   'Collected',
-      value:   loading ? '—' : fmtINR(kpis.total_collected),
+      color: 'green',
+      icon: '💰',
+      label: 'Collected',
+      value: loading ? '—' : fmtINR(kpis.total_collected),
       subtext: 'Total recovered',
-      change:  null,
+      change: null,
     },
     {
-      color:   'red',
-      icon:    '⏳',
-      label:   'Pending',
-      value:   loading ? '—' : fmtINR(kpis.total_pending),
+      color: 'red',
+      icon: '⏳',
+      label: 'Pending',
+      value: loading ? '—' : fmtINR(kpis.total_pending),
       subtext: `${kpis.overdue_count ?? 0} overdue`,
-      change:  null,
+      change: null,
     },
   ];
 
   // Max collected for trend bar scaling
-  const maxCollected = Math.max(...monthlyTrend.map(m => Number(m.collected || 0)), 1);
+  const maxCollected = monthlyTrend.length > 0 
+    ? Math.max(...monthlyTrend.map(m => Number(m.collected || 0)), 1)
+    : 1;
 
   return (
     <Layout>
@@ -317,8 +320,8 @@ const DashboardPage = () => {
                                 o.days_overdue >= 90
                                   ? '#ef4444'
                                   : o.days_overdue >= 30
-                                  ? '#f97316'
-                                  : '#eab308',
+                                    ? '#f97316'
+                                    : '#eab308',
                               fontWeight: 600,
                             }}
                           >
@@ -334,8 +337,8 @@ const DashboardPage = () => {
                           o.days_overdue >= 90
                             ? '#ef4444'
                             : o.days_overdue >= 30
-                            ? '#f97316'
-                            : 'inherit',
+                              ? '#f97316'
+                              : 'inherit',
                       }}
                     >
                       {fmtINR(o.remaining_balance)}
@@ -363,10 +366,10 @@ const DashboardPage = () => {
                   const pct = total > 0 ? Math.round((Number(s.count) / total) * 100) : 0;
                   const color = statusColor(s.status);
                   const barColors = {
-                    green:  '#16a34a',
-                    blue:   '#2563eb',
+                    green: '#16a34a',
+                    blue: '#2563eb',
                     violet: '#7c3aed',
-                    red:    '#dc2626',
+                    red: '#dc2626',
                   };
                   return (
                     <div key={s.status} style={{ marginBottom: 10 }}>
@@ -377,6 +380,7 @@ const DashboardPage = () => {
                           fontSize: 12,
                           marginBottom: 3,
                           opacity: 0.8,
+                          color:  '#fff',
                         }}
                       >
                         <span>{s.status}</span>

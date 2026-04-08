@@ -1,18 +1,18 @@
 import "../../App.css";
 import React, { useEffect, useState } from 'react';
+import { getFileUrl, ALLOWED_FILE_TYPES } from '../../config/constants';
 
 const Customer_list_view = ({ viewData }) => {
     const [formData, setFormData] = useState({});
+    const [step, setStep] = useState(1);
 
     useEffect(() => {
         if (viewData) {
             const normalizedDate = viewData.dateOfBirth?.split("T")[0] || viewData.dateOfBirth;
             setFormData({ ...viewData, dateOfBirth: normalizedDate });
+            setStep(1);
         }
-        setStep(1);
     }, [viewData]);
-
-    const [step, setStep] = useState(1);
 
     const steps = [
         { id: 1, name: "Personal Info" },
@@ -150,9 +150,9 @@ const Customer_list_view = ({ viewData }) => {
                                         <label className="form-label">Address Proof Document</label>
                                         <span>
                                             <a
-                                                href={`http://localhost:5000/uploads/${formData.addressProof}`}
+                                                href={getFileUrl(formData.addressProof)}
                                                 target="_blank"
-                                                rel=" noreferrer"
+                                                rel="noreferrer"
                                             >
                                                 {formData.addressProofOriginal || '---'}
                                             </a>
@@ -200,9 +200,9 @@ const Customer_list_view = ({ viewData }) => {
                                         <label className="form-label">Document Id Upload</label>
                                         <span>
                                             <a
-                                                href={`http://localhost:5000/uploads/${formData.idDocumentUpload}`}
+                                                href={getFileUrl(formData.idDocumentUpload)}
                                                 target="_blank"
-                                                rel=" noreferrer"
+                                                rel="noreferrer"
                                             >
                                                 {formData.idDocumentUploadOriginal || '---'}
                                             </a>
@@ -213,9 +213,9 @@ const Customer_list_view = ({ viewData }) => {
                                         <label className="form-label">Photo of Customer</label>
                                         <span>
                                             <a
-                                                href={`http://localhost:5000/uploads/${formData.customerPhoto}`}
+                                                href={getFileUrl(formData.customerPhoto)}
                                                 target="_blank"
-                                                rel=" noreferrer"
+                                                rel="noreferrer"
                                             >
                                                 {formData.customerPhotoOriginal || '---'}
                                             </a>

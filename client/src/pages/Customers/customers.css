@@ -1,0 +1,313 @@
+.customers-ui {
+  background: #07090f;
+  color: #eceef6;
+  font-family: 'DM Mono', monospace;
+  padding: 28px;
+  min-height: 100vh;
+}
+
+/* ─── Topbar ─── */
+.customers-ui .topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.customers-ui .topbar-left h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.customers-ui .topbar-right {
+  display: flex;
+  gap: 10px;
+}
+
+/* ─── Action Buttons ─── */
+.customers-ui .btn-add {
+  background: #4f8dff;
+  border: none;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.customers-ui .btn-add:hover {
+  background: #3d6dcc;
+  transform: translateY(-1px);
+}
+
+/* ─── KPI Grid ─── */
+.customers-ui .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.customers-ui .kpi {
+  background: #0d1018;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.customers-ui .kpi.blue {
+  border-left: 3px solid #4f8dff;
+}
+
+.customers-ui .kpi.violet {
+  border-left: 3px solid #b794f6;
+}
+
+.customers-ui .kpi.green {
+  border-left: 3px solid #18d88b;
+}
+
+.customers-ui .kpi.orange {
+  border-left: 3px solid #ffb547;
+}
+
+.customers-ui .kpi-icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.customers-ui .kpi-label {
+  font-size: 10px;
+  color: #7880a0;
+  margin-bottom: 4px;
+}
+
+.customers-ui .kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.customers-ui .kpi-subtext {
+  font-size: 11px;
+  color: #7880a0;
+}
+
+/* ─── Card Container ─── */
+.customers-ui .card {
+  background: #0d1018;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.customers-ui .card-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.customers-ui .card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.customers-ui .card-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ─── Table ─── */
+.customers-ui .card-body {
+  overflow-x: auto;
+}
+
+.customers-ui table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.customers-ui thead {
+  background: rgba(255,255,255,0.02);
+}
+
+.customers-ui th {
+  padding: 12px 14px;
+  text-align: left;
+  color: #7880a0;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.customers-ui td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: #eceef6;
+}
+
+.customers-ui tbody tr {
+  transition: background 0.2s;
+}
+
+.customers-ui tbody tr:hover {
+  background: rgba(79,141,255,0.05);
+}
+
+.customers-ui tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ─── Status Badges ─── */
+.customers-ui .status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.customers-ui .status-badge.active {
+  background: rgba(24,216,139,0.15);
+  color: #18d88b;
+}
+
+.customers-ui .status-badge.inactive {
+  background: rgba(120,128,160,0.15);
+  color: #7880a0;
+}
+
+.customers-ui .status-badge.employed {
+  background: rgba(79,141,255,0.15);
+  color: #4f8dff;
+}
+
+.customers-ui .status-badge.unemployed {
+  background: rgba(240,80,90,0.15);
+  color: #f0505a;
+}
+
+/* ─── Action Buttons (Table) ─── */
+.customers-ui .action-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.customers-ui .btn-icon {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #7880a0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.customers-ui .btn-icon:hover {
+  background: rgba(79,141,255,0.1);
+  color: #4f8dff;
+  border-color: #4f8dff;
+}
+
+.customers-ui .btn-icon.danger:hover {
+  background: rgba(240,80,90,0.1);
+  color: #f0505a;
+  border-color: #f0505a;
+}
+
+/* ─── Loading State ─── */
+.customers-ui .loading-row td {
+  padding: 16px 14px;
+}
+
+.customers-ui .skeleton {
+  display: inline-block;
+  height: 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ─── Empty State ─── */
+.customers-ui .empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #7880a0;
+}
+
+.customers-ui .empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.3;
+}
+
+/* ─── Modal Styling ─── */
+.modal-content {
+  background: #0d1018 !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  color: #eceef6 !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+.modal-title {
+  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btn-close {
+  filter: invert(1) !important;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1200px) {
+  .customers-ui .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .customers-ui {
+    padding: 16px;
+  }
+
+  .customers-ui .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customers-ui table {
+    font-size: 11px;
+  }
+
+  .customers-ui th,
+  .customers-ui td {
+    padding: 10px 8px;
+  }
+
+  .customers-ui .topbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .customers-ui .action-buttons {
+    flex-direction: column;
+  }
+}

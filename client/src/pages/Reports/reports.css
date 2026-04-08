@@ -389,7 +389,7 @@
 .reports-body td {
   padding: 13px 20px;
   font-size: 13px;
-  color: var(--muted2);
+  color: var(--muted2) !important;
   border-bottom: 1px solid rgba(31, 36, 51, 0.6);
 }
 

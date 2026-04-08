@@ -1,25 +1,39 @@
-import '../../App.css';
+import './loans.css';
 import Layout from '../../components/Layout/Layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import api from '../../services/api';
 import Loan_List_Details from './loan_list_details';
 import Loan_List_View from './loan_list_view';
 import { toast } from 'react-toastify';
+
+// ─── Helpers ──────────────────────────
+const fmtINR = (val) => {
+  const n = Number(val || 0);
+  if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
+  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+  if (n >= 1000) return `₹${n.toLocaleString('en-IN')}`;
+  return `₹${n}`;
+};
 
 const Loan_Details = () => {
   const [loanCustomers, setLoanCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editLoanCustomer, setEditLoanCustomer] = useState(null);
   const [viewLoanCustomer, setViewLoanCustomer] = useState(null);
+  const [kpiData, setKpiData] = useState({
+    total: 0,
+    active: 0,
+    pending: 0,
+    totalAmount: 0
+  });
 
-  const fetchAll = () => {
+  const fetchAll = useCallback(() => {
     setLoading(true);
     api.get('loan_customers')
       .then(res => {
         const mapped = res.data.loan_customers.map(item => ({
           loan_customer_id: item.id,
           loan_id: item.loan_id,
-          // FIX Issue 2 (list nulls): use ?? null so 0 is preserved; shown as "—" in table
           loanAmount: item.loan_amount ?? null,
           loanPurpose: item.loan_purpose ?? null,
           interestRate: item.interest_rate ?? null,
@@ -36,6 +50,14 @@ const Loan_Details = () => {
         }));
 
         setLoanCustomers(mapped);
+
+        // Calculate KPIs
+        const total = mapped.length;
+        const active = mapped.filter(l => l.statusApproved === 'ACTIVE').length;
+        const pending = mapped.filter(l => l.statusApproved === 'PENDING').length;
+        const totalAmount = mapped.reduce((sum, l) => sum + (Number(l.loanAmount) || 0), 0);
+
+        setKpiData({ total, active, pending, totalAmount });
         setLoading(false);
       })
       .catch(err => {
@@ -43,23 +65,20 @@ const Loan_Details = () => {
         toast.error('Failed to load loan customers.');
         setLoading(false);
       });
-  };
+  }, []);
 
   useEffect(() => {
     fetchAll();
-  }, []);
+  }, [fetchAll]);
 
   const fetchLoanCustomerById = async (id) => {
     try {
       const res = await api.get(`/loan_customers/${id}`);
-
-      // FIX Issue 2 (edit fields missing): API may wrap the object under a key.
-      // Support both: { id, loan_id, ... } and { loan_customer: { id, loan_id, ... } }
       const loan = res.data?.loan_customer || res.data;
 
       setEditLoanCustomer({
-        id: loan.id,                          // numeric PK — used in PUT URL
-        loanId: loan.loan_id,                 // display-only in readonly field
+        id: loan.id,
+        loanId: loan.loan_id,
         loanAmount: loan.loan_amount ?? "",
         loanPurpose: loan.loan_purpose ?? "",
         interestRate: loan.interest_rate ?? "",
@@ -81,14 +100,6 @@ const Loan_Details = () => {
     }
   };
 
-  // FIX Issue 1 (double API + blank screen):
-  // Root cause: using data-bs-toggle + data-bs-target on buttons causes Bootstrap
-  // to open the modal immediately on click. Simultaneously, setEditLoanCustomer(null)
-  // triggers a React re-render which remounts the modal mid-animation → blank screen.
-  // Also, onSaved called fetchAll() AND the modal's own hide triggered another state
-  // update → two API calls fired back-to-back.
-  // Solution: Remove data-bs-* attributes from all buttons. Open modal programmatically
-  // AFTER state is set so React re-render is complete before Bootstrap animates.
   const openModal = () => {
     const modalEl = document.getElementById("addLoanCustomerModal");
     if (modalEl) {
@@ -101,13 +112,11 @@ const Loan_Details = () => {
 
   const handleAddClick = () => {
     setEditLoanCustomer(null);
-    // Small timeout ensures React flushes the null state before modal opens
     setTimeout(openModal, 0);
   };
 
   const handleEditClick = async (loanCustomer) => {
     await fetchLoanCustomerById(loanCustomer.loan_customer_id);
-    // Open modal AFTER fetch completes so form is fully populated before display
     openModal();
   };
 
@@ -116,29 +125,210 @@ const Loan_Details = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this loan customer?')) {
+    if (window.confirm('Are you sure you want to delete this loan?')) {
       try {
         await api.delete(`/loan_customers/${id}`);
-        toast.success('Loan customer deleted successfully.');
+        toast.success('Loan deleted successfully.');
         fetchAll();
       } catch (err) {
         console.error('Delete failed:', err);
-        toast.error('Failed to delete loan customer.');
+        const errorMsg = err.response?.data?.message || err.message || 'Failed to delete loan.';
+        toast.error(errorMsg);
       }
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status?.toUpperCase()) {
+      case 'ACTIVE':
+        return 'active';
+      case 'APPROVED':
+        return 'approved';
+      case 'PENDING':
+        return 'pending';
+      case 'REJECTED':
+        return 'rejected';
+      default:
+        return 'approved';
+    }
+  };
+
+  const kpiCards = [
+    {
+      color: 'blue',
+      icon: '📋',
+      label: 'Total Loans',
+      value: kpiData.total,
+      subtext: 'All loans'
+    },
+    {
+      color: 'green',
+      icon: '✓',
+      label: 'Active',
+      value: kpiData.active,
+      subtext: `${Math.round((kpiData.active / (kpiData.total || 1)) * 100)}% of total`
+    },
+    {
+      color: 'violet',
+      icon: '⏳',
+      label: 'Pending',
+      value: kpiData.pending,
+      subtext: 'Awaiting approval'
+    },
+    {
+      color: 'red',
+      icon: '💰',
+      label: 'Total Principal',
+      value: fmtINR(kpiData.totalAmount),
+      subtext: 'Disbursed amount'
+    }
+  ];
+
   return (
     <Layout>
-      {/* FIX Issue 1: No data-bs-toggle / data-bs-target — open programmatically */}
-      <button
-        type="button"
-        className="btn btn-primary d-block mb-3"
-        style={{ marginLeft: 'auto' }}
-        onClick={handleAddClick}
-      >
-        Add Loan Customer
-      </button>
+      <div className="loans-ui">
+        {/* Topbar */}
+        <div className="topbar">
+          <div className="topbar-left">
+            <h2>Loans</h2>
+          </div>
+          <div className="topbar-right">
+            <button
+              className="btn-add"
+              onClick={handleAddClick}
+            >
+              ➕ Add Loan
+            </button>
+          </div>
+        </div>
+
+        {/* KPI Grid */}
+        <div className="kpi-grid">
+          {kpiCards.map((k) => (
+            <div key={k.label} className={`kpi ${k.color}`}>
+              <div className="kpi-icon">{k.icon}</div>
+              <div className="kpi-label">{k.label}</div>
+              <div className="kpi-value">{loading ? '—' : k.value}</div>
+              <div className="kpi-subtext">{k.subtext}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Loans Table Card */}
+        <div className="card">
+          <div className="card-header">
+            <div className="card-title">Loan List</div>
+            <div className="card-controls">
+              <span style={{ fontSize: '11px', color: '#7880a0' }}>
+                {loading ? 'Loading...' : `${loanCustomers.length} loans`}
+              </span>
+            </div>
+          </div>
+
+          <div className="card-body">
+            {loading ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Purpose</th>
+                    <th>Rate</th>
+                    <th>Term</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>EMI</th>
+                    <th>Balance</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3].map((i) => (
+                    <tr key={i} className="loading-row">
+                      <td><div className="skeleton" style={{ width: '80px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '100px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '120px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '60px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '60px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '90px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '80px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '100px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '100px' }} /></td>
+                      <td><div className="skeleton" style={{ width: '90px' }} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : loanCustomers.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">📭</div>
+                <p>No loans found. Add one to get started.</p>
+              </div>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Purpose</th>
+                    <th>Rate</th>
+                    <th>Term</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>EMI</th>
+                    <th>Balance</th>
+                    <th style={{ textAlign: 'center' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loanCustomers.map((loanCustomer) => (
+                    <tr key={loanCustomer.loan_customer_id}>
+                      <td>{loanCustomer.loan_id}</td>
+                      <td className="amount">{loanCustomer.loanAmount ? fmtINR(loanCustomer.loanAmount) : '—'}</td>
+                      <td>{loanCustomer.loanPurpose ?? '—'}</td>
+                      <td>{loanCustomer.interestRate ? `${loanCustomer.interestRate}%` : '—'}</td>
+                      <td>{loanCustomer.loanTerm ? `${loanCustomer.loanTerm}mo` : '—'}</td>
+                      <td>{loanCustomer.applicationDate ?? '—'}</td>
+                      <td>
+                        <span className={`status-badge ${getStatusColor(loanCustomer.statusApproved)}`}>
+                          {loanCustomer.statusApproved ?? '—'}
+                        </span>
+                      </td>
+                      <td className="amount">{loanCustomer.monthlyPayment ? fmtINR(loanCustomer.monthlyPayment) : '—'}</td>
+                      <td className="amount">{loanCustomer.remainingBalance ? fmtINR(loanCustomer.remainingBalance) : '—'}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button
+                            className="btn-icon"
+                            onClick={() => handleEditClick(loanCustomer)}
+                            title="Edit"
+                          >
+                            ✎
+                          </button>
+                          <button
+                            className="btn-icon"
+                            onClick={() => handleView(loanCustomer)}
+                            title="View"
+                          >
+                            👁
+                          </button>
+                          <button
+                            className="btn-icon danger"
+                            onClick={() => handleDelete(loanCustomer.loan_customer_id)}
+                            title="Delete"
+                          >
+                            🗑
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
 
       <Loan_List_Details
         editData={editLoanCustomer}
@@ -149,89 +339,6 @@ const Loan_Details = () => {
       <Loan_List_View
         viewData={viewLoanCustomer}
       />
-
-      <div className="table-responsive customer-table">
-        <table className="table table-striped table-hover align-middle">
-          <thead>
-            <tr>
-              <th>Loan ID</th>
-              <th>Loan Amount</th>
-              <th>Loan Purpose</th>
-              <th>Interest Rate</th>
-              <th>Loan Term</th>
-              <th>Application Date</th>
-              <th>Status</th>
-              <th>Monthly Payment</th>
-              <th>Next Payment Due</th>
-              <th>Remaining Balance</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="11" className="text-center py-4">
-                  <div className="spinner-border spinner-border-sm me-2" role="status" />
-                  Loading...
-                </td>
-              </tr>
-            ) : loanCustomers.length === 0 ? (
-              <tr>
-                <td colSpan="11" className="text-center py-4 text-muted">
-                  No loan customers found.
-                </td>
-              </tr>
-            ) : (
-              loanCustomers.map((loanCustomer) => (
-                <tr key={loanCustomer.loan_customer_id}>
-                  <td>{loanCustomer.loan_id}</td>
-                  {/* FIX Issue 2 (list): show "—" for null values from API */}
-                  <td>{loanCustomer.loanAmount ?? "—"}</td>
-                  <td>{loanCustomer.loanPurpose ?? "—"}</td>
-                  <td>{loanCustomer.interestRate ?? "—"}</td>
-                  <td>{loanCustomer.loanTerm ?? "—"}</td>
-                  <td>{loanCustomer.applicationDate ?? "—"}</td>
-                  <td>{loanCustomer.statusApproved ?? "—"}</td>
-                  <td>{loanCustomer.monthlyPayment ?? "—"}</td>
-                  <td>{loanCustomer.nextPaymentDue ?? "—"}</td>
-                  <td>{loanCustomer.remainingBalance ?? "—"}</td>
-                  <td>
-                    <div className="d-flex align-items-center justify-content-center gap-2">
-                      {/* FIX Issue 1: programmatic open — no data-bs-toggle */}
-                      <button
-                        className="btn btn-sm btn-warning"
-                        onClick={() => handleEditClick(loanCustomer)}
-                        title="Edit"
-                      >
-                        <i className="bi bi-pencil-square"></i>
-                      </button>
-
-                      {/* View modal is unrelated to the add/edit modal — keep data-bs-* here */}
-                      <button
-                        className="btn btn-sm btn-info"
-                        onClick={() => handleView(loanCustomer)}
-                        data-bs-toggle="modal"
-                        data-bs-target="#viewLoanCustomerModal"
-                        title="View"
-                      >
-                        <i className="bi bi-eye"></i>
-                      </button>
-
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleDelete(loanCustomer.loan_customer_id)}
-                        title="Delete"
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
     </Layout>
   );
 };

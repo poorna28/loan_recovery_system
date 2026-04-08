@@ -121,6 +121,7 @@
   padding: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
   font-size: 13px;
+  color: #fff;
 }
 
 .dashboard-ui .card-head.red {
@@ -146,6 +147,7 @@
 
 .dashboard-ui .name {
   font-weight: 500;
+  color: #fff;
 }
 
 .dashboard-ui .desc {

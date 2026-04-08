@@ -39,6 +39,7 @@ const ReportModel = {
     FROM loan_customer lc
     LEFT JOIN customers c ON c.customer_id = lc.customer_id
     ORDER BY lc.id DESC
+    LIMIT 100
   `),
 
   getStatusBreakdown: () => query(`
@@ -86,6 +87,7 @@ const ReportModel = {
     LEFT JOIN loan_customer lc ON lc.id = p.loan_customer_id
     LEFT JOIN customers c ON c.customer_id = lc.customer_id
     ORDER BY p.payment_date DESC
+    LIMIT 100
   `),
 
   // ── OVERDUE TAB ───────────────────────────────────────────────────────────
@@ -116,6 +118,7 @@ const ReportModel = {
     WHERE lc.status_approved = 'ACTIVE'
       AND lc.next_payment_due < CURDATE()
     ORDER BY days_overdue DESC
+    LIMIT 100
   `),
 
   // ── CUSTOMER-WISE TAB ────────────────────────────────────────────────────
@@ -153,6 +156,7 @@ const ReportModel = {
     LEFT JOIN loan_customer lc ON lc.customer_id = c.customer_id
     GROUP BY c.customer_id, c.firstName, c.lastName, c.phoneNumber
     ORDER BY pending_amount DESC
+    LIMIT 100
   `),
 
 };

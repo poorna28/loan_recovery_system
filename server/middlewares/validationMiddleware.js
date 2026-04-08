@@ -3,6 +3,15 @@
  * Validates request body, params, and query parameters
  */
 
+// Helper function to sanitize strings (prevent XSS)
+const sanitizeString = (str) => {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/[<>]/g, '') // Remove < and >
+    .trim()
+    .substring(0, 255); // Limit length
+};
+
 const validatePayment = (req, res, next) => {
   const { loanId, amount, method } = req.body;
 
@@ -37,8 +46,12 @@ const validateLoan = (req, res, next) => {
   const loanAmount   = req.body.loan_amount   ?? req.body.loanAmount;
   const interestRate = req.body.interest_rate ?? req.body.interestRate;
   const loanTerm     = req.body.loan_term     ?? req.body.loanTerm;
+  const applicationDate = req.body.application_date ?? req.body.applicationDate;
+  const nextPaymentDue = req.body.next_payment_due ?? req.body.nextPaymentDue;
+  const statusApproved = req.body.status_approved ?? req.body.statusApproved;
 
   const errors = [];
+  const today = new Date().toISOString().split('T')[0];
 
   if (
     customer_id === undefined ||
@@ -48,16 +61,30 @@ const validateLoan = (req, res, next) => {
     errors.push('customer_id is required');
   }
 
-  if (loanAmount && (isNaN(loanAmount) || Number(loanAmount) <= 0)) {
-    errors.push('loan_amount must be a positive number');
+  if (!loanAmount || isNaN(loanAmount) || Number(loanAmount) <= 0 || Number(loanAmount) > 10000000) {
+    errors.push('loan_amount must be between 0 and 10,000,000');
   }
 
-  if (interestRate && (isNaN(interestRate) || Number(interestRate) < 0)) {
-    errors.push('interest_rate must be a non-negative number');
+  if (interestRate && (isNaN(interestRate) || Number(interestRate) < 0 || Number(interestRate) > 100)) {
+    errors.push('interest_rate must be between 0% and 100%');
   }
 
-  if (loanTerm && (isNaN(loanTerm) || Number(loanTerm) <= 0)) {
-    errors.push('loan_term must be a positive number (months)');
+  if (!loanTerm || isNaN(loanTerm) || Number(loanTerm) <= 0 || Number(loanTerm) > 360) {
+    errors.push('loan_term must be between 1 and 360 months');
+  }
+
+  if (!applicationDate) {
+    errors.push('application_date is required');
+  } else if (applicationDate > today) {
+    errors.push('application_date cannot be in the future');
+  }
+
+  if (nextPaymentDue && applicationDate && nextPaymentDue < applicationDate) {
+    errors.push('next_payment_due must be on or after application_date');
+  }
+
+  if (statusApproved && !['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'].includes(statusApproved)) {
+    errors.push('status_approved must be one of: PENDING, APPROVED, REJECTED, ACTIVE');
   }
 
   if (errors.length > 0) {
@@ -72,7 +99,7 @@ const validateLoan = (req, res, next) => {
 };
 
 const validateCustomer = (req, res, next) => {
-  const { firstName, lastName, email } = req.body;
+  const { firstName, lastName, email, phoneNumber, profileStatus, employmentStatus } = req.body;
 
   const errors = [];
 
@@ -84,8 +111,20 @@ const validateCustomer = (req, res, next) => {
     errors.push('lastName is required');
   }
 
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errors.push('email must be a valid email address');
+  }
+
+  if (!phoneNumber || !/^[6-9]\d{9}$/.test(phoneNumber)) {
+    errors.push('phoneNumber must be a valid 10-digit Indian mobile number (starting with 6-9)');
+  }
+
+  if (!profileStatus || !['Active', 'Inactive', 'OnHold'].includes(profileStatus)) {
+    errors.push('profileStatus must be one of: Active, Inactive, OnHold');
+  }
+
+  if (!employmentStatus || !['Employed', 'Self-Employed', 'Unemployed', 'Student', 'Retired'].includes(employmentStatus)) {
+    errors.push('employmentStatus must be one of: Employed, Self-Employed, Unemployed, Student, Retired');
   }
 
   if (errors.length > 0) {
@@ -116,7 +155,8 @@ module.exports = {
   validatePayment,
   validateLoan,
   validateCustomer,
-  validateIdParam
+  validateIdParam,
+  sanitizeString
 };
 
 

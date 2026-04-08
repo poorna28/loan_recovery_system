@@ -244,8 +244,11 @@ const LoanCustomer = {
 
           const remainingBalance = Number(loan.loan_amount);
 
+          // Calculate next payment due as one month from today
           const nextPaymentDue = new Date();
           nextPaymentDue.setMonth(nextPaymentDue.getMonth() + 1);
+          // Format as DATE (YYYY-MM-DD) not datetime
+          const nextPaymentDueFormatted = nextPaymentDue.toISOString().split('T')[0];
 
           db.query(
             `UPDATE loan_customer SET
@@ -254,7 +257,7 @@ const LoanCustomer = {
                remaining_balance = ?,
                next_payment_due  = ?
              WHERE id = ?`,
-            [monthlyPayment, remainingBalance, nextPaymentDue, id],
+            [monthlyPayment, remainingBalance, nextPaymentDueFormatted, id],
             (err2, result) => {
               if (err2) return reject(err2);
               resolve(result);

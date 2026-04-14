@@ -5,6 +5,7 @@ import Layout from '../../components/Layout/Layout';
 import Customer_details from './customer_details';
 import Customer_list_view from './customer_list_view';
 import { toast } from 'react-toastify';
+import { buildUrl } from '../../utils/queryBuilder';
 
 // ─── Helpers ──────────────────────────
 const fmtINR = (val) => {
@@ -23,6 +24,15 @@ const Customers = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerLoans, setCustomerLoans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    search: '',
+    sortBy: 'firstName',
+    sortOrder: 'asc',
+    page: 1,
+    limit: 50,
+    profileStatus: '',
+    employmentStatus: ''
+  });
   const [kpiData, setKpiData] = useState({
     total: 0,
     active: 0,
@@ -33,7 +43,8 @@ const Customers = () => {
   const fetchCustomers = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await api.get('customers');
+      const url = buildUrl('customers', filters);
+      const res = await api.get(url);
       const customerList = res.data.customers || [];
       setCustomers(customerList);
 
@@ -52,7 +63,7 @@ const Customers = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [filters]);
 
   useEffect(() => {
     fetchCustomers();
@@ -111,7 +122,9 @@ const Customers = () => {
   const openLoansModal = async (customer_id) => {
     setSelectedCustomer(customer_id);
     try {
-      const res = await api.get(`/loan_customers/customer/${customer_id}`);
+      const loansFilters = { page: 1, limit: 100, customerId: customer_id };
+      const url = buildUrl(`loan_customers/customer/${customer_id}`, loansFilters);
+      const res = await api.get(url);
       setCustomerLoans(res.data.loans || []);
       const modalEl = document.getElementById('customerLoansModal');
       if (modalEl) {

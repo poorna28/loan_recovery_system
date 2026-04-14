@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { buildUrl, buildPayload } from "../../utils/queryBuilder";
 
 const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
 
@@ -57,7 +58,9 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
     // Fetch customers only once on component mount
     const fetchCustomers = async () => {
       try {
-        const res = await api.get("/customers");
+        const customersParams = { page: 1, limit: 500 };
+        const url = buildUrl("/customers", customersParams);
+        const res = await api.get(url);
         const list = res.data?.customers || res.data?.data || [];
         setCustomers(Array.isArray(list) ? list : []);
       } catch (err) {
@@ -143,21 +146,22 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
 
     setIsSubmitting(true);
 
-    // FIX: Convert camelCase formData keys → snake_case so the backend
-    // correctly maps all fields. Previously monthlyPayment, nextPaymentDue,
-    // remainingBalance etc. were sent as-is → backend ignored them → saved null.
-    const payload = {
-      customer_id: formData.customer_id,
-      loan_amount: formData.loanAmount,
-      loan_purpose: formData.loanPurpose,
-      interest_rate: formData.interestRate,
-      loan_term: formData.loanTerm,
-      application_date: formData.applicationDate,
-      status_approved: formData.statusApproved,
-      monthly_payment: formData.monthlyPayment,
-      next_payment_due: formData.nextPaymentDue,
-      remaining_balance: formData.remainingBalance,
-    };
+    // Build consistent payload with snake_case keys
+    const payload = buildPayload(
+      {
+        customer_id: formData.customer_id,
+        loan_amount: formData.loanAmount,
+        loan_purpose: formData.loanPurpose,
+        interest_rate: formData.interestRate,
+        loan_term: formData.loanTerm,
+        application_date: formData.applicationDate,
+        status_approved: formData.statusApproved,
+        monthly_payment: formData.monthlyPayment,
+        next_payment_due: formData.nextPaymentDue,
+        remaining_balance: formData.remainingBalance,
+      },
+      { excludeFields: [] }
+    );
 
     let apiCall;
     if (editData) {

@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Layout from '../../components/Layout/Layout';
 import '../Dashboard/dashboard.css';
-import api from '../../services/api';
-
+import api from '../../services/api';import { buildUrl } from '../../utils/queryBuilder';
 // ─── Helpers ──────────────────────────── ──────────────────────────── ──────────
 
 const fmtINR = (val) => {
@@ -53,12 +52,18 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [dashboardParams, setDashboardParams] = useState({
+    dateRange: 'all',
+    limit: 100,
+    page: 1
+  });
 
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.get('/dashboard');
+      const url = buildUrl('/dashboard', dashboardParams);
+      const res = await api.get(url);
       setData(res.data || {});
       setLastUpdated(new Date());
     } catch (err) {
@@ -67,7 +72,7 @@ const DashboardPage = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [dashboardParams]);
 
   useEffect(() => {
     fetchDashboard();

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import "../Reports/reports.css";
 import Layout from "../../components/Layout/Layout";
 import api from "../../services/api";
+import { buildUrl } from "../../utils/queryBuilder";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -678,6 +679,14 @@ const TABS = [
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("summary");
+  const [reportFilters, setReportFilters] = useState({
+    dateFrom: '',
+    dateTo: '',
+    sortBy: 'date',
+    sortOrder: 'desc',
+    page: 1,
+    limit: 100
+  });
 
   // Per-tab state: { data, loading, error }
   const [tabState, setTabState] = useState({
@@ -700,7 +709,8 @@ const Reports = () => {
     }));
 
     try {
-      const res = await api.get(tab.endpoint);
+      const url = buildUrl(tab.endpoint, reportFilters);
+      const res = await api.get(url);
       setTabState((prev) => ({
         ...prev,
         [tabId]: { data: res.data, loading: false, error: null },
@@ -716,7 +726,7 @@ const Reports = () => {
         },
       }));
     }
-  }, [tabState]);
+  }, [tabState, reportFilters]);
 
   // Fetch on tab switch
   useEffect(() => {

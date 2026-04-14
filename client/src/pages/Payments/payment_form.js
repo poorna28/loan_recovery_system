@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import { buildUrl, buildPayload } from '../../utils/queryBuilder';
 
 const Payment_Form = ({ onPaymentSuccess }) => {
   const [formData, setFormData] = useState({
@@ -19,7 +20,9 @@ const Payment_Form = ({ onPaymentSuccess }) => {
   useEffect(() => {
     const fetchLoans = () => {
       setLoansLoading(true);
-      api.get('/loan_customers')
+      const loansFilters = { page: 1, limit: 100, status: 'ACTIVE' };
+      const url = buildUrl('/loan_customers', loansFilters);
+      api.get(url)
         .then(res => {
           console.log("Raw loan_customers response:", res.data);
           const activeLoans = (res.data.loan_customers || []).filter(
@@ -73,12 +76,19 @@ const Payment_Form = ({ onPaymentSuccess }) => {
     }
 
     try {
-      // Make payment request
-      const response = await api.post('/payments/make', {
-        loanId: Number(formData.loanId),
-        amount: Number(formData.amount),
-        method: formData.method
-      });
+      // Build consistent payload
+      const payload = buildPayload(
+        {
+          loanId: Number(formData.loanId),
+          amount: Number(formData.amount),
+          paymentMethod: formData.method,
+          timestamp: new Date().toISOString()
+        },
+        { excludeFields: [] }
+      );
+
+      // Make payment request with payload
+      const response = await api.post('/payments/make', payload);
 
       setSuccess('Payment processed successfully!');
       setFormData({

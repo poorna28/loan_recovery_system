@@ -5,6 +5,7 @@ import api from '../../services/api';
 import Payment_View from './payment_view';
 import Payment_Form from './payment_form';
 import { toast } from 'react-toastify';
+import { buildUrl } from '../../utils/queryBuilder';
 
 // ─── Helpers ──────────────────────────
 const fmtINR = (val) => {
@@ -20,6 +21,14 @@ const Payment_Page = () => {
   const [loading, setLoading] = useState(true);
   const [viewPayment, setViewPayment] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    sortBy: 'paymentDate',
+    sortOrder: 'desc',
+    page: 1,
+    limit: 50,
+    paymentMethod: ''
+  });
   const [kpiData, setKpiData] = useState({
     totalCollected: 0,
     totalTransactions: 0,
@@ -30,7 +39,8 @@ const Payment_Page = () => {
   const fetchAll = useCallback(() => {
     setLoading(true);
 
-    api.get('payments')
+    const url = buildUrl('payments', filters);
+    api.get(url)
       .then(res => {
         const mapped = res.data.payments.map(item => ({
           payment_id: item.id,
@@ -66,7 +76,7 @@ const Payment_Page = () => {
         toast.error('Failed to load payments');
         setLoading(false);
       });
-  }, []);
+  }, [filters]);
 
   useEffect(() => {
     fetchAll();

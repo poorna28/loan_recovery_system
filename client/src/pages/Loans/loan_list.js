@@ -5,6 +5,7 @@ import api from '../../services/api';
 import Loan_List_Details from './loan_list_details';
 import Loan_List_View from './loan_list_view';
 import { toast } from 'react-toastify';
+import { buildUrl } from '../../utils/queryBuilder';
 
 // ─── Helpers ──────────────────────────
 const fmtINR = (val) => {
@@ -20,6 +21,14 @@ const Loan_Details = () => {
   const [loading, setLoading] = useState(true);
   const [editLoanCustomer, setEditLoanCustomer] = useState(null);
   const [viewLoanCustomer, setViewLoanCustomer] = useState(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    sortBy: 'applicationDate',
+    sortOrder: 'desc',
+    page: 1,
+    limit: 50,
+    loanStatus: ''
+  });
   const [kpiData, setKpiData] = useState({
     total: 0,
     active: 0,
@@ -29,7 +38,8 @@ const Loan_Details = () => {
 
   const fetchAll = useCallback(() => {
     setLoading(true);
-    api.get('loan_customers')
+    const url = buildUrl('loan_customers', filters);
+    api.get(url)
       .then(res => {
         const mapped = res.data.loan_customers.map(item => ({
           loan_customer_id: item.id,
@@ -65,7 +75,7 @@ const Loan_Details = () => {
         toast.error('Failed to load loan customers.');
         setLoading(false);
       });
-  }, []);
+  }, [filters]);
 
   useEffect(() => {
     fetchAll();

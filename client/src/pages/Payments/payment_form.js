@@ -11,8 +11,10 @@ const Payment_Form = ({ onPaymentSuccess }) => {
   });
 
   const [loans, setLoans] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loansLoading, setLoansLoading] = useState(true);
+  const [methodsLoading, setMethodsLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -42,6 +44,47 @@ const Payment_Form = ({ onPaymentSuccess }) => {
     };
 
     fetchLoans();
+  }, []);
+
+  // Fetch payment methods from settings
+  useEffect(() => {
+    const fetchPaymentMethods = () => {
+      setMethodsLoading(true);
+      api.get('/settings/payment-methods')
+        .then(res => {
+          console.log("Payment methods response:", res.data);
+          // API returns: { success: true, settings: { methods: [...], rules: {...} } }
+          // Filter to show only enabled methods
+          const enabledMethods = (res.data.settings?.methods || []).filter(
+            method => method.is_enabled === true || method.is_enabled === 1
+          );
+          console.log("Enabled payment methods:", enabledMethods);
+          setPaymentMethods(enabledMethods);
+          // Set default method to first enabled method
+          if (enabledMethods.length > 0 && !formData.method) {
+            setFormData(prev => ({
+              ...prev,
+              method: enabledMethods[0].method_name
+            }));
+          }
+        })
+        .catch(err => {
+          console.error('Failed to fetch payment methods:', err);
+          // Fallback to default methods if API fails
+          const defaultMethods = [
+            { id: 1, method_name: 'CASH', icon: '💵', is_enabled: true },
+            { id: 2, method_name: 'CHECK', icon: '📄', is_enabled: true },
+            { id: 3, method_name: 'TRANSFER', icon: '🏦', is_enabled: true },
+            { id: 4, method_name: 'CARD', icon: '💳', is_enabled: false }
+          ];
+          setPaymentMethods(defaultMethods.filter(m => m.is_enabled));
+        })
+        .finally(() => {
+          setMethodsLoading(false);
+        });
+    };
+
+    fetchPaymentMethods();
   }, []);
 
   const handleChange = (e) => {
@@ -202,11 +245,16 @@ const Payment_Form = ({ onPaymentSuccess }) => {
                   className="form-select"
                   value={formData.method}
                   onChange={handleChange}
+                  disabled={methodsLoading || paymentMethods.length === 0}
                 >
-                  <option value="CASH">💵 Cash</option>
-                  <option value="CHECK">📄 Check</option>
-                  <option value="TRANSFER">🏦 Bank Transfer</option>
-                  <option value="CARD">💳 Card</option>
+                  <option value="">
+                    {methodsLoading ? '⏳ Loading methods...' : paymentMethods.length === 0 ? '❌ No payment methods available' : '💳 Choose method'}
+                  </option>
+                  {paymentMethods.map(method => (
+                    <option key={method.id} value={method.method_name}>
+                      {method.icon} {method.description || method.method_name}
+                    </option>
+                  ))}
                 </select>
               </div>
 

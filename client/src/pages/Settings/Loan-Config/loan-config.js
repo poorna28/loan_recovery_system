@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Company-Profile/company-profile.css";
 import Layout from "../../../components/Layout/Layout";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
 
 const LoanConfig = () => {
   // State for Loan Term Limits
@@ -17,16 +19,97 @@ const LoanConfig = () => {
   const [lateFee, setLateFee] = useState(200);
   const [penaltyRate, setPenaltyRate] = useState(2);
   const [gracePeriod, setGracePeriod] = useState(3);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const markDirty = () => console.log("Form changed");
-  const saveSettings = () => console.log("Saving loan config...");
-  const discardChanges = () => console.log("Resetting to defaults...");
+  // Fetch loan config on mount
+  useEffect(() => {
+    fetchLoanConfig();
+  }, []);
+
+  const fetchLoanConfig = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/settings/loan-config');
+      if (response.data.success) {
+        const config = response.data.settings;
+        setMinTenure(config.min_tenure || 3);
+        setMaxTenure(config.max_tenure || 60);
+        setDefaultTenure(config.default_tenure || 12);
+        setMinAmount(config.min_amount || 5000);
+        setMaxAmount(config.max_amount || 1000000);
+        setEmiMethod(config.emi_method || "Reducing Balance");
+        setLateFee(config.late_fee || 200);
+        setPenaltyRate(config.penalty_rate || 2);
+        setGracePeriod(config.grace_period || 3);
+      }
+    } catch (error) {
+      console.error('Error fetching loan config:', error);
+      toast.error(error.response?.data?.message || 'Failed to load loan configuration');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveSettings = async () => {
+    try {
+      setSaving(true);
+      const payload = {
+        min_tenure: parseInt(minTenure),
+        max_tenure: parseInt(maxTenure),
+        default_tenure: parseInt(defaultTenure),
+        min_amount: parseFloat(minAmount),
+        max_amount: parseFloat(maxAmount),
+        emi_method: emiMethod,
+        late_fee: parseFloat(lateFee),
+        penalty_rate: parseFloat(penaltyRate),
+        grace_period: parseInt(gracePeriod)
+      };
+
+      const response = await api.put('/settings/loan-config', payload);
+
+      if (response.data.success) {
+        toast.success('Loan configuration saved successfully');
+      } else {
+        toast.error(response.data.message || 'Failed to save configuration');
+      }
+    } catch (error) {
+      console.error('Error saving loan config:', error);
+      if (error.response?.data?.errors) {
+        error.response.data.errors.forEach(err => toast.error(err));
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to save loan configuration');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const discardChanges = async () => {
+    await fetchLoanConfig();
+    toast.info('Changes discarded');
+  };
+
   const handleTagInput = (e) => {
     if (e.key === "Enter") {
       console.log("Add loan type:", e.target.value);
       e.target.value = "";
     }
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="settings">
+          <div className="panel" id="panel-loan">
+            <div style={{ padding: "40px", textAlign: "center" }}>
+              Loading loan configuration...
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -36,7 +119,7 @@ const LoanConfig = () => {
             <div>
               <div className="page-title">Loan Configuration</div>
               <div className="page-sub">
-                Define default terms, limits, and loan types · GET /api/settings/loan-config
+                Define default terms, limits, and loan types
               </div>
             </div>
             <span className="status-badge badge-live">● Live</span>
@@ -61,7 +144,7 @@ const LoanConfig = () => {
                       type="number"
                       value={minTenure}
                       min="1"
-                      onChange={(e) => { setMinTenure(e.target.value); markDirty(); }}
+                      onChange={(e) => setMinTenure(e.target.value)}
                     />
                     <span className="input-suffix">mo</span>
                   </div>
@@ -74,7 +157,7 @@ const LoanConfig = () => {
                       type="number"
                       value={maxTenure}
                       min="1"
-                      onChange={(e) => { setMaxTenure(e.target.value); markDirty(); }}
+                      onChange={(e) => setMaxTenure(e.target.value)}
                     />
                     <span className="input-suffix">mo</span>
                   </div>
@@ -87,7 +170,7 @@ const LoanConfig = () => {
                       type="number"
                       value={defaultTenure}
                       min="1"
-                      onChange={(e) => { setDefaultTenure(e.target.value); markDirty(); }}
+                      onChange={(e) => setDefaultTenure(e.target.value)}
                     />
                     <span className="input-suffix">mo</span>
                   </div>
@@ -114,7 +197,7 @@ const LoanConfig = () => {
                       className="input"
                       type="number"
                       value={minAmount}
-                      onChange={(e) => { setMinAmount(e.target.value); markDirty(); }}
+                      onChange={(e) => setMinAmount(e.target.value)}
                     />
                     <span className="input-suffix">₹</span>
                   </div>
@@ -126,7 +209,7 @@ const LoanConfig = () => {
                       className="input"
                       type="number"
                       value={maxAmount}
-                      onChange={(e) => { setMaxAmount(e.target.value); markDirty(); }}
+                      onChange={(e) => setMaxAmount(e.target.value)}
                     />
                     <span className="input-suffix">₹</span>
                   </div>
@@ -136,25 +219,26 @@ const LoanConfig = () => {
                   <select
                     className="input"
                     value={emiMethod}
-                    onChange={(e) => { setEmiMethod(e.target.value); markDirty(); }}
+                    onChange={(e) => setEmiMethod(e.target.value)}
                   >
                     <option>Reducing Balance</option>
                     <option>Flat Rate</option>
-                    <option>Compound Interest</option>
+                    <option>Simple Interest</option>
                   </select>
                 </div>
                 <div className="field">
                   <label className="field-label">Loan Types Offered</label>
-                  <div className="tag-input-wrap" id="loan-types-wrap">
-                    <input
-                      className="tag-ghost-input"
-                      id="tag-input"
-                      placeholder="Add type…"
-                      onKeyDown={handleTagInput}
-                    />
-                  </div>
-                  <div className="field-hint">Press Enter to add a type</div>
+                  <select id="loan-types-dropdown" className="input">
+                    <option value="">Select Loan Type</option>
+                    <option value="Educational">Educational</option>
+                    <option value="Home">Home</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Personal">Personal</option>
+                    {/* Add more from config */}
+                  </select>
+                  <div className="field-hint">Choose from available loan types</div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -177,7 +261,7 @@ const LoanConfig = () => {
                       className="input"
                       type="number"
                       value={lateFee}
-                      onChange={(e) => { setLateFee(e.target.value); markDirty(); }}
+                      onChange={(e) => setLateFee(e.target.value)}
                     />
                     <span className="input-suffix">₹</span>
                   </div>
@@ -190,7 +274,7 @@ const LoanConfig = () => {
                       type="number"
                       value={penaltyRate}
                       step="0.1"
-                      onChange={(e) => { setPenaltyRate(e.target.value); markDirty(); }}
+                      onChange={(e) => setPenaltyRate(e.target.value)}
                     />
                     <span className="input-suffix">%/mo</span>
                   </div>
@@ -202,7 +286,7 @@ const LoanConfig = () => {
                       className="input"
                       type="number"
                       value={gracePeriod}
-                      onChange={(e) => { setGracePeriod(e.target.value); markDirty(); }}
+                      onChange={(e) => setGracePeriod(e.target.value)}
                     />
                     <span className="input-suffix">days</span>
                   </div>
@@ -213,10 +297,18 @@ const LoanConfig = () => {
 
           {/* Buttons */}
           <div className="btn-row">
-            <button className="btn btn-primary" onClick={saveSettings}>
-              💾 Save Loan Config
+            <button
+              className="btn btn-primary"
+              onClick={saveSettings}
+              disabled={saving}
+            >
+              {saving ? "💾 Saving..." : "💾 Save Loan Config"}
             </button>
-            <button className="btn btn-ghost" onClick={discardChanges}>
+            <button
+              className="btn btn-ghost"
+              onClick={discardChanges}
+              disabled={saving}
+            >
               Reset to defaults
             </button>
           </div>

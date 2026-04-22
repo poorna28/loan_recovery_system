@@ -11,13 +11,14 @@ const loggingMiddleware = (req, res, next) => {
   req.id = requestId;
 
   // Log incoming request
+
   console.log(
-    `📥 [${requestId}] ${req.method} ${req.path}`,
+    ` [${requestId}] ${req.method} ${req.path}`,
     req.query && Object.keys(req.query).length > 0 ? `| Query: ${JSON.stringify(req.query)}` : ''
   );
 
   if (req.body && Object.keys(req.body).length > 0) {
-    console.log(`📦 [${requestId}] Body:`, JSON.stringify(req.body));
+    console.log(` [${requestId}] Body:`, JSON.stringify(req.body));
   }
 
   // Intercept response
@@ -34,7 +35,7 @@ const loggingMiddleware = (req, res, next) => {
     );
 
     if (statusCode >= 400) {
-      console.log(`📋 [${requestId}] Response:`, JSON.stringify(data));
+      console.log(` [${requestId}] Response:`, JSON.stringify(data));
     }
 
     return originalJson.call(this, data);

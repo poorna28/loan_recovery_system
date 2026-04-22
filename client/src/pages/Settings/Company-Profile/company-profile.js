@@ -1,22 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Company-Profile/company-profile.css";
 import Layout from "../../../components/Layout/Layout";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
 
 const CompanyProfile = () => {
-    const [companyName, setCompanyName] = useState("LoanPro Finance Pvt. Ltd.");
-    const [registrationNumber, setRegistrationNumber] = useState("CIN: U65929TG2020PTC142857");
-    const [gstin, setGstin] = useState("36AABCL1234A1ZX");
-    const [supportPhone, setSupportPhone] = useState("+91 98765 43210");
-    const [address, setAddress] = useState("Plot 42, HITEC City, Hyderabad, Telangana - 500081");
+    const [companyName, setCompanyName] = useState("");
+    const [registrationNumber, setRegistrationNumber] = useState("");
+    const [gstin, setGstin] = useState("");
+    const [supportPhone, setSupportPhone] = useState("");
+    const [address, setAddress] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
-    const markDirty = () => {
-        console.log("Form changed");
+    // Fetch company profile on component mount
+    useEffect(() => {
+        fetchCompanyProfile();
+    }, []);
+
+    const fetchCompanyProfile = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get('/settings/company-profile');
+            if (response.data.success) {
+                const settings = response.data.settings;
+                setCompanyName(settings.company_name || "");
+                setRegistrationNumber(settings.registration_number || "");
+                setGstin(settings.gstin || "");
+                setSupportPhone(settings.support_phone || "");
+                setAddress(settings.address || "");
+            }
+        } catch (error) {
+            console.error('Error fetching company profile:', error);
+            toast.error(error.response?.data?.message || 'Failed to load company profile');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const saveSettings = () => {
-        console.log("Saving company profile...");
-        // Add your save logic here (API call, localStorage, etc.)
+    const saveSettings = async () => {
+        try {
+            // Validate required fields
+            if (!companyName.trim()) {
+                toast.error('Company name is required');
+                return;
+            }
+
+            setSaving(true);
+            const payload = {
+                company_name: companyName,
+                registration_number: registrationNumber,
+                gstin: gstin,
+                support_phone: supportPhone,
+                address: address
+            };
+
+            const response = await api.put('/settings/company-profile', payload);
+            
+            if (response.data.success) {
+                toast.success('Company profile saved successfully');
+            } else {
+                toast.error(response.data.message || 'Failed to save settings');
+            }
+        } catch (error) {
+            console.error('Error saving company profile:', error);
+            if (error.response?.data?.errors) {
+                error.response.data.errors.forEach(err => toast.error(err));
+            } else {
+                toast.error(error.response?.data?.message || 'Failed to save company profile');
+            }
+        } finally {
+            setSaving(false);
+        }
     };
+
+    if (loading) {
+        return (
+            <Layout>
+                <div className="settings">
+                    <div className="panel" id="panel-company">
+                        <div style={{ padding: "40px", textAlign: "center" }}>
+                            Loading company profile...
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
 
     return (
         <Layout>
@@ -47,7 +117,7 @@ const CompanyProfile = () => {
                                         className="input"
                                         type="text"
                                         value={companyName}
-                                        onChange={(e) => { setCompanyName(e.target.value); markDirty(); }}
+                                        onChange={(e) => setCompanyName(e.target.value)}
                                     />
                                 </div>
                                 <div className="field">
@@ -56,7 +126,7 @@ const CompanyProfile = () => {
                                         className="input"
                                         type="text"
                                         value={registrationNumber}
-                                        onChange={(e) => { setRegistrationNumber(e.target.value); markDirty(); }}
+                                        onChange={(e) => setRegistrationNumber(e.target.value)}
                                     />
                                 </div>
                                 <div className="field">
@@ -65,7 +135,7 @@ const CompanyProfile = () => {
                                         className="input"
                                         type="text"
                                         value={gstin}
-                                        onChange={(e) => { setGstin(e.target.value); markDirty(); }}
+                                        onChange={(e) => setGstin(e.target.value)}
                                     />
                                 </div>
                                 <div className="field">
@@ -74,7 +144,7 @@ const CompanyProfile = () => {
                                         className="input"
                                         type="text"
                                         value={supportPhone}
-                                        onChange={(e) => { setSupportPhone(e.target.value); markDirty(); }}
+                                        onChange={(e) => setSupportPhone(e.target.value)}
                                     />
                                 </div>
                                 <div className="field cols-1" style={{ gridColumn: "span 2" }}>
@@ -83,7 +153,7 @@ const CompanyProfile = () => {
                                         className="input"
                                         type="text"
                                         value={address}
-                                        onChange={(e) => { setAddress(e.target.value); markDirty(); }}
+                                        onChange={(e) => setAddress(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -91,8 +161,12 @@ const CompanyProfile = () => {
                     </div>
 
                     <div className="btn-row">
-                        <button className="btn btn-primary" onClick={saveSettings}>
-                            💾 Save Company Profile
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={saveSettings}
+                            disabled={saving}
+                        >
+                            {saving ? "💾 Saving..." : "💾 Save Company Profile"}
                         </button>
                     </div>
                 </div>

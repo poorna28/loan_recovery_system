@@ -3,6 +3,8 @@
  * Validates request body, params, and query parameters
  */
 
+const settingsCache = require('../utils/settingsCache');
+
 // Helper function to sanitize strings (prevent XSS)
 const sanitizeString = (str) => {
   if (typeof str !== 'string') return str;
@@ -40,62 +42,82 @@ const validatePayment = (req, res, next) => {
   next();
 };
 
-const validateLoan = (req, res, next) => {
-  // Read BOTH snake_case (what frontend sends) and camelCase (fallback)
-  const customer_id  = req.body.customer_id  ?? req.body.customerId;
-  const loanAmount   = req.body.loan_amount   ?? req.body.loanAmount;
-  const interestRate = req.body.interest_rate ?? req.body.interestRate;
-  const loanTerm     = req.body.loan_term     ?? req.body.loanTerm;
-  const applicationDate = req.body.application_date ?? req.body.applicationDate;
-  const nextPaymentDue = req.body.next_payment_due ?? req.body.nextPaymentDue;
-  const statusApproved = req.body.status_approved ?? req.body.statusApproved;
+const validateLoan = async (req, res, next) => {
+  try {
+    // Fetch loan configuration from cache
+    const loanConfig = await settingsCache.getLoanConfig();
+    
+    // Read BOTH snake_case (what frontend sends) and camelCase (fallback)
+    const customer_id  = req.body.customer_id  ?? req.body.customerId;
+    const loanAmount   = req.body.loan_amount   ?? req.body.loanAmount;
+    const interestRate = req.body.interest_rate ?? req.body.interestRate;
+    const loanTerm     = req.body.loan_term     ?? req.body.loanTerm;
+    const applicationDate = req.body.application_date ?? req.body.applicationDate;
+    const nextPaymentDue = req.body.next_payment_due ?? req.body.nextPaymentDue;
+    const statusApproved = req.body.status_approved ?? req.body.statusApproved;
 
-  const errors = [];
-  const today = new Date().toISOString().split('T')[0];
+    const errors = [];
+    const today = new Date().toISOString().split('T')[0];
 
-  if (
-    customer_id === undefined ||
-    customer_id === null ||
-    (typeof customer_id === 'string' && customer_id.trim() === '')
-  ) {
-    errors.push('customer_id is required');
-  }
+    if (
+      customer_id === undefined ||
+      customer_id === null ||
+      (typeof customer_id === 'string' && customer_id.trim() === '')
+    ) {
+      errors.push('customer_id is required');
+    }
 
-  if (!loanAmount || isNaN(loanAmount) || Number(loanAmount) <= 0 || Number(loanAmount) > 10000000) {
-    errors.push('loan_amount must be between 0 and 10,000,000');
-  }
+    // Use configured min/max amounts from settings instead of hardcoded values
+    const minAmount = loanConfig.min_amount;
+    const maxAmount = loanConfig.max_amount;
+    
+    if (!loanAmount || isNaN(loanAmount) || Number(loanAmount) < minAmount || Number(loanAmount) > maxAmount) {
+      errors.push(`loan_amount must be between ${minAmount} and ${maxAmount}`);
+    }
 
-  if (interestRate && (isNaN(interestRate) || Number(interestRate) < 0 || Number(interestRate) > 100)) {
-    errors.push('interest_rate must be between 0% and 100%');
-  }
+    if (interestRate && (isNaN(interestRate) || Number(interestRate) < 0 || Number(interestRate) > 100)) {
+      errors.push('interest_rate must be between 0% and 100%');
+    }
 
-  if (!loanTerm || isNaN(loanTerm) || Number(loanTerm) <= 0 || Number(loanTerm) > 360) {
-    errors.push('loan_term must be between 1 and 360 months');
-  }
+    // Use configured min/max tenure from settings instead of hardcoded values
+    const minTenure = loanConfig.min_tenure;
+    const maxTenure = loanConfig.max_tenure;
+    
+    if (!loanTerm || isNaN(loanTerm) || Number(loanTerm) < minTenure || Number(loanTerm) > maxTenure) {
+      errors.push(`loan_term must be between ${minTenure} and ${maxTenure} months`);
+    }
 
-  if (!applicationDate) {
-    errors.push('application_date is required');
-  } else if (applicationDate > today) {
-    errors.push('application_date cannot be in the future');
-  }
+    if (!applicationDate) {
+      errors.push('application_date is required');
+    } else if (applicationDate > today) {
+      errors.push('application_date cannot be in the future');
+    }
 
-  if (nextPaymentDue && applicationDate && nextPaymentDue < applicationDate) {
-    errors.push('next_payment_due must be on or after application_date');
-  }
+    if (nextPaymentDue && applicationDate && nextPaymentDue < applicationDate) {
+      errors.push('next_payment_due must be on or after application_date');
+    }
 
-  if (statusApproved && !['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'].includes(statusApproved)) {
-    errors.push('status_approved must be one of: PENDING, APPROVED, REJECTED, ACTIVE');
-  }
+    if (statusApproved && !['PENDING', 'APPROVED', 'REJECTED', 'ACTIVE'].includes(statusApproved)) {
+      errors.push('status_approved must be one of: PENDING, APPROVED, REJECTED, ACTIVE');
+    }
 
-  if (errors.length > 0) {
-    return res.status(400).json({
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error('❌ Validation error:', error.message);
+    res.status(500).json({
       success: false,
-      message: 'Validation failed',
-      errors
+      message: 'Internal validation error',
+      error: error.message
     });
   }
-
-  next();
 };
 
 const validateCustomer = (req, res, next) => {

@@ -35,6 +35,12 @@ app.use('/api/auth', require('./routes/authRoutes'));
 const paymentRoutes = require('./routes/paymentRoutes');
 app.use('/api', paymentRoutes);
 
+const settingsRoutes = require('./routes/settingsRoutes');
+app.use('/api/settings', settingsRoutes);
+
+const userRoutes = require('./routes/userRoutes');
+app.use('/api', userRoutes);
+
 // ============= ERROR HANDLING MIDDLEWARE =============
 // This must be last - catches all errors from routes above
 app.use((err, req, res, next) => {

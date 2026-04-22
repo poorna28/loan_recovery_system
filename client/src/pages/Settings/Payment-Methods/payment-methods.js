@@ -1,34 +1,102 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Company-Profile/company-profile.css";
 import Layout from "../../../components/Layout/Layout";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
 
 const PaymentMethods = () => {
 
-    // State for accepted methods
-    const [methods, setMethods] = useState({
-        Cash: true,
-        UPI: true,
-        "Bank Transfer": true,
-        "Debit Card": false,
-        "Net Banking": false,
-        "Cheque / DD": false,
-    });
-
-    // State for payment rules
+    const [methods, setMethods] = useState([]);
     const [autoReceipt, setAutoReceipt] = useState(true);
     const [allowPartial, setAllowPartial] = useState(false);
     const [allowAdvance, setAllowAdvance] = useState(true);
     const [roundOff, setRoundOff] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
-    const toggleMethod = (method) => {
-        setMethods((prev) => ({ ...prev, [method]: !prev[method] }));
-        console.log("Toggled method:", method);
+    // Fetch payment settings on mount
+    useEffect(() => {
+        fetchPaymentSettings();
+    }, []);
+
+    const fetchPaymentSettings = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get('/settings/payment-methods');
+            if (response.data.success) {
+                const { methods: fetchedMethods, rules } = response.data.settings;
+                setMethods(fetchedMethods || []);
+                if (rules) {
+                    setAutoReceipt(rules.auto_receipt || true);
+                    setAllowPartial(rules.allow_partial || false);
+                    setAllowAdvance(rules.allow_advance || true);
+                    setRoundOff(rules.round_off || true);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching payment settings:', error);
+            toast.error(error.response?.data?.message || 'Failed to load payment methods');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const markDirty = () => console.log("Form changed");
-    const saveSettings = () => console.log("Saving payment settings...");
-    const discardChanges = () => console.log("Resetting payment settings...");
+    const toggleMethod = (methodId) => {
+        setMethods(methods.map(m => 
+            m.id === methodId ? { ...m, is_enabled: !m.is_enabled } : m
+        ));
+    };
 
+    const saveSettings = async () => {
+        try {
+            setSaving(true);
+            const payload = {
+                methods: methods.map(m => ({ id: m.id, is_enabled: m.is_enabled })),
+                rules: {
+                    auto_receipt: autoReceipt,
+                    allow_partial: allowPartial,
+                    allow_advance: allowAdvance,
+                    round_off: roundOff
+                }
+            };
+
+            const response = await api.put('/settings/payment-methods', payload);
+            
+            if (response.data.success) {
+                toast.success('Payment settings saved successfully');
+            } else {
+                toast.error(response.data.message || 'Failed to save settings');
+            }
+        } catch (error) {
+            console.error('Error saving payment settings:', error);
+            if (error.response?.data?.errors) {
+                error.response.data.errors.forEach(err => toast.error(err));
+            } else {
+                toast.error(error.response?.data?.message || 'Failed to save payment settings');
+            }
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const discardChanges = async () => {
+        await fetchPaymentSettings();
+        toast.info('Changes discarded');
+    };
+
+    if (loading) {
+        return (
+            <Layout>
+                <div className="settings">
+                    <div className="panel" id="panel-payments">
+                        <div style={{ padding: "40px", textAlign: "center" }}>
+                            Loading payment settings...
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
 
     return (
         <Layout>
@@ -38,7 +106,7 @@ const PaymentMethods = () => {
                         <div>
                             <div className="page-title">Payment Methods</div>
                             <div className="page-sub">
-                                Enable or disable payment modes · GET /api/settings/payment-methods
+                                Enable or disable payment modes
                             </div>
                         </div>
                         <span className="status-badge badge-live">● Live</span>
@@ -55,32 +123,18 @@ const PaymentMethods = () => {
                         </div>
                         <div className="section-body">
                             <div className="method-grid">
-                                {Object.keys(methods).map((method) => (
+                                {methods.map((method) => (
                                     <div
-                                        key={method}
-                                        className={`method-card ${methods[method] ? "selected" : ""}`}
-                                        onClick={() => toggleMethod(method)}
+                                        key={method.id}
+                                        className={`method-card ${method.is_enabled ? "selected" : ""}`}
+                                        onClick={() => toggleMethod(method.id)}
                                     >
                                         <div className="method-top">
-                                            <span className="method-icon">
-                                                {method === "Cash" && "💵"}
-                                                {method === "UPI" && "📱"}
-                                                {method === "Bank Transfer" && "🏦"}
-                                                {method === "Debit Card" && "💳"}
-                                                {method === "Net Banking" && "🌐"}
-                                                {method === "Cheque / DD" && "📄"}
-                                            </span>
+                                            <span className="method-icon">{method.icon}</span>
                                             <div className="method-check"></div>
                                         </div>
-                                        <div className="method-name">{method}</div>
-                                        <div className="method-sub">
-                                            {method === "Cash" && "In-person collection"}
-                                            {method === "UPI" && "GPay, PhonePe, BHIM"}
-                                            {method === "Bank Transfer" && "NEFT / RTGS / IMPS"}
-                                            {method === "Debit Card" && "Visa, Mastercard, RuPay"}
-                                            {method === "Net Banking" && "All major banks"}
-                                            {method === "Cheque / DD" && "Post-dated cheques"}
-                                        </div>
+                                        <div className="method-name">{method.method_name}</div>
+                                        <div className="method-sub">{method.description}</div>
                                     </div>
                                 ))}
                             </div>
@@ -106,7 +160,7 @@ const PaymentMethods = () => {
                                     <input
                                         type="checkbox"
                                         checked={autoReceipt}
-                                        onChange={() => { setAutoReceipt(!autoReceipt); markDirty(); }}
+                                        onChange={() => setAutoReceipt(!autoReceipt)}
                                     />
                                     <div className="toggle-track"></div>
                                     <div className="toggle-thumb"></div>
@@ -122,7 +176,7 @@ const PaymentMethods = () => {
                                     <input
                                         type="checkbox"
                                         checked={allowPartial}
-                                        onChange={() => { setAllowPartial(!allowPartial); markDirty(); }}
+                                        onChange={() => setAllowPartial(!allowPartial)}
                                     />
                                     <div className="toggle-track"></div>
                                     <div className="toggle-thumb"></div>
@@ -138,7 +192,7 @@ const PaymentMethods = () => {
                                     <input
                                         type="checkbox"
                                         checked={allowAdvance}
-                                        onChange={() => { setAllowAdvance(!allowAdvance); markDirty(); }}
+                                        onChange={() => setAllowAdvance(!allowAdvance)}
                                     />
                                     <div className="toggle-track"></div>
                                     <div className="toggle-thumb"></div>
@@ -154,7 +208,7 @@ const PaymentMethods = () => {
                                     <input
                                         type="checkbox"
                                         checked={roundOff}
-                                        onChange={() => { setRoundOff(!roundOff); markDirty(); }}
+                                        onChange={() => setRoundOff(!roundOff)}
                                     />
                                     <div className="toggle-track"></div>
                                     <div className="toggle-thumb"></div>
@@ -165,10 +219,18 @@ const PaymentMethods = () => {
 
                     {/* Buttons */}
                     <div className="btn-row">
-                        <button className="btn btn-primary" onClick={saveSettings}>
-                            💾 Save Payment Settings
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={saveSettings}
+                            disabled={saving}
+                        >
+                            {saving ? "💾 Saving..." : "💾 Save Payment Settings"}
                         </button>
-                        <button className="btn btn-ghost" onClick={discardChanges}>
+                        <button 
+                            className="btn btn-ghost" 
+                            onClick={discardChanges}
+                            disabled={saving}
+                        >
                             Reset
                         </button>
                     </div>

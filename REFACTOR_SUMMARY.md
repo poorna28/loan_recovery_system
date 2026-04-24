@@ -69,7 +69,7 @@ const res = await api.get(url);
 
 ---
 
-### 4. `/client/src/pages/Payments/PaymentPage .js`
+### 4. `/client/src/pages/Payments/PaymentPage.js`
 **Changes:**
 - Added import: `buildUrl` from queryBuilder
 - Added filter state with: search, sortBy, sortOrder, page, limit, paymentMethod

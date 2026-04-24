@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../Company-Profile/company-profile.css";
 import Layout from "../../../components/Layout/Layout";
 import api from "../../../services/api";
@@ -21,12 +21,7 @@ const Notifications = () => {
 
     const [isDirty, setIsDirty] = useState(false);
 
-    // Fetch existing settings on mount
-    useEffect(() => {
-        fetchNotificationSettings();
-    }, []);
-
-    const fetchNotificationSettings = async () => {
+    const fetchNotificationSettings = useCallback(async () => {
         try {
             setLoading(true);
             const response = await api.get('/settings/notifications');
@@ -47,7 +42,12 @@ const Notifications = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    // Fetch existing settings on mount
+    useEffect(() => {
+        fetchNotificationSettings();
+    }, [fetchNotificationSettings]);
 
     const markDirty = () => {
         setIsDirty(true);

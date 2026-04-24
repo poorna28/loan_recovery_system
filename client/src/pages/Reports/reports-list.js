@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "../Reports/reports.css";
 import Layout from "../../components/Layout/Layout";
 import api from "../../services/api";
@@ -679,7 +679,7 @@ const TABS = [
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("summary");
-  const [reportFilters, setReportFilters] = useState({
+  const [reportFilters] = useState({
     dateFrom: '',
     dateTo: '',
     sortBy: 'date',

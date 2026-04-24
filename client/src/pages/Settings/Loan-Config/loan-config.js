@@ -90,12 +90,12 @@ const LoanConfig = () => {
     toast.info('Changes discarded');
   };
 
-  const handleTagInput = (e) => {
-    if (e.key === "Enter") {
-      console.log("Add loan type:", e.target.value);
-      e.target.value = "";
-    }
-  };
+  // const handleTagInput = (e) => {
+  //   if (e.key === "Enter") {
+  //     console.log("Add loan type:", e.target.value);
+  //     e.target.value = "";
+  //   }
+  // };
 
   if (loading) {
     return (

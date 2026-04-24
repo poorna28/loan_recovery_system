@@ -353,4 +353,4 @@ const LoanDetails = () => {
   );
 };
 
-export default Loan_Details;
+export default LoanDetails;

@@ -679,14 +679,14 @@ const TABS = [
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("summary");
-  // const [reportFilters, setReportFilters] = useState({
-  //   dateFrom: '',
-  //   dateTo: '',
-  //   sortBy: 'date',
-  //   sortOrder: 'desc',
-  //   page: 1,
-  //   limit: 100
-  // });
+  const [reportFilters, setReportFilters] = useState({
+    dateFrom: '',
+    dateTo: '',
+    sortBy: 'date',
+    sortOrder: 'desc',
+    page: 1,
+    limit: 100
+  });
 
   // Per-tab state: { data, loading, error }
   const [tabState, setTabState] = useState({

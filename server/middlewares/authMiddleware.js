@@ -3,12 +3,12 @@
  * Verifies JWT token and attaches user info to request
  */
 
-const jwt = require('jsonwebtoken'); // dependency for JWT handling. //require('jsonwebtoken') → Loads external package
+const tokenManager = require('../utils/tokenManager');
 
 const authMiddleware = (req, res, next) => {
   try {
-    // Get token from header
-    const token = req.headers.authorization?.split(' ')[1] || req.headers.authorization;
+    // Extract token from header or cookies
+    const token = tokenManager.extractTokenFromRequest(req);
 
     if (!token) {
       return res.status(401).json({
@@ -18,20 +18,17 @@ const authMiddleware = (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = tokenManager.verifyToken(token);
 
     // Attach user info to request
     req.user = decoded;
-    console.log('Decoded JWT payload:', decoded);
-    
     req.userId = decoded.id || decoded.userId;
-    console.log('User ID from token:', req.userId);
-
-    console.log(' User authenticated:', req.userId);
+    
+    console.log(`✅ User authenticated: ${req.userId} (Request ID: ${req.id})`);
     next();
 
   } catch (err) {
-    console.error(' Auth error:', err.message);
+    console.error(`❌ Auth error: ${err.message} (Request ID: ${req.id})`);
 
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({

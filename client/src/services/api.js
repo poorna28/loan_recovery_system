@@ -2,11 +2,14 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
+  // Enable sending cookies with requests (for httpOnly cookie authentication)
+  withCredentials: true
 });
 
 /**
  * Request Interceptor
- * Logs all outgoing requests and adds auth token if available
+ * Logs all outgoing requests
+ * NOTE: Token is now sent via httpOnly cookie automatically
  */
 api.interceptors.request.use(
   (config) => {
@@ -16,11 +19,8 @@ api.interceptors.request.use(
     //   data: config.data
     // });
 
-    // Add token if available
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // No need to add token manually - cookies are sent automatically with withCredentials: true
+    // This prevents XSS attacks that could steal tokens from localStorage
 
     return config;
   },
@@ -52,8 +52,10 @@ api.interceptors.response.use(
 
     // Handle specific error cases
     if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
-      localStorage.removeItem('token');
+      // Unauthorized - session expired
+      // Clear any local session data if present
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
       window.location.href = '/';
       console.warn('🔐 Session expired. Redirecting to login...');
     }

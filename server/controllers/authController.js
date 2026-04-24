@@ -1,33 +1,118 @@
-const jwt = require('jsonwebtoken'); //Dependencies //Creates authentication tokens
-const bcrypt = require('bcrypt'); //Dependencies //Safely compares hashed passwords 
-const userModel = require('../models/userModel'); //Dependencies //Database access layer
+const bcrypt = require('bcrypt');
+const userModel = require('../models/userModel');
+const tokenManager = require('../utils/tokenManager');
+const { validatePasswordStrength } = require('../utils/passwordValidator');
+const logger = require('../config/logger');
 
 exports.signup = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        const [existing] = await userModel.findUserByEmail(email);
-        if (existing.length) return res.status(400).json({ message: 'Email already exists' });
 
+        // Validate password strength
+        const passwordValidation = validatePasswordStrength(password);
+        if (!passwordValidation.valid) {
+            logger.warn('Weak password attempted during signup', { email, errors: passwordValidation.errors });
+            return res.status(400).json({
+                success: false,
+                message: 'Password does not meet security requirements',
+                errors: passwordValidation.errors
+            });
+        }
+
+        // Check if email already exists
+        const [existing] = await userModel.findUserByEmail(email);
+        if (existing.length) {
+            logger.warn('Signup attempt with existing email', { email });
+            return res.status(400).json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        // Create user
         await userModel.createUser({ name, email, password });
-        res.status(201).json({ message: 'User registered successfully' });
+        logger.info('New user registered successfully', { email, name });
+
+        res.status(201).json({
+            success: true,
+            message: 'User registered successfully'
+        });
     } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
+        logger.error('Signup error', { error: err.message, email: req.body?.email });
+        res.status(500).json({
+            success: false,
+            message: 'Server error during signup',
+            error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+        });
     }
 };
 
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        // Find user by email
         const [user] = await userModel.findUserByEmail(email);
-        if (!user.length) return res.status(400).json({ message: 'Invalid credentials' });
+        if (!user.length) {
+            logger.warn('Login attempt with non-existent email', { email });
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid email or password'
+            });
+        }
 
+        // Verify password
         const valid = await bcrypt.compare(password, user[0].password);
-        if (!valid) return res.status(400).json({ message: 'Invalid credentials' });
+        if (!valid) {
+            logger.warn('Login attempt with incorrect password', { email });
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid email or password'
+            });
+        }
 
-        const token = jwt.sign({ id: user[0].id, role: user[0].role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, message: 'Login successful' });
+        // Create token
+        const token = tokenManager.createToken(user[0].id, user[0].email, user[0].role);
+
+        // Set httpOnly cookie
+        tokenManager.setTokenCookie(res, token);
+
+        logger.info('User logged in successfully', { email, userId: user[0].id });
+
+        res.json({
+            success: true,
+            message: 'Login successful',
+            user: {
+                id: user[0].id,
+                name: user[0].name,
+                email: user[0].email,
+                role: user[0].role
+            }
+        });
     } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
+        logger.error('Login error', { error: err.message, email: req.body?.email });
+        res.status(500).json({
+            success: false,
+            message: 'Server error during login',
+            error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+        });
+    }
+};
+
+exports.logout = (req, res) => {
+    try {
+        tokenManager.clearTokenCookie(res);
+        logger.info('User logged out', { userId: req.userId });
+        res.json({
+            success: true,
+            message: 'Logged out successfully'
+        });
+    } catch (err) {
+        logger.error('Logout error', { error: err.message });
+        res.status(500).json({
+            success: false,
+            message: 'Server error during logout'
+        });
     }
 };
 

@@ -23,71 +23,33 @@ const LoanConfig = () => {
   const [saving, setSaving] = useState(false);
 
   // Fetch loan config on mount
-  // useEffect(() => {
-  //   fetchLoanConfig();
-  // }, []);
+  useEffect(() => {
+    fetchLoanConfig();
+  }, []);
 
-  // const fetchLoanConfig = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.get('/settings/loan-config');
-  //     if (response.data.success) {
-  //       const config = response.data.settings;
-  //       setMinTenure(config.min_tenure || 3);
-  //       setMaxTenure(config.max_tenure || 60);
-  //       setDefaultTenure(config.default_tenure || 12);
-  //       setMinAmount(config.min_amount || 5000);
-  //       setMaxAmount(config.max_amount || 1000000);
-  //       setEmiMethod(config.emi_method || "Reducing Balance");
-  //       setLateFee(config.late_fee || 200);
-  //       setPenaltyRate(config.penalty_rate || 2);
-  //       setGracePeriod(config.grace_period || 3);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching loan config:', error);
-  //     toast.error(error.response?.data?.message || 'Failed to load loan configuration');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-useEffect(() => {
-  const fetchUsersAndRoles = async () => {
+  const fetchLoanConfig = async () => {
     try {
       setLoading(true);
-
-      const [usersRes, rolesRes] = await Promise.all([
-        api.get('/users'),
-        api.get('/roles')
-      ]);
-
-      const usersData = (usersRes.data.users || usersRes.data.data || []).map(user => {
-        const roleColor = getRoleColor(user.role_name);
-        return {
-          id: user.id || user.user_id,
-          initial: (user.name || user.email || 'U')[0].toUpperCase(),
-          name: user.name || 'Unknown',
-          email: user.email || '',
-          role: user.role_name || 'User',
-          roleColor: roleColor.color,
-          roleBg: roleColor.bg,
-          active: user.is_active !== 0 && user.is_active !== false,
-          created_at: user.created_at,
-        };
-      });
-
-      setUsers(usersData);
-      setRoles(rolesRes.data.roles || rolesRes.data.data || []);
-      setError('');
-    } catch (err) {
-      setError('Failed to load users and roles');
-      toast.error('Failed to load users and roles');
+      const response = await api.get('/settings/loan-config');
+      if (response.data.success) {
+        const config = response.data.settings;
+        setMinTenure(config.min_tenure || 3);
+        setMaxTenure(config.max_tenure || 60);
+        setDefaultTenure(config.default_tenure || 12);
+        setMinAmount(config.min_amount || 5000);
+        setMaxAmount(config.max_amount || 1000000);
+        setEmiMethod(config.emi_method || "Reducing Balance");
+        setLateFee(config.late_fee || 200);
+        setPenaltyRate(config.penalty_rate || 2);
+        setGracePeriod(config.grace_period || 3);
+      }
+    } catch (error) {
+      console.error('Error fetching loan config:', error);
+      toast.error(error.response?.data?.message || 'Failed to load loan configuration');
     } finally {
       setLoading(false);
     }
   };
-
-  fetchUsersAndRoles();
-}, []);
 
   const saveSettings = async () => {
     try {

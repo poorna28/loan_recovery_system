@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Payment_View = ({ viewData }) => {
+const PaymentView = ({ viewData }) => {
   const formatCurrency = (value) => {
     if (!value && value !== 0) return '--';
     return `$${Number(value).toFixed(2)}`;
@@ -69,4 +69,4 @@ const Payment_View = ({ viewData }) => {
   );
 };
 
-export default Payment_View;
+export default PaymentView;

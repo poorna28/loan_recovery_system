@@ -5,6 +5,39 @@ import { toast } from 'react-toastify';
 import { ALLOWED_FILE_TYPES, getFileUrl } from '../../config/constants';
 import { buildPayload } from '../../utils/queryBuilder';
 
+const emptyForm = {
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    email: '',
+    profileStatus: '',
+    employmentStatus: '',
+    annualIncome: '',
+    creditScore: '',
+    dateOfBirth: '',
+    address: '',
+    title: '',
+    gender: '',
+    nationality: '',
+    primaryNumber: '',
+    secondaryNumber: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    addressProof: null,
+    // idExpiryDate: '',
+    // idIssueDate: '',
+    govtIdNumber: '',
+    govtIdType: '',
+    idDocumentUpload: null,
+    customerPhoto: null,
+    // companyName: '',
+    jobTitle: '',
+    // monthlyIncome: '',
+    incomeProofDocument: '',
+    // creditScoreBand: '',
+};
+
 const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
     const [formData, setFormData] = useState({
         // Step 1
@@ -35,40 +68,6 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
         incomeProofDocument: '',
     });
 
-    const emptyForm = {
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        email: '',
-        profileStatus: '',
-        employmentStatus: '',
-        annualIncome: '',
-        creditScore: '',
-        dateOfBirth: '',
-        address: '',
-        title: '',
-        gender: '',
-        nationality: '',
-        primaryNumber: '',
-        secondaryNumber: '',
-        city: '',
-        state: '',
-        postalCode: '',
-        addressProof: null,
-        // idExpiryDate: '',
-        // idIssueDate: '',
-        govtIdNumber: '',
-        govtIdType: '',
-        idDocumentUpload: null,
-        customerPhoto: null,
-        // companyName: '',
-        jobTitle: '',
-        // monthlyIncome: '',
-        incomeProofDocument: '',
-        // creditScoreBand: '',
-    };
-
-
     useEffect(() => {
         if (editData) {
             const normalizedDate = editData.dateOfBirth?.split('T')[0] || '';
@@ -91,14 +90,12 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
         }
 
         setErrors({});
-        setShowAlert(false);
         setStep(1);
     }, [editData]);
 
 
 
     const [errors, setErrors] = useState({});
-    const [showAlert, setShowAlert] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedFileNames, setSelectedFileNames] = useState({
         addressProof: "",
@@ -322,7 +319,6 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
 
             setEditData(null);
             setErrors({});
-            setShowAlert(false);
 
             // Refresh the customer list
             if (onSaveSuccess) {
@@ -376,7 +372,6 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
                                 aria-label="Close"
                                 onClick={() => {
                                     setEditData(null);
-                                    setShowAlert(false)
                                     setErrors({});
                                 }}
                             ></button>

@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 
 const UserRole = () => {
   const [users, setUsers] = useState([]);
-   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -19,10 +18,7 @@ useEffect(() => {
     try {
       setLoading(true);
 
-      const [usersRes, rolesRes] = await Promise.all([
-        api.get('/users'),
-        api.get('/roles')
-      ]);
+      const usersRes = await api.get('/users');
 
       const usersData = (usersRes.data.users || usersRes.data.data || []).map(user => {
         const roleColor = getRoleColor(user.role_name);
@@ -40,9 +36,6 @@ useEffect(() => {
       });
 
       setUsers(usersData);
-
-      // ❌ REMOVE THIS if not using roles
-      // setRoles(rolesRes.data.roles || rolesRes.data.data || []);
 
       setError('');
     } catch (err) {

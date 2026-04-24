@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../Company-Profile/company-profile.css";
 import Layout from "../../../components/Layout/Layout";
 import api from "../../../services/api";
@@ -22,12 +22,7 @@ const LoanConfig = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Fetch loan config on mount
-  useEffect(() => {
-    fetchLoanConfig();
-  }, []);
-
-  const fetchLoanConfig = async () => {
+  const fetchLoanConfig = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get('/settings/loan-config');
@@ -49,7 +44,12 @@ const LoanConfig = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Fetch loan config on mount
+  useEffect(() => {
+    fetchLoanConfig();
+  }, [fetchLoanConfig]);
 
   const saveSettings = async () => {
     try {

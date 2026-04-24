@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
-
 :root {
   --bg: #0a0c10;
   --bg2: #111318;
@@ -17,8 +15,8 @@
   --red: #f05252;
   --red2: #c03e3e;
   --teal: #1ecfcf;
-  --font-display: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --font-display: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-mono: Consolas, 'Courier New', monospace;
 }
 
 * {

@@ -23,7 +23,7 @@ const routes = [
   // {path: '/basic_info', element: <Basic_Info />},
   {path: '/customers', element: <Customers />},
   {path: '/loan_details', element: <LoanDetails />},
-  {path: '/payments',element: <PaymentPage   />},
+  {path: '/payments',element: <PaymentPage />},
   {path: '/reports', element: <Reports />},
   {path: '/company_profile', element: <CompanyProfile />},
   {path: '/loan_config', element: <LoanConfig />},

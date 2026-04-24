@@ -55,7 +55,7 @@ api.get('/loans')  // ✅ Based on backend routes
 
 ---
 
-#### 4. **PaymentPage .js - Missing Error Alert for Failed Fetch**
+#### 4. **PaymentPage.js - Missing Error Alert for Failed Fetch**
 - **Severity:** 🟡 Medium
 - **Issue:** If fetching payments fails, no error message is shown
 - **Location:** Lines 24-37 - `fetchAll()` catch block
@@ -71,7 +71,7 @@ api.get('/loans')  // ✅ Based on backend routes
 
 ---
 
-#### 5. **PaymentPage .js - Missing Currency Formatting in Table**
+#### 5. **PaymentPage.js - Missing Currency Formatting in Table**
 - **Severity:** 🟡 Medium
 - **Issue:** Payment amounts displayed as raw numbers without formatting
 - **Location:** Lines 127-133 - Table body
@@ -90,7 +90,7 @@ api.get('/loans')  // ✅ Based on backend routes
 - **Issue:** Modal won't display data without proper Bootstrap modal trigger
 - **Location:** Modal ID `#viewPaymentModal` not triggered properly
 - **Details:** Modal has `tabIndex="-1"` but no JavaScript to trigger it
-- **Related Code:** Line 148 in PaymentPage .js shows modal trigger but data binding unclear
+- **Related Code:** Line 148 in PaymentPage.js shows modal trigger but data binding unclear
 - **Fix:** Ensure proper Bootstrap modal initialization or use controlled component
 
 ---

@@ -2,8 +2,8 @@ import './payments.css';
 import Layout from '../../components/Layout/Layout';
 import React, { useEffect, useState, useCallback } from 'react';
 import api from '../../services/api';
-import Payment_View from './payment_view';
-import Payment_Form from './payment_form';
+import PaymentView from './payment_view';
+import PaymentForm from './payment_form';
 import { toast } from 'react-toastify';
 import { buildUrl } from '../../utils/queryBuilder';
 
@@ -21,7 +21,7 @@ const PaymentPage  = () => {
   const [loading, setLoading] = useState(true);
   const [viewPayment, setViewPayment] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(null);
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     search: '',
     sortBy: 'paymentDate',
     sortOrder: 'desc',
@@ -298,8 +298,8 @@ const PaymentPage  = () => {
         </div>
       </div>
 
-      <Payment_Form onPaymentSuccess={handlePaymentSuccess} />
-      <Payment_View viewData={viewPayment} />
+      <PaymentForm onPaymentSuccess={handlePaymentSuccess} />
+      <PaymentView viewData={viewPayment} />
     </Layout>
   );
 };

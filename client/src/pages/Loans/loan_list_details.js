@@ -3,7 +3,7 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import { buildUrl, buildPayload } from "../../utils/queryBuilder";
 
-const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
+const LoanListDetails = ({ editData, setEditData, onSaved }) => {
 
   const [formData, setFormData] = useState({
     customer_id: "",
@@ -499,4 +499,4 @@ const Loan_List_Details = ({ editData, setEditData, onSaved }) => {
   );
 };
 
-export default Loan_List_Details;
+export default LoanListDetails;

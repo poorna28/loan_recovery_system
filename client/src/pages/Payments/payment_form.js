@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { toast } from 'react-toastify';
 import { buildUrl, buildPayload } from '../../utils/queryBuilder';
 
-const Payment_Form = ({ onPaymentSuccess }) => {
+const PaymentForm = ({ onPaymentSuccess }) => {
   const [formData, setFormData] = useState({
     loanId: '',
     amount: '',
@@ -61,11 +60,16 @@ const Payment_Form = ({ onPaymentSuccess }) => {
           console.log("Enabled payment methods:", enabledMethods);
           setPaymentMethods(enabledMethods);
           // Set default method to first enabled method
-          if (enabledMethods.length > 0 && !formData.method) {
-            setFormData(prev => ({
-              ...prev,
-              method: enabledMethods[0].method_name
-            }));
+          if (enabledMethods.length > 0) {
+            setFormData(prev => {
+              if (!prev.method) {
+                return {
+                  ...prev,
+                  method: enabledMethods[0].method_name
+                };
+              }
+              return prev;
+            });
           }
         })
         .catch(err => {
@@ -131,7 +135,7 @@ const Payment_Form = ({ onPaymentSuccess }) => {
       );
 
       // Make payment request with payload
-      const response = await api.post('/payments/make', payload);
+      await api.post('/payments/make', payload);
 
       setSuccess('Payment processed successfully!');
       setFormData({
@@ -273,4 +277,4 @@ const Payment_Form = ({ onPaymentSuccess }) => {
   );
 };
 
-export default Payment_Form;
+export default PaymentForm;

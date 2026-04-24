@@ -2,8 +2,8 @@ import './loans.css';
 import Layout from '../../components/Layout/Layout';
 import React, { useEffect, useState, useCallback } from 'react';
 import api from '../../services/api';
-import Loan_List_Details from './loan_list_details';
-import Loan_List_View from './loan_list_view';
+import LoanListDetails from './loan_list_details';
+import LoanListView from './loan_list_view';
 import { toast } from 'react-toastify';
 import { buildUrl } from '../../utils/queryBuilder';
 
@@ -21,7 +21,7 @@ const LoanDetails = () => {
   const [loading, setLoading] = useState(true);
   const [editLoanCustomer, setEditLoanCustomer] = useState(null);
   const [viewLoanCustomer, setViewLoanCustomer] = useState(null);
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     search: '',
     sortBy: 'applicationDate',
     sortOrder: 'desc',
@@ -340,13 +340,13 @@ const LoanDetails = () => {
         </div>
       </div>
 
-      <Loan_List_Details
+      <LoanListDetails
         editData={editLoanCustomer}
         setEditData={setEditLoanCustomer}
         onSaved={fetchAll}
       />
 
-      <Loan_List_View
+      <LoanListView
         viewData={viewLoanCustomer}
       />
     </Layout>

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const UserRole = () => {
   const [users, setUsers] = useState([]);
-  // const [roles, setRoles] = useState([]);
+   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -15,24 +15,16 @@ const UserRole = () => {
 
   // Fetch users and roles on component mount
 useEffect(() => {
-  fetchUsersAndRoles();
-}, [fetchUsersAndRoles]);
-
   const fetchUsersAndRoles = async () => {
     try {
       setLoading(true);
-      // Fetch users and roles in parallel
+
       const [usersRes, rolesRes] = await Promise.all([
         api.get('/users'),
         api.get('/roles')
       ]);
 
-      console.log("Users response:", usersRes.data);
-      console.log("Roles response:", rolesRes.data);
-
-      // Format users data
       const usersData = (usersRes.data.users || usersRes.data.data || []).map(user => {
-        // Get color for role badge
         const roleColor = getRoleColor(user.role_name);
         return {
           id: user.id || user.user_id,
@@ -48,16 +40,23 @@ useEffect(() => {
       });
 
       setUsers(usersData);
-      setRoles(rolesRes.data.roles || rolesRes.data.data || []);
+
+      // ❌ REMOVE THIS if not using roles
+      // setRoles(rolesRes.data.roles || rolesRes.data.data || []);
+
       setError('');
     } catch (err) {
       console.error('Failed to fetch users/roles:', err);
-      setError('Failed to load users and roles. Please try again.');
+      setError('Failed to load users and roles');
       toast.error('Failed to load users and roles');
     } finally {
       setLoading(false);
     }
   };
+
+  fetchUsersAndRoles();
+}, []);
+
 
   const getRoleColor = (roleName) => {
     const roleColors = {

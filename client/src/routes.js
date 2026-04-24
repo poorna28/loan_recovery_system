@@ -6,7 +6,7 @@ import PrivateRoute from './privateRoute';
 // import Basic_Info from './pages/Customers/customer_list';
 import Customers from './pages/Customers/customer_list';
 import LoanDetails from './pages/Loans/loan_list';
-import PaymentPage  from './pages/Payments/PaymentPage ';
+import PaymentPage from './pages/Payments/PaymentPage';
 import Reports from './pages/Reports/reports-list';
 import CompanyProfile from './pages/Settings/Company-Profile/company-profile';
 import LoanConfig from './pages/Settings/Loan-Config/loan-config';

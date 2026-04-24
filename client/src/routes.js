@@ -5,8 +5,8 @@ import DashboardPage from './pages/Dashboard/Dashboard';
 import PrivateRoute from './privateRoute';
 // import Basic_Info from './pages/Customers/customer_list';
 import Customers from './pages/Customers/customer_list';
-import Loan_Details from './pages/Loans/loan_list';
-import Payment_Page from './pages/Payments/payment_page';
+import LoanDetails from './pages/Loans/loan_list';
+import PaymentPage  from './pages/Payments/PaymentPage ';
 import Reports from './pages/Reports/reports-list';
 import CompanyProfile from './pages/Settings/Company-Profile/company-profile';
 import LoanConfig from './pages/Settings/Loan-Config/loan-config';
@@ -22,8 +22,8 @@ const routes = [
   { path: '/signup', element: <SignupForm /> },
   // {path: '/basic_info', element: <Basic_Info />},
   {path: '/customers', element: <Customers />},
-  {path: '/loan_details', element: <Loan_Details />},
-  {path: '/payments',element: <Payment_Page  />},
+  {path: '/loan_details', element: <LoanDetails />},
+  {path: '/payments',element: <PaymentPage   />},
   {path: '/reports', element: <Reports />},
   {path: '/company_profile', element: <CompanyProfile />},
   {path: '/loan_config', element: <LoanConfig />},

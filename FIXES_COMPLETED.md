@@ -27,12 +27,12 @@
 - **Details:** `validationErrors.join(', ')` for multiple errors
 - **Location:** Lines 63
 
-✅ **4. Missing Error Alert on Fetch (payment_page.js)**
+✅ **4. Missing Error Alert on Fetch (PaymentPage .js)**
 - **Fixed:** Now shows error alert if fetching payments fails
 - **Details:** Added error state handling in fetch with user-friendly error message
 - **Location:** Lines 37-43
 
-✅ **5. Currency Formatting in Table (payment_page.js)**
+✅ **5. Currency Formatting in Table (PaymentPage .js)**
 - **Fixed:** Added `formatCurrency()` helper function and applied to all amount columns
 - **Details:** Shows ₹ with proper localization: ₹5,000.00
 - **Location:** Lines 9-12, 135-140
@@ -209,7 +209,7 @@
 
 ### Frontend
 - [client/src/pages/Payments/payment_form.js](client/src/pages/Payments/payment_form.js)
-- [client/src/pages/Payments/payment_page.js](client/src/pages/Payments/payment_page.js)
+- [client/src/pages/Payments/PaymentPage .js](client/src/pages/Payments/PaymentPage .js)
 - [client/src/pages/Dashboard/Dashboard.js](client/src/pages/Dashboard/Dashboard.js)
 - [client/src/pages/Reports/reports-list.js](client/src/pages/Reports/reports-list.js)
 

@@ -14,9 +14,9 @@ const UserRole = () => {
   const [filterStatus, setFilterStatus] = useState('all'); // all, active, inactive
 
   // Fetch users and roles on component mount
-  useEffect(() => {
-    fetchUsersAndRoles();
-  }, []);
+useEffect(() => {
+  fetchUsersAndRoles();
+}, [fetchUsersAndRoles]);
 
   const fetchUsersAndRoles = async () => {
     try {

@@ -1,0 +1,211 @@
+const customerModel = require('../models/customerModel');
+const db = require('../models/db');
+
+exports.createCustomer = async (req, res) => {
+  try {
+    // Remove auto-generated fields that should not be set by client
+    const { customer_id, id, ...bodyData } = req.body;
+    
+    const payload = {
+      ...bodyData,
+      // Address Proof
+      addressProof:
+        req.files?.addressProof?.[0]?.savedAs ||
+        bodyData.addressProof ||
+        null,
+
+      addressProofOriginal:
+        req.files?.addressProof?.[0]?.originalname ||
+        bodyData.addressProofOriginal ||
+        null,
+
+      // ID Document
+      idDocumentUpload:
+        req.files?.idDocumentUpload?.[0]?.savedAs ||
+        bodyData.idDocumentUpload ||
+        null,
+
+      idDocumentUploadOriginal:
+        req.files?.idDocumentUpload?.[0]?.originalname ||
+        bodyData.idDocumentUploadOriginal ||
+        null,
+
+      // Customer Photo
+      customerPhoto:
+        req.files?.customerPhoto?.[0]?.savedAs ||
+        bodyData.customerPhoto ||
+        null,
+
+      customerPhotoOriginal:
+        req.files?.customerPhoto?.[0]?.originalname ||
+        bodyData.customerPhotoOriginal ||
+        null
+    };
+
+
+    const customer = await customerModel.createCustomer(payload);
+
+    res.status(201).json({
+      message: 'Customer created',
+      customerId: customer.customerId
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Get all customers
+exports.getAllCustomers = async (req, res) => {
+  try {
+    res.set('Cache-Control', 'no-store'); // disable caching
+
+    const customers = await customerModel.getCustomersWithLoanCount();
+
+    res.status(200).json({ customers });
+  } catch (err) {
+    console.error('❌ Error fetching customers:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Delete a customer
+exports.deleteCustomer = async (req, res) => {
+  try {
+    res.set('Cache-Control', 'no-store'); // disable caching
+
+    const { customer_id  } = req.params;
+    
+    // Check if customer exists
+    const customer = await customerModel.getCustomerById(customer_id);
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    // Check if customer has active loans
+    const loanModel = require('../models/loanModel');
+    const loans = await new Promise((resolve, reject) => {
+      db.query(
+        'SELECT COUNT(*) as count FROM loan_customer WHERE customer_id = ? AND status_approved IN ("ACTIVE", "APPROVED")',
+        [customer_id],
+        (err, results) => {
+          if (err) return reject(err);
+          resolve(results[0]?.count || 0);
+        }
+      );
+    });
+
+    if (loans > 0) {
+      return res.status(400).json({ message: 'Cannot delete customer with active or approved loans' });
+    }
+
+    await customerModel.deleteCustomer(customer_id );
+    res.status(200).json({ message: 'Customer deleted' });
+  } catch (err) {
+    console.error('Error deleting customer:', err);
+    if (err.code === 'ER_ROW_IS_REFERENCED_2') {
+      return res.status(400).json({ message: 'Cannot delete customer with associated loans' });
+    }
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Update a customer
+exports.updateCustomer = async (req, res) => {
+  try {
+    res.set('Cache-Control', 'no-store'); // disable caching
+
+    const { customer_id  } = req.params;
+    
+    // Check if customer exists
+    const existing = await customerModel.getCustomerById(customer_id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    // Check for email duplicate (if email is being changed)
+    if (req.body.email && req.body.email !== existing.email) {
+      const emailExists = await new Promise((resolve, reject) => {
+        db.query(
+          'SELECT customer_id FROM customers WHERE email = ? AND customer_id != ?',
+          [req.body.email, customer_id],
+          (err, results) => {
+            if (err) return reject(err);
+            resolve(results.length > 0);
+          }
+        );
+      });
+      
+      if (emailExists) {
+        return res.status(409).json({ message: 'Email already exists for another customer' });
+      }
+    }
+
+    const { customer_id: id, id: innerId, ...bodyData } = req.body;
+    
+    const payload = {
+      ...bodyData,
+      // Address Proof
+      addressProof:
+        req.files?.addressProof?.[0]?.savedAs ||
+        bodyData.addressProof ||
+        null,
+
+      addressProofOriginal:
+        req.files?.addressProof?.[0]?.originalname ||
+        bodyData.addressProofOriginal ||
+        null,
+
+      // ID Document
+      idDocumentUpload:
+        req.files?.idDocumentUpload?.[0]?.savedAs ||
+        bodyData.idDocumentUpload ||
+        null,
+
+      idDocumentUploadOriginal:
+        req.files?.idDocumentUpload?.[0]?.originalname ||
+        bodyData.idDocumentUploadOriginal ||
+        null,
+
+      // Customer Photo
+      customerPhoto:
+        req.files?.customerPhoto?.[0]?.savedAs ||
+        bodyData.customerPhoto ||
+        null,
+
+      customerPhotoOriginal:
+        req.files?.customerPhoto?.[0]?.originalname ||
+        bodyData.customerPhotoOriginal ||
+        null
+    };
+
+    await customerModel.updateCustomer(customer_id , payload);
+
+    res.status(200).json({ message: 'Customer updated' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+exports.getCustomerById = async (req, res) => {
+  try {
+        res.set('Cache-Control', 'no-store'); // disable caching
+
+    const { customer_id } = req.params;
+    const customer = await customerModel.getCustomerById(customer_id);
+
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    res.status(200).json(customer);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+
+

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const UserRole = () => {
   const [users, setUsers] = useState([]);
-  const [roles, setRoles] = useState([]);
+  // const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');

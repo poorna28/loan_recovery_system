@@ -410,7 +410,7 @@ app.use('/api/v1', customerRoutes);
 **Location:** Various components  
 **Issue:** Generic "Failed to load" messages don't help users  
 **Impact:** Poor user experience during troubleshooting  
-**Example:** [payment_page.js](client/src/pages/Payments/payment_page.js) lines 40-43
+**Example:** [PaymentPage .js](client/src/pages/Payments/PaymentPage .js) lines 40-43
 ```javascript
 .catch(err => {
   setAlert({ type: 'danger', message: 'Failed to fetch payments' });

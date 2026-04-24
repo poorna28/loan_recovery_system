@@ -132,7 +132,7 @@ api.get(url)
 
 ---
 
-### Payment Page (`/client/src/pages/Payments/payment_page.js`)
+### Payment Page (`/client/src/pages/Payments/PaymentPage .js`)
 
 **Before:**
 ```javascript
@@ -354,7 +354,7 @@ router.get('/customers', (req, res) => {
 - [x] Create query builder utility
 - [x] Update customer_list.js with filters
 - [x] Update loan_list.js with filters
-- [x] Update payment_page.js with filters
+- [x] Update PaymentPage .js with filters
 - [x] Update reports-list.js with filters
 - [x] Update Dashboard.js with params
 - [x] Update customer_details.js with buildPayload

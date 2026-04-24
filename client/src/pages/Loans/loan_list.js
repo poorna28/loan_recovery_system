@@ -16,7 +16,7 @@ const fmtINR = (val) => {
   return `₹${n}`;
 };
 
-const Loan_Details = () => {
+const LoanDetails = () => {
   const [loanCustomers, setLoanCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editLoanCustomer, setEditLoanCustomer] = useState(null);

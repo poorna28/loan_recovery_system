@@ -16,7 +16,7 @@ const fmtINR = (val) => {
   return `₹${n}`;
 };
 
-const Payment_Page = () => {
+const PaymentPage  = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewPayment, setViewPayment] = useState(null);
@@ -304,4 +304,4 @@ const Payment_Page = () => {
   );
 };
 
-export default Payment_Page;
+export default PaymentPage ;

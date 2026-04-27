@@ -1,24 +1,25 @@
+const fs = require('fs');
 const mysql = require('mysql2');
 require('dotenv').config();
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-    ssl: {
-    rejectUnauthorized: true // ensures SSL is used
+  ssl: {
+    ca: fs.readFileSync(__dirname + '/ca.pem'), // path to your downloaded CA cert
+    rejectUnauthorized: true
   }
 });
 
-// ...existing code...
-db.connect((err) => {
+db.connect(err => {
   if (err) {
     console.error('❌ MySQL connection error:', err.message);
-    // Optionally: process.exit(1);
   } else {
-    console.log('Connected to MySQL database');
+    console.log('✅ Connected to MySQL database');
   }
 });
-// ...existing code...
+
 module.exports = db;

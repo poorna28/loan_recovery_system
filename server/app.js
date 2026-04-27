@@ -46,6 +46,14 @@ app.use('/uploads', express.static('uploads'));
 const customerRoutes = require('./routes/customerRoutes');
 app.use('/api', customerRoutes);
 
+// ===================
+
+app.get('/', (req, res) => {
+  res.send('Loan Recovery System API is running');
+});
+
+
+// ===================
 const loanRoutes = require('./routes/loanRoutes');
 app.use('/api', loanRoutes);
 

@@ -93,7 +93,7 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
         setStep(1);
     }, [editData]);
 
-
+  const [showAlert, setShowAlert] = useState(false); 
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);

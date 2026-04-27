@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-<<<<<<< HEAD
+// <<<<<<< HEAD
   baseURL: 'https://loan-recovery-system-7vv5.onrender.com/api',
-=======
-  baseURL: 'http://localhost:5000/api',
->>>>>>> 06eb77230932ab7784391e9b63e7d1558b33ac85
+// =======
+//   baseURL: 'http://localhost:5000/api',
+// >>>>>>> 06eb77230932ab7784391e9b63e7d1558b33ac85
   // Enable sending cookies with requests (for httpOnly cookie authentication)
   withCredentials: true
 });

@@ -60,8 +60,8 @@ app.use('/api/settings', settingsRoutes);
 const userRoutes = require('./routes/userRoutes');
 app.use('/api', userRoutes);
 
-const reportRoutes = require('./routes/reportroutes');
-app.use('/api/reports', reportRoutes);
+// const reportRoutes = require('./routes/reportroutes');
+// app.use('/api/reports', reportRoutes);
 
 const dashboardRoutes = require('./routes/dashboardRoutes');
 app.use('/api/dashboard', dashboardRoutes);

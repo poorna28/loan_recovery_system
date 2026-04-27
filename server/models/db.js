@@ -9,7 +9,7 @@ const db = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   ssl: {
-    ca: fs.readFileSync(__dirname + '/ca.pem'), // path to your downloaded CA cert
+    ca: fs.readFileSync(__dirname + '/../config/ca.pem'),
     rejectUnauthorized: true
   }
 });

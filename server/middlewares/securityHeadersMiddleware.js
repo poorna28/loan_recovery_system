@@ -13,7 +13,7 @@ const securityHeaders = [
       scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", 'http://localhost:5000'],
+      connectSrc: ["'self'", 'https://loan-recovery-system-7vv5.onrender.com'],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],

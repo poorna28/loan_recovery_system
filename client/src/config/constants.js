@@ -1,6 +1,6 @@
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-export const UPLOAD_BASE_URL = process.env.REACT_APP_UPLOAD_URL || 'http://localhost:5000/uploads';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://loan-recovery-system-7vv5.onrender.com';
+export const UPLOAD_BASE_URL = process.env.REACT_APP_UPLOAD_URL || 'https://loan-recovery-system-7vv5.onrender.com';
 
 // File types
 export const ALLOWED_FILE_TYPES = '.pdf,.jpg,.jpeg,.png';

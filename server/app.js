@@ -14,7 +14,7 @@ const { csrfCookieParser, csrfProtection, csrfErrorHandler } = require('./middle
 
 // ============= BUILT-IN MIDDLEWARE =============
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'https://loan-recovery-system.vercel.app',
   credentials: true
 }));
 app.use(express.json());

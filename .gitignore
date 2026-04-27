@@ -49,3 +49,5 @@ coverage/
 .cache/
 temp/
 tmp/
+.env
+.env.example

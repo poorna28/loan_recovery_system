@@ -14,13 +14,11 @@ const { csrfCookieParser, csrfProtection, csrfErrorHandler } = require('./middle
 
 // ============= BUILT-IN MIDDLEWARE =============
 app.use(cors({
-<<<<<<< HEAD
   origin: process.env.CORS_ORIGIN || 'https://loan-recovery-system.vercel.app',
-=======
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
->>>>>>> 06eb77230932ab7784391e9b63e7d1558b33ac85
   credentials: true
 }));
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

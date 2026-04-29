@@ -298,3 +298,7 @@ button {
 .success {
   background: #ecfdf5;
 }
+
+.form-control-plaintext{
+  color: #ccc !important;
+}

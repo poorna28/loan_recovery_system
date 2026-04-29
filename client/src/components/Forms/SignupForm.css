@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── Container ── */
+.signup-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0a0a0f;
+  overflow: hidden;
+  font-family: 'Syne', sans-serif;
+}
+
+/* ── Particle canvas ── */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Card ── */
+.signup-card {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  width: 360px;
+  max-width: calc(100vw - 2rem);
+  backdrop-filter: blur(14px);
+  animation: cardIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* ── Header ── */
+.card-header {
+  margin-bottom: 2rem;
+}
+
+.card-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #444;
+  margin: 0 0 8px;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff !important;
+  letter-spacing: -1px;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Glitch layers */
+.card-title::before,
+.card-title::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.card-title::before {
+  color: #00ffcc;
+  animation: glitch1 4s infinite;
+  clip-path: polygon(0 20%, 100% 20%, 100% 45%, 0 45%);
+}
+
+.card-title::after {
+  color: #ff3cac;
+  animation: glitch2 4s infinite;
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+}
+
+@keyframes glitch1 {
+  0%, 90%, 100% { transform: translate(0); opacity: 0; }
+  92%           { transform: translate(-3px,  1px); opacity: 1; }
+  94%           { transform: translate( 3px, -1px); opacity: 1; }
+  96%           { transform: translate(0);           opacity: 0; }
+}
+
+@keyframes glitch2 {
+  0%, 90%, 100% { transform: translate(0); opacity: 0; }
+  91%           { transform: translate( 3px, -1px); opacity: 1; }
+  93%           { transform: translate(-3px,  1px); opacity: 1; }
+  95%           { transform: translate(0);           opacity: 0; }
+}
+
+/* ── Form ── */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* ── Fields ── */
+.field-wrap {
+  position: relative;
+  animation: fieldIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field-wrap:nth-child(1) { animation-delay: 0.05s; }
+.field-wrap:nth-child(2) { animation-delay: 0.15s; }
+.field-wrap:nth-child(3) { animation-delay: 0.25s; }
+
+@keyframes fieldIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.field-label {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ccc;
+  margin-bottom: 6px;
+  transition: color 0.3s ease;
+}
+
+.field-wrap:focus-within .field-label {
+  color: #00ffcc;
+}
+
+.field-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.field-input::placeholder {
+  color: #2a2a35;
+}
+
+.field-input:focus {
+  border-color: #00ffcc;
+  background: rgba(0, 255, 204, 0.04);
+  box-shadow: 0 0 0 3px rgba(0, 255, 204, 0.08);
+}
+
+/* Animated underline sweep */
+.field-line {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ffcc, transparent);
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), left 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.field-wrap:focus-within .field-line {
+  width: 100%;
+  left: 0;
+}
+
+/* ── Button ── */
+.form-button {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 14px;
+  margin-top: 0.4rem;
+  background: transparent;
+  border: 1px solid #00ffcc;
+  border-radius: 10px;
+  color: #00ffcc;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.35s ease;
+  animation: fieldIn 0.6s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Fill sweep on hover */
+.form-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #00ffcc;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.form-button:hover::before {
+  transform: scaleX(1);
+}
+
+.form-button:hover {
+  color: #0a0a0f;
+}
+
+.form-button:active {
+  transform: scale(0.98);
+}
+
+.form-button span {
+  position: relative;
+  z-index: 1;
+}
+
+input::placeholder {
+  color: #545252 !important;
+}
+
+/* Ripple */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(0, 255, 204, 0.35);
+  transform: translate(-50%, -50%);
+  animation: rippleAnim 0.65s linear;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes rippleAnim {
+  from { width: 0;     height: 0;     opacity: 1; }
+  to   { width: 220px; height: 220px; opacity: 0; }
+}
+
+/* ── Footer ── */
+.footer-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: #ccc;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.footer-link {
+  color: #00ffcc;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.footer-link:hover {
+  opacity: 0.7;
+}
+
+/* ── Particles JS (injected via useEffect or plain script) ── */

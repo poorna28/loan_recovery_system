@@ -43,6 +43,9 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { validateCustomer, validateIdParam } = require('../middlewares/validationMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
+const { authorizeRoles } = require('../middlewares/roleMiddleware');
+
 
 /* ========= Multer config (unchanged) ========= */
 
@@ -73,15 +76,17 @@ const uploadFields = upload.fields([
 /* ========= ROUTES WITH VALIDATION ========= */
 
 // Create with validation
-router.post('/customers', uploadFields, validateCustomer, customerController.createCustomer);
+router.post('/customers', authMiddleware, authorizeRoles('Admin','Manager','Staff'), uploadFields, validateCustomer, customerController.createCustomer);
 
 // Read
-router.get('/customers', customerController.getAllCustomers);
-router.get('/customers/:customer_id', customerController.getCustomerById);
+router.get('/customers', authMiddleware, authorizeRoles('Admin','Manager','Staff','Accountant','Auditor','Customer Service'), customerController.getAllCustomers);
+router.get('/customers/:customer_id', authMiddleware, authorizeRoles('Admin','Manager','Staff','Accountant','Auditor','Customer Service'), customerController.getCustomerById);
 
 // Update with validation
 router.put(
   '/customers/:customer_id',
+  authMiddleware,
+  authorizeRoles('Admin','Manager','Staff','Customer Service'),
   uploadFields,
   validateCustomer,
   customerController.updateCustomer
@@ -89,8 +94,7 @@ router.put(
 
 // Delete with validation
 router.delete(
-  '/customers/:customer_id',
-  customerController.deleteCustomer
+  '/customers/:customer_id', authMiddleware, authorizeRoles('Admin'), customerController.deleteCustomer
 );
 
 module.exports = router;

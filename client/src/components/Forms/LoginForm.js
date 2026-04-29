@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import './LoginForm.css';
 
 const LoginForm = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -9,30 +10,144 @@ const LoginForm = () => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await api.post('/auth/login', form);
-    toast.success(res.data.message);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post('/auth/login', form);
+      toast.success(res.data.message);
+      localStorage.setItem('authToken', res.data.token || 'logged-in');
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Login failed');
+    }
+  };
 
-    // Store token
-    localStorage.setItem('authToken', res.data.token || 'logged-in');
+  useEffect(() => {
+    const canvas = document.getElementById('login-particles-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animId;
 
-    // Navigate and replace history
-    navigate('/dashboard', { replace: true });
-  } catch (err) {
-    toast.error(err.response?.data?.message || 'Login failed');
-  }
-};
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
 
+    const pts = Array.from({ length: 65 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.5 + 0.3,
+      alpha: Math.random() * 0.35 + 0.08,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,255,204,${p.alpha})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < pts.length; j++) {
+          const q = pts[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(0,255,204,${0.07 * (1 - d / 100)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  const handleRipple = (e) => {
+    const btn = e.currentTarget;
+    const circle = document.createElement('span');
+    const rect = btn.getBoundingClientRect();
+    circle.className = 'ripple';
+    circle.style.left = e.clientX - rect.left + 'px';
+    circle.style.top = e.clientY - rect.top + 'px';
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 700);
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-      <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-      <button type="submit">Login</button>
-    </form>
+    <div className="login-container">
+      <canvas id="login-particles-canvas"></canvas>
+
+      <div className="login-card">
+        <div className="card-header">
+          {/* <p className="card-eyebrow">// auth required</p> */}
+          <h2 className="card-title" data-text="Welcome Back">Welcome Back</h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form" noValidate>
+          <div className="field-wrap">
+            <label className="field-label" htmlFor="login-email">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              name="email"
+              placeholder="you@domain.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="field-input"
+            />
+            <span className="field-line"></span>
+          </div>
+
+          <div className="field-wrap">
+            <label className="field-label" htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              name="password"
+              placeholder="Your password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              className="field-input"
+            />
+            <span className="field-line"></span>
+          </div>
+
+          <button type="submit" className="form-button" onClick={handleRipple}>
+            <span>Login</span>
+          </button>
+        </form>
+
+        <p className="footer-text">
+          Don't have an account?{' '}
+          <span className="footer-link" onClick={() => navigate('/signup')}>Sign up</span>
+        </p>
+      </div>
+    </div>
   );
 };
 

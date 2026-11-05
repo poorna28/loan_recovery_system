@@ -1,6 +1,10 @@
 import React from 'react';
 
+<<<<<<< HEAD
 const Payment_View = ({ viewData }) => {
+=======
+const PaymentView = ({ viewData }) => {
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
   const formatCurrency = (value) => {
     if (!value && value !== 0) return '--';
     return `$${Number(value).toFixed(2)}`;
@@ -69,4 +73,8 @@ const Payment_View = ({ viewData }) => {
   );
 };
 
+<<<<<<< HEAD
 export default Payment_View;
+=======
+export default PaymentView;
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391

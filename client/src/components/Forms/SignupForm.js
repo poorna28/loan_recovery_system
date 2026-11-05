@@ -16,6 +16,7 @@ const SignupForm = () => {
     try {
       const res = await api.post('/auth/signup', form);
       toast.success(res.data.message);
+
       setForm({ name: '', email: '', password: '' });
       navigate('/');
     } catch (err) {
@@ -34,6 +35,7 @@ const SignupForm = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
+
     resize();
     window.addEventListener('resize', resize);
 
@@ -48,10 +50,11 @@ const SignupForm = () => {
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < pts.length; i++) {
-        const p = pts[i];
+
+      pts.forEach((p, i) => {
         p.x += p.vx;
         p.y += p.vy;
+
         if (p.x < 0) p.x = canvas.width;
         if (p.x > canvas.width) p.x = 0;
         if (p.y < 0) p.y = canvas.height;
@@ -67,6 +70,7 @@ const SignupForm = () => {
           const dx = p.x - q.x;
           const dy = p.y - q.y;
           const d = Math.sqrt(dx * dx + dy * dy);
+
           if (d < 100) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
@@ -76,9 +80,11 @@ const SignupForm = () => {
             ctx.stroke();
           }
         }
-      }
+      });
+
       animId = requestAnimationFrame(draw);
     };
+
     draw();
 
     return () => {
@@ -91,9 +97,11 @@ const SignupForm = () => {
     const btn = e.currentTarget;
     const circle = document.createElement('span');
     const rect = btn.getBoundingClientRect();
+
     circle.className = 'ripple';
     circle.style.left = e.clientX - rect.left + 'px';
     circle.style.top = e.clientY - rect.top + 'px';
+
     btn.appendChild(circle);
     setTimeout(() => circle.remove(), 700);
   };
@@ -103,64 +111,44 @@ const SignupForm = () => {
       <canvas id="particles-canvas"></canvas>
 
       <div className="signup-card">
-        <div className="card-header">
-          {/* <p className="card-eyebrow">// init session</p> */}
-          <h2 className="card-title" data-text="Create Account">Create Account</h2>
-        </div>
+        <h2>Create Account</h2>
 
-        <form onSubmit={handleSubmit} className="signup-form" noValidate>
-          <div className="field-wrap">
-            <label className="field-label" htmlFor="name">Name</label>
-            <input
-              id="name"
-              type="text"
-              name="name"
-              placeholder="Your full name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="field-input"
-            />
-            <span className="field-line"></span>
-          </div>
+        <form onSubmit={handleSubmit} className="signup-form">
+          <input
+            type="text"
+            name="name"
+            placeholder="Your full name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="field-wrap">
-            <label className="field-label" htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="you@domain.com"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="field-input"
-            />
-            <span className="field-line"></span>
-          </div>
+          <input
+            type="email"
+            name="email"
+            placeholder="you@domain.com"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="field-wrap">
-            <label className="field-label" htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Create a password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="field-input"
-            />
-            <span className="field-line"></span>
-          </div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Create a password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
 
-          <button type="submit" className="form-button" onClick={handleRipple}>
-            <span>Register</span>
+          <button type="submit" onClick={handleRipple}>
+            Register
           </button>
         </form>
 
-        <p className="footer-text">
-          Already have an account? <span className="footer-link" onClick={() => navigate('/')}>Sign in</span>
+        <p>
+          Already have an account?{' '}
+          <span onClick={() => navigate('/')}>Sign in</span>
         </p>
       </div>
     </div>

@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 require('dotenv').config();
+=======
+const path = require('path');
+
+require('dotenv').config({
+  path: path.resolve(__dirname, '../.env')
+});
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
 // Validate environment variables first
 const { validateEnvironment } = require('./config/env');

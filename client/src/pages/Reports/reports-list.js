@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect, useRef, useState, useCallback } from "react";
+=======
+import React, { useEffect, useState, useCallback } from "react";
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 import "../Reports/reports.css";
 import Layout from "../../components/Layout/Layout";
 import api from "../../services/api";
@@ -679,7 +683,11 @@ const TABS = [
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("summary");
+<<<<<<< HEAD
   const [reportFilters, setReportFilters] = useState({
+=======
+  const [reportFilters] = useState({
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     dateFrom: '',
     dateTo: '',
     sortBy: 'date',
@@ -812,4 +820,8 @@ const Reports = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Reports;
+=======
+export default Reports;
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391

@@ -1,7 +1,11 @@
 import "../../App.css";
 import React, { useEffect, useState } from "react";
 
+<<<<<<< HEAD
 const Loan_List_View = ({ viewData }) => {
+=======
+const LoanListView = ({ viewData }) => {
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -94,4 +98,8 @@ const Loan_List_View = ({ viewData }) => {
   );
 };
 
+<<<<<<< HEAD
 export default Loan_List_View;
+=======
+export default LoanListView;
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391

@@ -43,9 +43,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { validateCustomer, validateIdParam } = require('../middlewares/validationMiddleware');
+<<<<<<< HEAD
 const authMiddleware = require('../middlewares/authMiddleware');
 const { authorizeRoles } = require('../middlewares/roleMiddleware');
 
+=======
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
 /* ========= Multer config (unchanged) ========= */
 
@@ -76,17 +79,28 @@ const uploadFields = upload.fields([
 /* ========= ROUTES WITH VALIDATION ========= */
 
 // Create with validation
+<<<<<<< HEAD
 router.post('/customers', authMiddleware, authorizeRoles('Admin','Manager','Staff'), uploadFields, validateCustomer, customerController.createCustomer);
 
 // Read
 router.get('/customers', authMiddleware, authorizeRoles('Admin','Manager','Staff','Accountant','Auditor','Customer Service'), customerController.getAllCustomers);
 router.get('/customers/:customer_id', authMiddleware, authorizeRoles('Admin','Manager','Staff','Accountant','Auditor','Customer Service'), customerController.getCustomerById);
+=======
+router.post('/customers', uploadFields, validateCustomer, customerController.createCustomer);
+
+// Read
+router.get('/customers', customerController.getAllCustomers);
+router.get('/customers/:customer_id', customerController.getCustomerById);
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
 // Update with validation
 router.put(
   '/customers/:customer_id',
+<<<<<<< HEAD
   authMiddleware,
   authorizeRoles('Admin','Manager','Staff','Customer Service'),
+=======
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
   uploadFields,
   validateCustomer,
   customerController.updateCustomer
@@ -94,7 +108,12 @@ router.put(
 
 // Delete with validation
 router.delete(
+<<<<<<< HEAD
   '/customers/:customer_id', authMiddleware, authorizeRoles('Admin'), customerController.deleteCustomer
+=======
+  '/customers/:customer_id',
+  customerController.deleteCustomer
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 );
 
 module.exports = router;

@@ -2,6 +2,7 @@ const db = require('./db');
 const bcrypt = require('bcrypt');
 
 const User = {
+<<<<<<< HEAD
 
   // FIXED: JOIN with user_roles and roles so role_name comes back with the user
   findUserByEmail: (email) => {
@@ -18,6 +19,14 @@ const User = {
           else resolve([results]);
         }
       );
+=======
+  findUserByEmail: (email) => {
+    return new Promise((resolve, reject) => {
+      db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     });
   },
 
@@ -36,4 +45,8 @@ const User = {
   },
 };
 
+<<<<<<< HEAD
 module.exports = User;
+=======
+module.exports = User;
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391

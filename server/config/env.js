@@ -36,9 +36,15 @@ const validateEnvironment = () => {
     errors.push(`NODE_ENV must be one of: development, production, testing. Got: ${process.env.NODE_ENV}`);
   }
 
+<<<<<<< HEAD
   // if (process.env.DB_PORT && isNaN(process.env.DB_PORT)) {
   //   errors.push(`DB_PORT must be a number. Got: ${process.env.DB_PORT}`);
   // }
+=======
+  if (process.env.DB_PORT && isNaN(process.env.DB_PORT)) {
+    errors.push(`DB_PORT must be a number. Got: ${process.env.DB_PORT}`);
+  }
+>>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
   if (process.env.PORT && isNaN(process.env.PORT)) {
     errors.push(`PORT must be a number. Got: ${process.env.PORT}`);

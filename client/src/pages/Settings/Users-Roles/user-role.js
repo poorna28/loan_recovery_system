@@ -6,10 +6,7 @@ import { toast } from "react-toastify";
 
 const UserRole = () => {
   const [users, setUsers] = useState([]);
-<<<<<<< HEAD
   const [roles, setRoles] = useState([]);
-=======
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -17,7 +14,6 @@ const UserRole = () => {
   const [filterStatus, setFilterStatus] = useState('all'); // all, active, inactive
 
   // Fetch users and roles on component mount
-<<<<<<< HEAD
   useEffect(() => {
     fetchUsersAndRoles();
   }, []);
@@ -37,16 +33,6 @@ const UserRole = () => {
       // Format users data
       const usersData = (usersRes.data.users || usersRes.data.data || []).map(user => {
         // Get color for role badge
-=======
-useEffect(() => {
-  const fetchUsersAndRoles = async () => {
-    try {
-      setLoading(true);
-
-      const usersRes = await api.get('/users');
-
-      const usersData = (usersRes.data.users || usersRes.data.data || []).map(user => {
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
         const roleColor = getRoleColor(user.role_name);
         return {
           id: user.id || user.user_id,
@@ -62,32 +48,17 @@ useEffect(() => {
       });
 
       setUsers(usersData);
-<<<<<<< HEAD
       setRoles(rolesRes.data.roles || rolesRes.data.data || []);
       setError('');
     } catch (err) {
       console.error('Failed to fetch users/roles:', err);
       setError('Failed to load users and roles. Please try again.');
-=======
-
-      setError('');
-    } catch (err) {
-      console.error('Failed to fetch users/roles:', err);
-      setError('Failed to load users and roles');
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
       toast.error('Failed to load users and roles');
     } finally {
       setLoading(false);
     }
   };
 
-<<<<<<< HEAD
-=======
-  fetchUsersAndRoles();
-}, []);
-
-
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
   const getRoleColor = (roleName) => {
     const roleColors = {
       'Super Admin': { color: '#5080ff', bg: 'rgba(80,128,255,0.12)' },
@@ -341,8 +312,4 @@ useEffect(() => {
   );
 };
 
-<<<<<<< HEAD
 export default UserRole;
-=======
-export default UserRole;
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391

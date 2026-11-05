@@ -18,19 +18,12 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
-<<<<<<< HEAD
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-=======
-    "dotenv": "^16.6.1",
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.4.1",
+  "express-rate-limit": "^8.4.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.1.1",
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     "mysql": "^2.18.1",
     "mysql2": "^3.14.1",
     "uuid": "^14.0.0"

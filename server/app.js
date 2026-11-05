@@ -14,17 +14,11 @@ const { csrfCookieParser, csrfProtection, csrfErrorHandler } = require('./middle
 
 // ============= BUILT-IN MIDDLEWARE =============
 app.use(cors({
-<<<<<<< HEAD
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+    : ['http://localhost:3000', 'https://loan-recovery-system.vercel.app'],
   credentials: true
 }));
-=======
-  origin: process.env.CORS_ORIGIN || 'https://loan-recovery-system.vercel.app',
-  credentials: true
-}));
-
-
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -54,8 +48,6 @@ app.use('/uploads', express.static('uploads'));
 const customerRoutes = require('./routes/customerRoutes');
 app.use('/api', customerRoutes);
 
-<<<<<<< HEAD
-=======
 // ===================
 
 app.get('/', (req, res) => {
@@ -64,7 +56,6 @@ app.get('/', (req, res) => {
 
 
 // ===================
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 const loanRoutes = require('./routes/loanRoutes');
 app.use('/api', loanRoutes);
 
@@ -79,13 +70,8 @@ app.use('/api/settings', settingsRoutes);
 const userRoutes = require('./routes/userRoutes');
 app.use('/api', userRoutes);
 
-<<<<<<< HEAD
-const reportRoutes = require('./routes/reportroutes');
+const reportRoutes = require('./routes/reportRoutes');
 app.use('/api/reports', reportRoutes);
-=======
-// const reportRoutes = require('./routes/reportroutes');
-// app.use('/api/reports', reportRoutes);
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
 const dashboardRoutes = require('./routes/dashboardRoutes');
 app.use('/api/dashboard', dashboardRoutes);

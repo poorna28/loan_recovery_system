@@ -16,19 +16,12 @@ const fmtINR = (val) => {
   return `₹${n}`;
 };
 
-const Loan_Details = () => {
-=======
 const LoanDetails = () => {
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
   const [loanCustomers, setLoanCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editLoanCustomer, setEditLoanCustomer] = useState(null);
   const [viewLoanCustomer, setViewLoanCustomer] = useState(null);
-<<<<<<< HEAD
   const [filters, setFilters] = useState({
-=======
-  const [filters] = useState({
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     search: '',
     sortBy: 'applicationDate',
     sortOrder: 'desc',
@@ -347,29 +340,17 @@ const LoanDetails = () => {
         </div>
       </div>
 
-<<<<<<< HEAD
-      <Loan_List_Details
-=======
       <LoanListDetails
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
         editData={editLoanCustomer}
         setEditData={setEditLoanCustomer}
         onSaved={fetchAll}
       />
 
-<<<<<<< HEAD
-      <Loan_List_View
-=======
       <LoanListView
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
         viewData={viewLoanCustomer}
       />
     </Layout>
   );
 };
 
-<<<<<<< HEAD
-export default Loan_Details;
-=======
 export default LoanDetails;
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391

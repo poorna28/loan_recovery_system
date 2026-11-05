@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from "react";
-=======
 import React, { useState, useEffect, useCallback } from "react";
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 import "../Company-Profile/company-profile.css";
 import Layout from "../../../components/Layout/Layout";
 import api from "../../../services/api";
@@ -26,16 +22,7 @@ const LoanConfig = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-<<<<<<< HEAD
-  // Fetch loan config on mount
-  useEffect(() => {
-    fetchLoanConfig();
-  }, []);
-
-  const fetchLoanConfig = async () => {
-=======
   const fetchLoanConfig = useCallback(async () => {
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     try {
       setLoading(true);
       const response = await api.get('/settings/loan-config');
@@ -57,16 +44,12 @@ const LoanConfig = () => {
     } finally {
       setLoading(false);
     }
-<<<<<<< HEAD
-  };
-=======
   }, []);
 
   // Fetch loan config on mount
   useEffect(() => {
     fetchLoanConfig();
   }, [fetchLoanConfig]);
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
   const saveSettings = async () => {
     try {
@@ -107,21 +90,12 @@ const LoanConfig = () => {
     toast.info('Changes discarded');
   };
 
-<<<<<<< HEAD
   const handleTagInput = (e) => {
     if (e.key === "Enter") {
       console.log("Add loan type:", e.target.value);
       e.target.value = "";
     }
   };
-=======
-  // const handleTagInput = (e) => {
-  //   if (e.key === "Enter") {
-  //     console.log("Add loan type:", e.target.value);
-  //     e.target.value = "";
-  //   }
-  // };
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
   if (loading) {
     return (

@@ -52,11 +52,7 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
-<<<<<<< HEAD
   const [dashboardParams, setDashboardParams] = useState({
-=======
-  const [dashboardParams] = useState({
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     dateRange: 'all',
     limit: 100,
     page: 1

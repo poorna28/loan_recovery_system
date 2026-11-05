@@ -1,10 +1,6 @@
 import "../../App.css";
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
 import { getFileUrl, ALLOWED_FILE_TYPES } from '../../config/constants';
-=======
-import { getFileUrl } from '../../config/constants';
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
 const Customer_list_view = ({ viewData }) => {
     const [formData, setFormData] = useState({});

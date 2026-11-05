@@ -2,13 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import api from '../../services/api';
 import './customers.css';
 import Layout from '../../components/Layout/Layout';
-<<<<<<< HEAD
-import Customer_details from './customer_details';
-import Customer_list_view from './customer_list_view';
-=======
 import CustomerDetails from './customer_details';
 import CustomerListView from './customer_list_view';
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 import { toast } from 'react-toastify';
 import { buildUrl } from '../../utils/queryBuilder';
 
@@ -29,11 +24,7 @@ const Customers = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerLoans, setCustomerLoans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-<<<<<<< HEAD
   const [filters, setFilters] = useState({
-=======
-  const [filters] = useState({
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     search: '',
     sortBy: 'firstName',
     sortOrder: 'asc',
@@ -339,17 +330,10 @@ const Customers = () => {
       </div>
 
       {/* Add/Edit Modal */}
-<<<<<<< HEAD
-      <Customer_details editData={editData} setEditData={setEditData} onSaveSuccess={fetchCustomers} />
-
-      {/* View Modal */}
-      <Customer_list_view viewData={viewData} />
-=======
-      <CustomerDetails editData={editData} setEditData={setEditData} onSaveSuccess={fetchCustomers} />
+  <CustomerDetails editData={editData} setEditData={setEditData} onSaveSuccess={fetchCustomers} />
 
       {/* View Modal */}
       <CustomerListView viewData={viewData} />
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
       {/* Customer Loans Modal */}
       <div className="modal fade" id="customerLoansModal">

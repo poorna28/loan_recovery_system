@@ -5,8 +5,6 @@ import { toast } from 'react-toastify';
 import { ALLOWED_FILE_TYPES, getFileUrl } from '../../config/constants';
 import { buildPayload } from '../../utils/queryBuilder';
 
-<<<<<<< HEAD
-=======
 const emptyForm = {
     firstName: '',
     lastName: '',
@@ -39,8 +37,6 @@ const emptyForm = {
     incomeProofDocument: '',
     // creditScoreBand: '',
 };
-
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
     const [formData, setFormData] = useState({
         // Step 1
@@ -71,43 +67,6 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
         incomeProofDocument: '',
     });
 
-<<<<<<< HEAD
-    const emptyForm = {
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        email: '',
-        profileStatus: '',
-        employmentStatus: '',
-        annualIncome: '',
-        creditScore: '',
-        dateOfBirth: '',
-        address: '',
-        title: '',
-        gender: '',
-        nationality: '',
-        primaryNumber: '',
-        secondaryNumber: '',
-        city: '',
-        state: '',
-        postalCode: '',
-        addressProof: null,
-        // idExpiryDate: '',
-        // idIssueDate: '',
-        govtIdNumber: '',
-        govtIdType: '',
-        idDocumentUpload: null,
-        customerPhoto: null,
-        // companyName: '',
-        jobTitle: '',
-        // monthlyIncome: '',
-        incomeProofDocument: '',
-        // creditScoreBand: '',
-    };
-
-
-=======
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     useEffect(() => {
         if (editData) {
             const normalizedDate = editData.dateOfBirth?.split('T')[0] || '';
@@ -130,7 +89,6 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
         }
 
         setErrors({});
-<<<<<<< HEAD
         setShowAlert(false);
         setStep(1);
     }, [editData]);
@@ -139,14 +97,6 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
 
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
-=======
-        setStep(1);
-    }, [editData]);
-
-//   const [showAlert, setShowAlert] = useState(false); 
-
-    const [errors, setErrors] = useState({});
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedFileNames, setSelectedFileNames] = useState({
         addressProof: "",
@@ -370,10 +320,7 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
 
             setEditData(null);
             setErrors({});
-<<<<<<< HEAD
             setShowAlert(false);
-=======
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
 
             // Refresh the customer list
             if (onSaveSuccess) {
@@ -427,10 +374,7 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
                                 aria-label="Close"
                                 onClick={() => {
                                     setEditData(null);
-<<<<<<< HEAD
                                     setShowAlert(false)
-=======
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
                                     setErrors({});
                                 }}
                             ></button>
@@ -1053,11 +997,7 @@ const Customer_details = ({ editData, setEditData, onSaveSuccess }) => {
                                 data-bs-dismiss="modal"
                                 onClick={() => {
                                     setEditData(null);
-<<<<<<< HEAD
                                     setShowAlert(false)
-=======
-                                    // setShowAlert(false)
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
                                     setErrors({});
                                 }}
                                 disabled={isSubmitting}

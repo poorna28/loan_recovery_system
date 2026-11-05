@@ -1,15 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config/constants';
 
 const api = axios.create({
-<<<<<<< HEAD
-  baseURL: 'http://localhost:5000/api',
-=======
-// <<<<<<< HEAD
-  baseURL: 'https://loan-recovery-system-7vv5.onrender.com/api',
-// =======
-//   baseURL: 'http://localhost:5000/api',
-// >>>>>>> 06eb77230932ab7784391e9b63e7d1558b33ac85
->>>>>>> fea1bb0f049d2f496625218d0a39caa6ea140391
+  baseURL: `${API_BASE_URL}/api`,
   // Enable sending cookies with requests (for httpOnly cookie authentication)
   withCredentials: true
 });
